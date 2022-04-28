@@ -9,7 +9,7 @@ public class DeckScript : MonoBehaviour
     //defines the card prefab and cardgroup so that the deck may be displayed visually
     public GameObject cardPrefab;
     public Transform cardGroup;
-    public Transform cardGroupFive;
+    public Transform cardGroupDeal;
     //defines the list of cards as game objects
     public List<GameObject> cards;
     //defines all the required values of each card as string arrays
@@ -18,16 +18,16 @@ public class DeckScript : MonoBehaviour
     string[] iconSuit = new string[] { "♣", "♦", "♥", "♠" };
     string[] iconFace = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
     //removes the first five cards in the deck and puts them in a seperate card group
-    public void DrawFive()
+    public void Deal()
     {
-        foreach (Transform item in cardGroupFive.transform)
+        foreach (Transform item in cardGroupDeal.transform)
         {
             Destroy(item.gameObject);
         }
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 2; i++)
         {
-            cards[i].transform.SetParent(cardGroupFive);
+            cards[i].transform.SetParent(cardGroupDeal);
         }
 
     }
