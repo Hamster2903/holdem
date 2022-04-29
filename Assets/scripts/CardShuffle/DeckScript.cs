@@ -9,7 +9,8 @@ public class DeckScript : MonoBehaviour
     //defines the card prefab and cardgroup so that the deck may be displayed visually
     public GameObject cardPrefab;
     public Transform cardGroup;
-    public Transform cardGroupDeal;
+    public Transform cardGroupDealtToHand;
+    public Transform cardGroupDealtToFlop;
     //defines the list of cards as game objects
     public List<GameObject> cards;
     //defines all the required values of each card as string arrays
@@ -17,17 +18,31 @@ public class DeckScript : MonoBehaviour
     string[] suit = new string[] { "Clubs", "Diamonds", "Hearts", "Spades" };
     string[] iconSuit = new string[] { "♣", "♦", "♥", "♠" };
     string[] iconFace = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
-    //removes the first five cards in the deck and puts them in a seperate card group
-    public void Deal()
+    
+    //removes the first 2 cards in the deck and puts them in a seperate card group designated for the player hand
+    public void DealToHand()
     {
-        foreach (Transform item in cardGroupDeal.transform)
+        foreach (Transform item in cardGroupDealtToHand.transform)
         {
             Destroy(item.gameObject);
         }
 
         for (int i = 0; i < 2; i++)
         {
-            cards[i].transform.SetParent(cardGroupDeal);
+            cards[i].transform.SetParent(cardGroupDealtToHand);
+        }
+
+    }
+    public void DealToFlop()
+    {
+        foreach (Transform item in cardGroupDealtToFlop.transform)
+        {
+            Destroy(item.gameObject);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            cards[i].transform.SetParent(cardGroupDealtToFlop);
         }
 
     }
@@ -77,7 +92,15 @@ public class DeckScript : MonoBehaviour
 
         //re add children to parent
     }
-    
+    void Start()
+    {
+        Generate();
+        Shuffle();
+        DealToFlop();
+        DealToHand();
+        
+    }
+
 }
 
 
