@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour
 {
+    
     //defines the card prefab and cardgroup so that the deck may be displayed visually
     public GameObject cardPrefab;
     public Transform cardGroup;
@@ -92,14 +93,7 @@ public class DeckScript : MonoBehaviour
 
         //re add children to parent
     }
-    void Start()
-    {
-        Generate();
-        Shuffle();
-        DealToFlop();
-        DealToHand();
-        
-    }
+    
 
 }
 
