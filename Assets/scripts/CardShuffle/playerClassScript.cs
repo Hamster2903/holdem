@@ -8,21 +8,38 @@ public class PlayerClassScript : MonoBehaviour
     private int valueOfChipsBet = 0;
     private bool folded = false;
     private string playerName = "";
-    private string valueOfCardsInHand = "";
-    private int numOfRoundsIn = 0;
+    private int valueOfCardsInHand = 0;
+    
 
-    public PlayerClassScript(int newNofCards, int newChipValue, bool newFolded, string newName, string newCardValue, int newRoundNum)
+    public PlayerClassScript(int newNofCards, int newChipValue, bool newFolded, string newName, int newCardValue)
     {
         this.numOfCardsInHand = newNofCards;
         this.valueOfChipsBet = newChipValue;
         this.folded = newFolded;
         this.playerName = newName;
         this.valueOfCardsInHand = newCardValue;
-        this.numOfRoundsIn = newRoundNum;
+        
     }
 
     public bool getFolded()
     {
         return this.folded;
+    }
+    public int getNumOfCardsInHand()
+    {
+        return this.numOfCardsInHand;
+    }
+    public int getValueOfChipsBet()
+    {
+        return this.valueOfChipsBet;
+    }
+    public string getPlayerName()
+    {
+        return this.playerName;
+    }
+    public int getValueOfCardsinHand()
+    {
+        return this.valueOfCardsInHand;
+        
     }
 }
