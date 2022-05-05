@@ -4,24 +4,30 @@ using UnityEngine;
 
 public class PlayerClassScript : MonoBehaviour
 {
-    private int numOfCardsInHand = 0;
+    
     private int valueOfChipsBet = 0;
+    private int individualValueOfBet = 0;
     private bool folded = false;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
-    
+    private bool isLittleBlind;
+    private bool isBigBlind;
+    public List<GameObject> cards;
 
-    public PlayerClassScript(int newNofCards, int newChipValue, bool newFolded, string newName, int newCardValue)
+    public PlayerClassScript(int newChipValue, int newIndividualBet,bool newFolded, string newName, int newCardValue, bool newLittleBlind, bool newBigBlind)
     {
-        this.numOfCardsInHand = newNofCards;
+        
         this.valueOfChipsBet = newChipValue;
+        this.individualValueOfBet = newIndividualBet;
         this.folded = newFolded;
         this.playerName = newName;
         this.valueOfCardsInHand = newCardValue;
-        
+        this.isLittleBlind = newLittleBlind;
+        this.isBigBlind = newBigBlind;
     }
 
-    public bool getFolded()
+
+    /*public bool getFolded()
     {
         return this.folded;
     }
@@ -41,5 +47,5 @@ public class PlayerClassScript : MonoBehaviour
     {
         return this.valueOfCardsInHand;
         
-    }
+    }*/
 }
