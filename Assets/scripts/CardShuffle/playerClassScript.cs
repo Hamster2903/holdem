@@ -14,16 +14,17 @@ public class PlayerClassScript : MonoBehaviour
     private bool isBigBlind;
     public List<GameObject> cards;
 
-    public PlayerClassScript(int newChipValue, int newIndividualBet,bool newFolded, string newName, int newCardValue, bool newLittleBlind, bool newBigBlind)
+    public PlayerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
     {
         
-        this.valueOfChipsBet = newChipValue;
-        this.individualValueOfBet = newIndividualBet;
-        this.folded = newFolded;
+        this.valueOfChipsBet = 0;
+        this.individualValueOfBet = 0;
+        this.folded = false;
         this.playerName = newName;
-        this.valueOfCardsInHand = newCardValue;
+        this.valueOfCardsInHand = 0;
         this.isLittleBlind = newLittleBlind;
         this.isBigBlind = newBigBlind;
+        this.cards = new List<GameObject>();
     }
 
 
