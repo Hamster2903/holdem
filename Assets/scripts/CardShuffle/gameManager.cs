@@ -31,7 +31,6 @@ public class gameManager : MonoBehaviour
     //deal to turn on the second round, players re-bet/call/fold/raise
     //deal to river on the third round, players re-bet/call/fold/raise
     //showdown, the card hands are evualated and the winner is determined
-    //
     public void GeneratePlayers(int numPlayers)
     {
         for (int i = 0; i < numPlayers; i++)
@@ -45,14 +44,12 @@ public class gameManager : MonoBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
-            GameObject cardToMove = deckScript.cards[0];
-            deckScript.cards.Remove(cardToMove);
-            players[i].cards.Add(cardToMove);
+            //must generate these specific cards to the cardgroup in the GUI, as of right now the function DealToHand in deckscript adds two random cards from the generated deck function
+            GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
+            deckScript.cards.Remove(cardToMove); //removes card from list
+            players[i].cards.Add(cardToMove); //adds removed card to player list for each player.
             print(cardToMove);
         }
-        
-        //askjs dck script for two crds for each player
-        //refrences deck script, refrences players through list, adds two cards to players
     }
     
     
