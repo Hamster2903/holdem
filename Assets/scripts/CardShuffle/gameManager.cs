@@ -17,6 +17,8 @@ public class gameManager : MonoBehaviour
     public int raiseValue;
     public int roundValue;
     public List<PlayerClassScript> players;
+    GameObject playerGameObject;
+    GameObject cardGroups;
     void Start()
     {
         deckScript.Generate();
@@ -44,7 +46,6 @@ public class gameManager : MonoBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
-            //must generate these specific cards to the cardgroup in the GUI, as of right now the function DealToHand in deckscript adds two random cards from the generated deck function
             GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
             deckScript.cards.Remove(cardToMove); //removes card from list
             players[i].cards.Add(cardToMove); //adds removed card to player list for each player.
@@ -52,6 +53,21 @@ public class gameManager : MonoBehaviour
         }
     }
     
-    
+
+    public void GeneratePlayerObjects()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            //instantiate player game object for each generated player
+        }
+    }
+    public void GenerateCardGroupObjects()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            //instantiate cards from list under the generated player game objects
+        }
+    }
+
 
 }
