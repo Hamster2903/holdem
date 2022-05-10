@@ -17,14 +17,21 @@ public class gameManager : MonoBehaviour
     public int raiseValue;
     public int roundValue;
     public List<PlayerClassScript> players;
-    GameObject playerGameObject;
-    GameObject cardGroups;
+    public GameObject playerPrefab;
+    public GameObject cardGroups;
+    public Transform playerPosition2;
+    public Transform playerPosition3;
+    public Transform playerPosition4;
+    public Transform playerPosition5;
+    //make list of player positions
+    public List<GameObject> playerPositions;
     void Start()
     {
         deckScript.Generate();
         deckScript.Shuffle();
         deckScript.DealToFlop();
         GeneratePlayers(2);
+        GeneratePlayerObjects();
         DealToHands();
     }
 
@@ -58,7 +65,8 @@ public class gameManager : MonoBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
-            //instantiate player game object for each generated player
+            GameObject newPlayer =Instantiate(playerPrefab);
+            newPlayer.transform.SetParent(playerPosition2);
         }
     }
     public void GenerateCardGroupObjects()
