@@ -6,7 +6,6 @@ public class PlayerClassScript : MonoBehaviour
 {
     
     private int valueOfChipsBet = 0;
-    private int individualValueOfBet = 0;
     private bool folded = false;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
@@ -18,7 +17,6 @@ public class PlayerClassScript : MonoBehaviour
     {
         
         this.valueOfChipsBet = 0;
-        this.individualValueOfBet = 0;
         this.folded = false;
         this.playerName = newName;
         this.valueOfCardsInHand = 0;

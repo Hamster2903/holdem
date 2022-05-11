@@ -61,13 +61,16 @@ public class gameManager : MonoBehaviour
 
     public void GeneratePlayerObjects()
     {
+        //defines player position in objects as its position in the list
         GameObject playerPositionsParent = playerPositions[players.Count - 2];
-        foreach (Transform item in playerPositionsParent.transform)
+        foreach (Transform item in playerPositionsParent.transform)//for each position in the list instantiates players
         {
             print("hello");
             GameObject newPlayer = Instantiate(playerPrefab);
             newPlayer.transform.SetParent(item.transform);
             newPlayer.transform.position = item.position;
+            //instantiate card prefabs based on cards in their respective player list
+            //how to access the specific card group 
         }
 
     }
