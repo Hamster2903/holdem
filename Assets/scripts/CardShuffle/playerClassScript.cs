@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerClassScript : MonoBehaviour
+public class playerClassScript : MonoBehaviour
 {
     
     private int valueOfChipsBet = 0;
@@ -13,7 +13,7 @@ public class PlayerClassScript : MonoBehaviour
     private bool isBigBlind;
     public List<GameObject> cards;
 
-    public PlayerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
+    public playerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
     {
         
         this.valueOfChipsBet = 0;

@@ -10,7 +10,6 @@ public class DeckScript : MonoBehaviour
     //defines the card prefab and cardgroup so that the deck may be displayed visually
     public GameObject cardPrefab;
     public Transform cardGroup;
-    public Transform cardGroupDealtToHand;
     public Transform cardGroupDealtToFlop;
     //defines the list of cards as game objects
     public List<GameObject> cards;
@@ -18,35 +17,10 @@ public class DeckScript : MonoBehaviour
     string[] face = new string[] { "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King" };
     string[] suit = new string[] { "Clubs", "Diamonds", "Hearts", "Spades" };
     string[] iconSuit = new string[] { "♣", "♦", "♥", "♠" };
-    string[] iconFace = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
+    string[] iconFace = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
     
-    //removes the first 2 cards in the deck and puts them in a seperate card group designated for the player hand
-    public void DealToHand()
-    {
-        foreach (Transform item in cardGroupDealtToHand.transform)
-        {
-            Destroy(item.gameObject);
-        }
-
-        for (int i = 0; i < 2; i++)
-        {
-            cards[i].transform.SetParent(cardGroupDealtToHand);
-        }
-
-    }
-    public void DealToFlop()
-    {
-        foreach (Transform item in cardGroupDealtToFlop.transform)
-        {
-            Destroy(item.gameObject);
-        }
-
-        for (int i = 0; i < 5; i++)
-        {
-            cards[i].transform.SetParent(cardGroupDealtToFlop);
-        }
-
-    }
+   
+   
     //Generate() destroys and clears each game object in th list prior to generating the new list and card prefabs
     public void Generate()
     {

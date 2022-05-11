@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class gameManager : MonoBehaviour
 {
-    //make list of players
+       
     public DeckScript deckScript;
     public Button raiseButton;
     public Button callButton;
@@ -16,34 +16,35 @@ public class gameManager : MonoBehaviour
     public int callValue;
     public int raiseValue;
     public int roundValue;
-    public List<PlayerClassScript> players;
+    public List<GameObject> players;
     public GameObject playerPrefab;
     public GameObject cardGroups;
-
-    //make list of player positions
+    public List<GameObject> flopList;
+    public GameObject flopGrid;
     public List<GameObject> playerPositions;
+    //make bool checking if playerName  so each player can see what their cards is but not what others are
     void Start()
     {
         deckScript.Generate();
         deckScript.Shuffle();
-        deckScript.DealToFlop();
-        GeneratePlayers(5);
+        DealToFlop1();
+        GeneratePlayers(3);
         GeneratePlayerObjects();
         DealToHands();
     }
-
-    //pre-flop, little and big blinds bet, moves around table until everyone has acted
-    //store and update round value based on community cards
-    //deal to turn on the second round, players re-bet/call/fold/raise
-    //deal to river on the third round, players re-bet/call/fold/raise
-    //showdown, the card hands are evualated and the winner is determined
+    //set 2 players to big and little blinds
+    //give each player prompts
+    //set round values
+    //evaluate hands after the final round, determine who wins the pot
+    
     public void GeneratePlayers(int numPlayers)
     {
         players.Clear();
         for (int i = 0; i < numPlayers; i++)
         {
-            PlayerClassScript newPlayer = new PlayerClassScript("TestPlayer" + i, false, false);
+            GameObject newPlayer = Instantiate(playerPrefab);
             players.Add(newPlayer);
+
         }
         print(numPlayers);
     }
@@ -51,36 +52,44 @@ public class gameManager : MonoBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
-            GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
-            deckScript.cards.Remove(cardToMove); //removes card from list
-            players[i].cards.Add(cardToMove); //adds removed card to player list for each player.
-            print(cardToMove);
+            for (int j = 0; j < 2; j++)
+            {
+                GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
+                deckScript.cards.Remove(cardToMove); //removes card from list
+                players[i].GetComponent<playerClassScript>().cards.Add(cardToMove); //adds removed card to player list for each player.
+                cardToMove.transform.SetParent(players[i].transform);//instantiates cards from list to player grid
+                print(cardToMove);
+            }
+            
         }
     }
     
 
     public void GeneratePlayerObjects()
     {
+        int count = 0;
         //defines player position in objects as its position in the list
-        GameObject playerPositionsParent = playerPositions[players.Count - 2];
+        GameObject playerPositionsParent = playerPositions[players.Count - 3];
         foreach (Transform item in playerPositionsParent.transform)//for each position in the list instantiates players
         {
             print("hello");
-            GameObject newPlayer = Instantiate(playerPrefab);
-            newPlayer.transform.SetParent(item.transform);
-            newPlayer.transform.position = item.position;
-            //instantiate card prefabs based on cards in their respective player list
-            //how to access the specific card group 
+            players[count].transform.SetParent(item.transform);
+            players[count].transform.position = item.position;
+            count++;
         }
 
     }
-    public void GenerateCardGroupObjects()
+    //make pre-flop round, ask for bets and actions,
+    public void DealToFlop1()
     {
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < 3; i++)
         {
-            //instantiate cards from list under the generated player game objects
+            GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
+            deckScript.cards.Remove(cardToMove); //removes card from list
+            flopList.Add(cardToMove);
+            cardToMove.transform.SetParent(flopGrid.transform);
         }
     }
-
-
+    //make deal to flop 2, loops and adds extra card depending on round
+   
 }
