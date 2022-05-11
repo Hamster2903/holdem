@@ -1104,7 +1104,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -362, y: 461}
+  m_AnchoredPosition: {x: 413, y: 463}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &893928229
@@ -1260,18 +1260,9 @@ MonoBehaviour:
   callValue: 0
   raiseValue: 0
   roundValue: 0
-  players:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  players: []
   playerPrefab: {fileID: 5088718751958668125, guid: 5929c3ce2b39f2b4f81e0d7c39169dd8, type: 3}
   cardGroups: {fileID: 0}
-  playerPosition2: {fileID: 761040532}
-  playerPosition3: {fileID: 893928230}
-  playerPosition4: {fileID: 1412317401}
-  playerPosition5: {fileID: 612452187}
   playerPositions:
   - {fileID: 761040531}
   - {fileID: 893928229}

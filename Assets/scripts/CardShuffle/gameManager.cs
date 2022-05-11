@@ -19,10 +19,7 @@ public class gameManager : MonoBehaviour
     public List<PlayerClassScript> players;
     public GameObject playerPrefab;
     public GameObject cardGroups;
-    public Transform playerPosition2;
-    public Transform playerPosition3;
-    public Transform playerPosition4;
-    public Transform playerPosition5;
+
     //make list of player positions
     public List<GameObject> playerPositions;
     void Start()
@@ -30,7 +27,7 @@ public class gameManager : MonoBehaviour
         deckScript.Generate();
         deckScript.Shuffle();
         deckScript.DealToFlop();
-        GeneratePlayers(2);
+        GeneratePlayers(5);
         GeneratePlayerObjects();
         DealToHands();
     }
@@ -42,6 +39,7 @@ public class gameManager : MonoBehaviour
     //showdown, the card hands are evualated and the winner is determined
     public void GeneratePlayers(int numPlayers)
     {
+        players.Clear();
         for (int i = 0; i < numPlayers; i++)
         {
             PlayerClassScript newPlayer = new PlayerClassScript("TestPlayer" + i, false, false);
@@ -63,11 +61,15 @@ public class gameManager : MonoBehaviour
 
     public void GeneratePlayerObjects()
     {
-        for (int i = 0; i < players.Count; i++)
+        GameObject playerPositionsParent = playerPositions[players.Count - 2];
+        foreach (Transform item in playerPositionsParent.transform)
         {
-            GameObject newPlayer =Instantiate(playerPrefab);
-            newPlayer.transform.SetParent(playerPosition2);
+            print("hello");
+            GameObject newPlayer = Instantiate(playerPrefab);
+            newPlayer.transform.SetParent(item.transform);
+            newPlayer.transform.position = item.position;
         }
+
     }
     public void GenerateCardGroupObjects()
     {
