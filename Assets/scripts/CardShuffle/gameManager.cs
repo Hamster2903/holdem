@@ -13,6 +13,7 @@ public class gameManager : MonoBehaviour
     public Button foldButton;
     public int littleBlindBetValue;
     public int bigBlindBetValue;
+    public int potValue;
     public int callValue;
     public int raiseValue;
     public int roundValue;
@@ -22,6 +23,7 @@ public class gameManager : MonoBehaviour
     public List<GameObject> flopList;
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
+    
     //make bool checking if playerName  so each player can see what their cards is but not what others are
     void Start()
     {
@@ -32,11 +34,31 @@ public class gameManager : MonoBehaviour
         GeneratePlayerObjects();
         DealToHands();
     }
+    //gameLoop (while)
+    public void gameLoop()
+    {
+        while(true)//while game is running, ends on conditions of everyone has folded, the 4th round ends
+        {
+            //must determine the players hand values, determines the who wins the pot
+            for (int i = 0; i < players.Count; i++)//loops for each player
+            {
+                //conditionally checks if each player has acted, using hasCalled, hasFolded, hasRaised,
+                
+            }
+        }
+    }
     //set 2 players to big and little blinds
     //give each player prompts
     //set round values
     //evaluate hands after the final round, determine who wins the pot
-    
+    public void DetermineLittleBlind()
+    {
+
+    }
+    public void DetermineBigBlind()
+    {
+        bigBlindBetValue = 2 * littleBlindBetValue;
+    }
     public void GeneratePlayers(int numPlayers)
     {
         players.Clear();
@@ -90,6 +112,14 @@ public class gameManager : MonoBehaviour
             cardToMove.transform.SetParent(flopGrid.transform);
         }
     }
+    public void DealToFlop2()
+    {
+        GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
+        deckScript.cards.Remove(cardToMove); //removes card from list
+        flopList.Add(cardToMove);
+        cardToMove.transform.SetParent(flopGrid.transform);
+    }
+    
     //make deal to flop 2, loops and adds extra card depending on round
    
 }
