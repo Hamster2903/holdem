@@ -16,7 +16,9 @@ public class gameManager : MonoBehaviour
     public int potValue;
     public int callValue;
     public int raiseValue;
-    public int roundValue;
+    public int roundNum;
+    public bool allFolded = false;
+    public bool potOver = false;
     public List<GameObject> players;
     public GameObject playerPrefab;
     public GameObject cardGroups;
@@ -37,20 +39,54 @@ public class gameManager : MonoBehaviour
     //gameLoop (while)
     public void gameLoop()
     {
-        while(true)//while game is running, ends on conditions of everyone has folded, the 4th round ends
+        //define round =1
+        //define player=1
+        //make function checking what player is active
+        //make function that asks for fold, raise and call
+        //each function checks what player is active and increments the player to the next one based on if they act
+        //once it has gone through each player, set player back to 1 and increment round by one
+        //repeat for all rounds
+        roundNum = 0;
+        
+        /*while(roundNum == 0 && allFolded == false)//while game is running, ends on conditions of everyone has folded, the 4th round ends
         {
             //must determine the players hand values, determines the who wins the pot
             for (int i = 0; i < players.Count; i++)//loops for each player
             {
                 //conditionally checks if each player has acted, using hasCalled, hasFolded, hasRaised,
-                
+                if(raiseButton has been clicked or callButton has been clicked or foldButton has been clicked)
+                {
+                    //then set for the player in the list their respective hasActed bool to true and move to next playr in list
+                }
             }
+            roundNum++;
         }
+        while(roundNum==1 && allFolded == false)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+
+            }
+            roundNum++;
+        }
+        while(roundNum == 2&& allFolded == false)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+
+            }
+            roundNum++;
+        }
+        while(roundNum == 3 && allFolded == false)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+
+            }
+            potOver = true;
+        }*/
     }
-    //set 2 players to big and little blinds
-    //give each player prompts
-    //set round values
-    //evaluate hands after the final round, determine who wins the pot
+    
     public void DetermineLittleBlind()
     {
 
@@ -119,7 +155,19 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
+    public void raiseButtonOnClick()
+    {
+        //runs raise function
+    }
+    public void callButtonOnClick()
+    {
+        //runs call function
+    }
+    public void foldButtonOnClick()
+    {
+        //runs fold function
+    }
+
     
-    //make deal to flop 2, loops and adds extra card depending on round
-   
+
 }

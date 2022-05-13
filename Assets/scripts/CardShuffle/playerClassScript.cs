@@ -9,6 +9,7 @@ public class playerClassScript : MonoBehaviour
     private bool hasFolded = false;
     private bool hasRaised = false;
     private bool hasCalled = false;
+    public bool hasActed;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
     private bool isLittleBlind;
@@ -27,28 +28,9 @@ public class playerClassScript : MonoBehaviour
         this.isLittleBlind = newLittleBlind;
         this.isBigBlind = newBigBlind;
         this.cards = new List<GameObject>();
+        this.hasActed = false;
     }
 
 
-    /*public bool getFolded()
-    {
-        return this.folded;
-    }
-    public int getNumOfCardsInHand()
-    {
-        return this.numOfCardsInHand;
-    }
-    public int getValueOfChipsBet()
-    {
-        return this.valueOfChipsBet;
-    }
-    public string getPlayerName()
-    {
-        return this.playerName;
-    }
-    public int getValueOfCardsinHand()
-    {
-        return this.valueOfCardsInHand;
-        
-    }*/
+   
 }
