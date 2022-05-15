@@ -56,12 +56,8 @@ public class gameManager : MonoBehaviour
         //once all players in the list have acted, set active player back to 1 and increment round by 1
         //run round specific functions, i.e. round 1 will have the 
 
-        //define player as the position on the table relative to its position in the list
-        //make function checking what player is active
-        //make function that asks for fold, raise and call
-        //each function checks what player is active and increments the player to the next one based on if they act
-        //once it has gone through each player, set player back to 1 and increment round by one
-        //repeat for all rounds
+        //
+       
         
     }
     public void GeneratePlayers(int numPlayers)
@@ -123,5 +119,30 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
-    public void 
+    public void RaiseOnClick()
+    {
+        
+        int activePlayerPosition = 0;
+        players[activePlayerPosition].isActive = true;
+        players[activePlayerPosition % players.Count].isActive = false;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].isActive = true;
+    }
+    public void CallOnCLick()
+    {
+        int activePlayerPosition = 0;
+        players[activePlayerPosition].isActive = true;
+        players[activePlayerPosition % players.Count].isActive = false;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].isActive = true;
+    }
+    public void FoldOnCLick()
+    {
+        
+        int activePlayerPosition = 0;
+        players[activePlayerPosition].isActive = true;
+        players[activePlayerPosition % players.Count].isActive = false;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].isActive = true;
+    }
 }
