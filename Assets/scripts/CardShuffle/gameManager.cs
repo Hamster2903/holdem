@@ -16,7 +16,8 @@ public class gameManager : MonoBehaviour
     public int potValue;
     public int callValue;
     public int raiseValue;
-    public int roundNum;
+    public int round;
+    public int activePlayer;
     public bool allFolded = false;
     public bool potOver = false;
     public List<GameObject> players;
@@ -29,71 +30,39 @@ public class gameManager : MonoBehaviour
     //make bool checking if playerName  so each player can see what their cards is but not what others are
     void Start()
     {
+        round = 0;
         deckScript.Generate();
         deckScript.Shuffle();
+        //run pre-flop round
         DealToFlop1();
         GeneratePlayers(3);
         GeneratePlayerObjects();
         DealToHands();
     }
     //gameLoop (while)
-    public void gameLoop()
+    public void gameState()
     {
-        //define round =1
-        //define player=1
+       
+        //sets first player in position to active, sequences through each player and sets the next one as false, use this code on the buttonOnClick functions
+        int activePlayerPosition = 0;
+        players[activePlayerPosition].isActive = true;
+        players[activePlayerPosition % players.Count].isActive = false;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].isActive = true;
+        
+        //set 1 player to active in the list of all players
+        //this player is allowed to act
+        //once this player has acted increment active player by 1, set previously active player to inactive
+        //once all players in the list have acted, set active player back to 1 and increment round by 1
+        //run round specific functions, i.e. round 1 will have the 
+
+        //define player as the position on the table relative to its position in the list
         //make function checking what player is active
         //make function that asks for fold, raise and call
         //each function checks what player is active and increments the player to the next one based on if they act
         //once it has gone through each player, set player back to 1 and increment round by one
         //repeat for all rounds
-        roundNum = 0;
         
-        /*while(roundNum == 0 && allFolded == false)//while game is running, ends on conditions of everyone has folded, the 4th round ends
-        {
-            //must determine the players hand values, determines the who wins the pot
-            for (int i = 0; i < players.Count; i++)//loops for each player
-            {
-                //conditionally checks if each player has acted, using hasCalled, hasFolded, hasRaised,
-                if(raiseButton has been clicked or callButton has been clicked or foldButton has been clicked)
-                {
-                    //then set for the player in the list their respective hasActed bool to true and move to next playr in list
-                }
-            }
-            roundNum++;
-        }
-        while(roundNum==1 && allFolded == false)
-        {
-            for (int i = 0; i < players.Count; i++)
-            {
-
-            }
-            roundNum++;
-        }
-        while(roundNum == 2&& allFolded == false)
-        {
-            for (int i = 0; i < players.Count; i++)
-            {
-
-            }
-            roundNum++;
-        }
-        while(roundNum == 3 && allFolded == false)
-        {
-            for (int i = 0; i < players.Count; i++)
-            {
-
-            }
-            potOver = true;
-        }*/
-    }
-    
-    public void DetermineLittleBlind()
-    {
-
-    }
-    public void DetermineBigBlind()
-    {
-        bigBlindBetValue = 2 * littleBlindBetValue;
     }
     public void GeneratePlayers(int numPlayers)
     {
@@ -137,7 +106,6 @@ public class gameManager : MonoBehaviour
         }
 
     }
-    //make pre-flop round, ask for bets and actions,
     public void DealToFlop1()
     {
         for (int i = 0; i < 3; i++)
@@ -155,19 +123,5 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
-    public void raiseButtonOnClick()
-    {
-        //runs raise function
-    }
-    public void callButtonOnClick()
-    {
-        //runs call function
-    }
-    public void foldButtonOnClick()
-    {
-        //runs fold function
-    }
-
-    
-
+    public void 
 }

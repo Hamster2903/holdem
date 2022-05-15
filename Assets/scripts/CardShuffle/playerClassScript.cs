@@ -6,10 +6,11 @@ public class playerClassScript : MonoBehaviour
 {
     
     private int valueOfChipsBet = 0;
-    private bool hasFolded = false;
-    private bool hasRaised = false;
-    private bool hasCalled = false;
+    public bool hasFolded = false;
+    public bool hasRaised = false;
+    public bool hasCalled = false;
     public bool hasActed;
+    public bool isActive = false;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
     private bool isLittleBlind;
@@ -29,6 +30,7 @@ public class playerClassScript : MonoBehaviour
         this.isBigBlind = newBigBlind;
         this.cards = new List<GameObject>();
         this.hasActed = false;
+        this.isActive = false;
     }
 
 
