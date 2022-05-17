@@ -26,7 +26,7 @@ public class gameManager : MonoBehaviour
     public List<GameObject> flopList;
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
-    
+    public bool isPlayerName;
     //make bool checking if playerName  so each player can see what their cards is but not what others are
     void Start()
     {
@@ -39,24 +39,23 @@ public class gameManager : MonoBehaviour
         GeneratePlayerObjects();
         DealToHands();
     }
-    //gameLoop (while)
+   
     public void gameState()
     {
        
-        //sets first player in position to active, sequences through each player and sets the next one as false, use this code on the buttonOnClick functions
-        int activePlayerPosition = 0;
-        players[activePlayerPosition].isActive = true;
-        players[activePlayerPosition % players.Count].isActive = false;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].isActive = true;
         
-        //set 1 player to active in the list of all players
-        //this player is allowed to act
-        //once this player has acted increment active player by 1, set previously active player to inactive
-        //once all players in the list have acted, set active player back to 1 and increment round by 1
-        //run round specific functions, i.e. round 1 will have the 
-
-        //
+        if(round == 1)
+        {
+            DealToFlop1();
+        }
+        if(round == 2)
+        {
+            DealToTurn();
+        }
+        if(round == 3)
+        {
+            DealToRiver();
+        }
        
         
     }
@@ -87,7 +86,20 @@ public class gameManager : MonoBehaviour
         }
     }
     
-
+    public void Rotation()
+    {
+        //sets first player in position to active, sequences through each player and sets the next one as false, use this code on the buttonOnClick functions
+        int activePlayerPosition = 0;
+        players[activePlayerPosition].
+        players[activePlayerPosition % players.Count];
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count]
+        if(activePlayerPosition == 0)
+        {
+            round += 1;
+        }
+        //place this code in ech button and then desihgn it so that it does the specific code for each button instead of using this as a function
+    }
     public void GeneratePlayerObjects()
     {
         int count = 0;
@@ -112,7 +124,14 @@ public class gameManager : MonoBehaviour
             cardToMove.transform.SetParent(flopGrid.transform);
         }
     }
-    public void DealToFlop2()
+    public void DealToTurn()
+    {
+        GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
+        deckScript.cards.Remove(cardToMove); //removes card from list
+        flopList.Add(cardToMove);
+        cardToMove.transform.SetParent(flopGrid.transform);
+    }
+    public void DealToRiver()
     {
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
         deckScript.cards.Remove(cardToMove); //removes card from list
@@ -121,28 +140,23 @@ public class gameManager : MonoBehaviour
     }
     public void RaiseOnClick()
     {
+        Rotation();
         
-        int activePlayerPosition = 0;
-        players[activePlayerPosition].isActive = true;
-        players[activePlayerPosition % players.Count].isActive = false;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].isActive = true;
+        //remove amount from players class and add raised amount in pot value
+       
     }
     public void CallOnCLick()
     {
-        int activePlayerPosition = 0;
-        players[activePlayerPosition].isActive = true;
-        players[activePlayerPosition % players.Count].isActive = false;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].isActive = true;
+        Rotation();
+        //match previous bet, remove amount from player class and store in pot
     }
     public void FoldOnCLick()
     {
-        
-        int activePlayerPosition = 0;
-        players[activePlayerPosition].isActive = true;
-        players[activePlayerPosition % players.Count].isActive = false;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].isActive = true;
+        Rotation();
+        //change player.hasFolded to true 
+    }
+    public void DistributePot()
+    {
+        //adds pot value to specific players
     }
 }

@@ -15,6 +15,7 @@ public class playerClassScript : MonoBehaviour
     private int valueOfCardsInHand = 0;
     private bool isLittleBlind;
     private bool isBigBlind;
+    private bool isDealer;
     public List<GameObject> cards;
 
     public playerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
@@ -31,6 +32,7 @@ public class playerClassScript : MonoBehaviour
         this.cards = new List<GameObject>();
         this.hasActed = false;
         this.isActive = false;
+        this.isDealer = false;
     }
 
 
