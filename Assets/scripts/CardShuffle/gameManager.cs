@@ -17,7 +17,7 @@ public class gameManager : MonoBehaviour
     public int callValue;
     public int raiseValue;
     public int round;
-    public int activePlayer;
+    int activePlayerPosition = 0;
     public bool allFolded = false;
     public bool potOver = false;
     public List<GameObject> players;
@@ -86,20 +86,7 @@ public class gameManager : MonoBehaviour
         }
     }
     
-    public void Rotation()
-    {
-        //sets first player in position to active, sequences through each player and sets the next one as false, use this code on the buttonOnClick functions
-        int activePlayerPosition = 0;
-        players[activePlayerPosition].
-        players[activePlayerPosition % players.Count];
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count]
-        if(activePlayerPosition == 0)
-        {
-            round += 1;
-        }
-        //place this code in ech button and then desihgn it so that it does the specific code for each button instead of using this as a function
-    }
+    
     public void GeneratePlayerObjects()
     {
         int count = 0;
@@ -140,19 +127,42 @@ public class gameManager : MonoBehaviour
     }
     public void RaiseOnClick()
     {
-        Rotation();
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = true;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = false;
+        if (activePlayerPosition == 0)
+        {
+            round += 1;
+        }
         
         //remove amount from players class and add raised amount in pot value
-       
+
     }
     public void CallOnCLick()
     {
-        Rotation();
+        
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = false;
+        if (activePlayerPosition == 0)
+        {
+            round += 1;
+        }
         //match previous bet, remove amount from player class and store in pot
     }
-    public void FoldOnCLick()
+    public void FoldOnClick()
     {
-        Rotation();
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true;
+        activePlayerPosition += 1;
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = false;
+        if (activePlayerPosition == 0)
+        {
+            round += 1;
+        }
+        //else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true)
+        //{
+            //players[activePlayerPosition].gameObject.SetActive(false);
+        //}
         //change player.hasFolded to true 
     }
     public void DistributePot()
