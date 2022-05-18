@@ -5,7 +5,8 @@ using UnityEngine;
 public class playerClassScript : MonoBehaviour
 {
     
-    private int valueOfChipsBet = 0;
+    private int numOfChips = 0;
+    private int numOfChipsInPot = 0;
     public bool hasFolded = false;
     public bool hasRaised = false;
     public bool hasCalled = false;
@@ -21,7 +22,8 @@ public class playerClassScript : MonoBehaviour
     public playerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
     {
         
-        this.valueOfChipsBet = 0;
+        this.numOfChips = 0;
+        this.numOfChipsInPot = 0;
         this.hasFolded = false;
         this.playerName = newName;
         this.valueOfCardsInHand = 0;

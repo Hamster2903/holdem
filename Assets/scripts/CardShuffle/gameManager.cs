@@ -11,6 +11,7 @@ public class gameManager : MonoBehaviour
     public Button raiseButton;
     public Button callButton;
     public Button foldButton;
+    public InputField raiseInput;
     public int littleBlindBetValue;
     public int bigBlindBetValue;
     public int potValue;
@@ -134,21 +135,29 @@ public class gameManager : MonoBehaviour
         {
             round += 1;
         }
-        
-        //remove amount from players class and add raised amount in pot value
-
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = true)
+        {
+            //sets the string value recorded in the input text to an integer which will be used to represent features on the player script
+            string raiseInputText = raiseInput.text;
+            raiseValue = int.Parse(raiseInputText);
+            //remove numOfChips, add to numOfChipsInPot and add to int potValue;
+        }
     }
-    public void CallOnCLick()
+    public void CallOnClick()
     {
-        
+        //sets the current player to hasCalled = true
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = false;
-        if (activePlayerPosition == 0)
+        activePlayerPosition += 1; //increases active player by one position
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = false; //sets new active player as hasCalled = false
+        if (activePlayerPosition == 0) //if the activeplayer rotates back to its original position increment the round by one
         {
             round += 1;
         }
-        //match previous bet, remove amount from player class and store in pot
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true) // if the active player hasCalled runs the code which completes the  call action
+        {
+            //remove amount of chips from playerClassScript numOfChips and to numOfChipsInPot and int potValue;
+        }
+        
     }
     public void FoldOnClick()
     {
@@ -159,14 +168,14 @@ public class gameManager : MonoBehaviour
         {
             round += 1;
         }
-        //else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true)
-        //{
-            //players[activePlayerPosition].gameObject.SetActive(false);
-        //}
-        //change player.hasFolded to true 
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true)
+        {
+            players[activePlayerPosition].gameObject.SetActive(false);
+            //remove numOfChipsInPot and add to int potValue;
+        }
     }
     public void DistributePot()
     {
-        //adds pot value to specific players
+        //removes potValue and adds to numOfChips on playerClassScript
     }
 }
