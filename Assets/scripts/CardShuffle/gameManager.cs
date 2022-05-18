@@ -135,7 +135,7 @@ public class gameManager : MonoBehaviour
         {
             round += 1;
         }
-        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = true)
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised == true)
         {
             //sets the string value recorded in the input text to an integer which will be used to represent features on the player script
             string raiseInputText = raiseInput.text;
@@ -153,7 +153,7 @@ public class gameManager : MonoBehaviour
         {
             round += 1;
         }
-        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true) // if the active player hasCalled runs the code which completes the  call action
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled == true) // if the active player hasCalled runs the code which completes the  call action
         {
             //remove amount of chips from playerClassScript numOfChips and to numOfChipsInPot and int potValue;
         }
@@ -168,7 +168,7 @@ public class gameManager : MonoBehaviour
         {
             round += 1;
         }
-        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true)
+        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded == true)
         {
             players[activePlayerPosition].gameObject.SetActive(false);
             //remove numOfChipsInPot and add to int potValue;
