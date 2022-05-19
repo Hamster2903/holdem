@@ -141,10 +141,6 @@ public class gameManager : MonoBehaviour
     }
     public void RaiseOnClick()
     {
-
-        
-
-
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("raise button working");
         //sets the string value recorded in the input text to an integer which will be used to represent features on the player script
@@ -177,22 +173,23 @@ public class gameManager : MonoBehaviour
 
     public void CallOnClick()
     {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("call button working");
         //sets the current player to hasCalled = true
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true;
-        activePlayerPosition += 1; //increases active player by one position
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = false; //sets new active player as hasCalled = false
+        currentPlayer.hasCalled = true;
+        //activePlayerPosition += 1; //increases active player by one position
+        currentPlayer.hasCalled = false; //sets new active player as hasCalled = false
         if (activePlayerPosition % players.Count == 0) //if the activeplayer rotates back to its original position increment the round by one
         {
             round += 1;
         }
-        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled == true) // if the active player hasCalled runs the code which completes the  call action
+        else if(currentPlayer.hasCalled == true) // if the active player hasCalled runs the code which completes the  call action
         {
             //remove chips from numOfChips and add to numOfChipsInPot and potValue
             //most recent bet = amount of chips to be added to pot and numOfChipsInPot
             //set the amount of chips to be added to pot and numOfChipsInPot to the new mostRecentBet
-            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips = (players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips -= mostRecentBet);
-            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot +=(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot += mostRecentBet);
+            currentPlayer.numOfChips -= mostRecentBet;
+            currentPlayer.numOfChipsInPot +=mostRecentBet;
             potValue += mostRecentBet;
         }
         print(activePlayerPosition % players.Count);
@@ -200,25 +197,27 @@ public class gameManager : MonoBehaviour
     }
     public void FoldOnClick()
     {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("fold button working");
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true;
-        activePlayerPosition += 1;
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = false;
+        currentPlayer.hasFolded = true;
+        //activePlayerPosition += 1;
+        currentPlayer.hasFolded = false;
         if (activePlayerPosition % players.Count==0)
         {
             round += 1;
         }
-        else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded == true)
+        else if(currentPlayer.hasFolded == true)
         {
             players[activePlayerPosition].gameObject.SetActive(false);
             //remove numOfChipsInPot and add to int potValue;
-            potValue += players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot;
+            potValue += currentPlayer.numOfChipsInPot;
         }
         print(activePlayerPosition % players.Count);
     }
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         //sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
-        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips =(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips += potValue);
+        currentPlayer.numOfChips += potValue;
     }
 }
