@@ -1612,6 +1612,7 @@ MonoBehaviour:
   - {fileID: 1412317400}
   - {fileID: 612452186}
   isPlayerName: 0
+  debug: 1
 --- !u!1 &1048691751
 GameObject:
   m_ObjectHideFlags: 0
