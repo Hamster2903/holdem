@@ -18,7 +18,8 @@ public class gameManager : MonoBehaviour
     public int callValue;
     public int raiseValue;
     public int round;
-    int activePlayerPosition = 0;
+    public int mostRecentBet;
+    public int activePlayerPosition = 0;
     public bool allFolded = false;
     public bool potOver = false;
     public List<GameObject> players;
@@ -35,19 +36,19 @@ public class gameManager : MonoBehaviour
         deckScript.Generate();
         deckScript.Shuffle();
         //run pre-flop round
-        DealToFlop1();
         GeneratePlayers(3);
         GeneratePlayerObjects();
         DealToHands();
+        GameLoop();
     }
    
-    public void gameState()
+    public void GameLoop()
     {
        
         
         if(round == 1)
         {
-            DealToFlop1();
+            DealToFlop();
         }
         if(round == 2)
         {
@@ -102,14 +103,14 @@ public class gameManager : MonoBehaviour
         }
 
     }
-    public void DealToFlop1()
+    public void DealToFlop()
     {
         for (int i = 0; i < 3; i++)
         {
             GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
             deckScript.cards.Remove(cardToMove); //removes card from list
-            flopList.Add(cardToMove);
-            cardToMove.transform.SetParent(flopGrid.transform);
+            flopList.Add(cardToMove);//adds removed card to lsit
+            cardToMove.transform.SetParent(flopGrid.transform);//puts card in game object grid
         }
     }
     public void DealToTurn()
@@ -128,6 +129,10 @@ public class gameManager : MonoBehaviour
     }
     public void RaiseOnClick()
     {
+        print("raise button working");
+        //sets the string value recorded in the input text to an integer which will be used to represent features on the player script
+        string raiseInputText = raiseInput.text;
+        raiseValue = int.Parse(raiseInputText);
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = true;
         activePlayerPosition += 1;
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised = false;
@@ -137,14 +142,14 @@ public class gameManager : MonoBehaviour
         }
         else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised == true)
         {
-            //sets the string value recorded in the input text to an integer which will be used to represent features on the player script
-            string raiseInputText = raiseInput.text;
-            raiseValue = int.Parse(raiseInputText);
+
             //remove numOfChips, add to numOfChipsInPot and add to int potValue;
+            //keep track of most recent bet so that the call function may use it
         }
     }
     public void CallOnClick()
     {
+        print("call button working");
         //sets the current player to hasCalled = true
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled = true;
         activePlayerPosition += 1; //increases active player by one position
@@ -155,12 +160,15 @@ public class gameManager : MonoBehaviour
         }
         else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasCalled == true) // if the active player hasCalled runs the code which completes the  call action
         {
-            //remove amount of chips from playerClassScript numOfChips and to numOfChipsInPot and int potValue;
+            //remove chips from numOfChips and add to numOfChipsInPot and potValue
+            //most recent bet = amount of chips to be added to pot and numOfChipsInPot
+            //set the amount of chips to be added to pot and numOfChipsInPot to the new mostRecentBet
         }
-        
+
     }
     public void FoldOnClick()
     {
+        print("fold button working");
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = true;
         activePlayerPosition += 1;
         players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasFolded = false;
@@ -176,6 +184,6 @@ public class gameManager : MonoBehaviour
     }
     public void DistributePot()
     {
-        //removes potValue and adds to numOfChips on playerClassScript
+        //sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
     }
 }
