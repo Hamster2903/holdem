@@ -15,6 +15,7 @@ public class gameManager : MonoBehaviour
     public int littleBlindBetValue;
     public int bigBlindBetValue;
     public int potValue = 0;
+    public int minimumBetValue = 10;
     public int callValue;
     public int raiseValue;
     public int round;
@@ -53,7 +54,8 @@ public class gameManager : MonoBehaviour
         GameLoop();
     }
     //make fucntion that sets 3 players as either big blind little blind or dealer position
-    //little blind may bet a small amount of chips either set or ranging from 5 to 20, big blind must bet 2x that
+    //little blind bets half the minimum bet (5) big blind must bet 10 in this instance
+    // so if player is little blind bet 5 if player is big blind must raise to 10 then set this as most recent bet
     public void GameLoop()
     {
        
