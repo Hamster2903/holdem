@@ -5,8 +5,8 @@ using UnityEngine;
 public class playerClassScript : MonoBehaviour
 {
     
-    private int numOfChips = 1000;
-    private int numOfChipsInPot = 0;
+    public int numOfChips = 1000;
+    public int numOfChipsInPot = 0;
     public bool hasFolded = false;
     public bool hasRaised = false;
     public bool hasCalled = false;

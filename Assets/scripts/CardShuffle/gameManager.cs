@@ -14,7 +14,7 @@ public class gameManager : MonoBehaviour
     public InputField raiseInput;
     public int littleBlindBetValue;
     public int bigBlindBetValue;
-    public int potValue;
+    public int potValue = 0;
     public int callValue;
     public int raiseValue;
     public int round;
@@ -41,7 +41,8 @@ public class gameManager : MonoBehaviour
         DealToHands();
         GameLoop();
     }
-   
+    //make fucntion that sets 3 players as either big blind little blind or dealer position
+    //little blind may bet a small amount of chips either set or ranging from 5 to 20, big blind must bet 2x that
     public void GameLoop()
     {
        
@@ -142,10 +143,14 @@ public class gameManager : MonoBehaviour
         }
         else if(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().hasRaised == true)
         {
-
             //remove numOfChips, add to numOfChipsInPot and add to int potValue;
             //keep track of most recent bet so that the call function may use it
+            raiseValue = mostRecentBet;
+            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips =(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips -= raiseValue);
+            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot = (players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot += raiseValue);
+            potValue +=players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot;
         }
+        print(players[activePlayerPosition % players.Count]);
     }
     public void CallOnClick()
     {
@@ -163,8 +168,11 @@ public class gameManager : MonoBehaviour
             //remove chips from numOfChips and add to numOfChipsInPot and potValue
             //most recent bet = amount of chips to be added to pot and numOfChipsInPot
             //set the amount of chips to be added to pot and numOfChipsInPot to the new mostRecentBet
+            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips = (players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips -= mostRecentBet);
+            players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot +=(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot += mostRecentBet);
+            potValue += mostRecentBet;
         }
-
+        print(players[activePlayerPosition % players.Count]);
     }
     public void FoldOnClick()
     {
@@ -180,10 +188,13 @@ public class gameManager : MonoBehaviour
         {
             players[activePlayerPosition].gameObject.SetActive(false);
             //remove numOfChipsInPot and add to int potValue;
+            potValue += players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChipsInPot;
         }
+        print(players[activePlayerPosition % players.Count]);
     }
-    public void DistributePot()
+    public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
         //sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips =(players[activePlayerPosition % players.Count].GetComponent<playerClassScript>().numOfChips += potValue);
     }
 }

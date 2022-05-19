@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class evaluateHand : MonoBehaviour
 {
-    int royalFlush = 10;
-    int straightFlush = 9;
-    int fourOfAKind = 8;
-    int fullHouse = 7;
-    int flush = 6;
-    int straight = 5;
-    int threeOfAKind = 4;
-    int twoPair = 3;
-    int onePair = 2;
-    int highCard = 1;
+    int royalFlush = 9;
+    int straightFlush = 8;
+    int fourOfAKind = 7;
+    int fullHouse = 6;
+    int flush = 5;
+    int straight = 4;
+    int threeOfAKind = 3;
+    int twoPair = 2;
+    int onePair = 1;
+    int highCard = 0;
     //evuluate hand from stored value in player class
     //royal flush
     //straight flush
