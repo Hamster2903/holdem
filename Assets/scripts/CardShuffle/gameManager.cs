@@ -56,6 +56,9 @@ public class gameManager : MonoBehaviour
     //make fucntion that sets 3 players as either big blind little blind or dealer position
     //little blind bets half the minimum bet (5) big blind must bet 10 in this instance
     // so if player is little blind bet 5 if player is big blind must raise to 10 then set this as most recent bet
+    //if players are to raise a bet it must be atleast double the previous bet
+    //once all players have bet it comes back around to the small blind, they can either match the big blinds bet, raise or fold
+    //the last player to act in the rotation will be the big blind, they can raise the bet, if they do everyone must act again until back to the big blind.
     public void GameLoop()
     {
        
