@@ -84,6 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6306365557556267472}
+  - component: {fileID: 9141198308703240058}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -114,6 +115,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &9141198308703240058
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2845195241180975019}
+  m_CullTransparentMesh: 1
 --- !u!1 &5088718751958668125
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,6 +135,7 @@ GameObject:
   - component: {fileID: 5088718751958668123}
   - component: {fileID: 4384943821544339636}
   - component: {fileID: 8161534526464214181}
+  - component: {fileID: 406256660348154133}
   m_Layer: 5
   m_Name: PlayerGameObject
   m_TagString: Untagged
@@ -173,6 +183,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef39f891c9d0a746b0fe8361f515abf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numOfChips: 0
+  numOfChipsInPot: 0
+  hasFolded: 0
+  hasRaised: 0
+  hasCalled: 0
+  hasActed: 0
+  isActive: 0
+  mostRecentBet: 0
+  isLittleBlind: 0
+  isBigBlind: 0
+  isDealer: 0
   cards: []
 --- !u!114 &8161534526464214181
 MonoBehaviour:
@@ -198,6 +219,36 @@ MonoBehaviour:
   m_Spacing: {x: -163, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
+--- !u!114 &406256660348154133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088718751958668125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9433962, g: 0.5399311, b: 0.5399311, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5088718752122171233
 GameObject:
   m_ObjectHideFlags: 0

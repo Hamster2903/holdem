@@ -12,6 +12,7 @@ public class playerClassScript : MonoBehaviour
     public bool hasCalled = false;
     public bool hasActed;
     public bool isActive = false;
+    public int mostRecentBet;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
     public bool isLittleBlind;
@@ -35,6 +36,7 @@ public class playerClassScript : MonoBehaviour
         this.hasActed = false;
         this.isActive = false;
         this.isDealer = false;
+        this.mostRecentBet = 0;
     }
 
 
