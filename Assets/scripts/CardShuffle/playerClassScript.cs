@@ -14,9 +14,9 @@ public class playerClassScript : MonoBehaviour
     public bool isActive = false;
     private string playerName = "";
     private int valueOfCardsInHand = 0;
-    private bool isLittleBlind;
-    private bool isBigBlind;
-    private bool isDealer;
+    public bool isLittleBlind;
+    public bool isBigBlind;
+    public bool isDealer;
     public List<GameObject> cards;
 
     public playerClassScript(string newName, bool newLittleBlind, bool newBigBlind)
