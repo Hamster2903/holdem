@@ -19,7 +19,7 @@ public class gameManager : MonoBehaviour
     public int minimumBetValue = 10;
     public int callValue;
     public int raiseValue;
-    public int round;
+    public int round = 0;
     public int mostRecentBet;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
@@ -43,13 +43,11 @@ public class gameManager : MonoBehaviour
     }
     void Start()
     {
-        round = 0;
         deckScript.Generate();
         deckScript.Shuffle();
         GeneratePlayers(3,1);
         GeneratePlayerObjects();
         DealToHands();
-        
         GameLoop();
     }
     //make fucntion that sets 3 players as either big blind little blind or dealer position
@@ -94,10 +92,13 @@ public class gameManager : MonoBehaviour
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
         littleBlindPlayer.mostRecentBet =5;
+        potValue += littleBlindPlayer.mostRecentBet;
         bigBlindPlayer.mostRecentBet = 10;
+        potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         activePlayerPosition = (2 + gameNum) % numPlayers;
-        players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+
 
         DebugPrint("active player position",activePlayerPosition);
     }
@@ -156,46 +157,45 @@ public class gameManager : MonoBehaviour
     }
     public void RaiseOnClick()
     {
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("raise button working");
         string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
         raiseValue = int.Parse(raiseInputText) +mostRecentBet*2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
-        //remove numOfChips, add to numOfChipsInPot and add to int potValue;
-        //keep track of most recent bet so that the call function may use it
-        raiseValue = mostRecentBet;
-        mostRecentBet = currentPlayer.mostRecentBet;
-        currentPlayer.numOfChips -= raiseValue;
-        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;
-        
+        mostRecentBet=raiseValue;
+        DebugPrint("most recent bet is", mostRecentBet); //checking to see what the mostRecent bet is and if it is correctly storing the bet value so it can be distributed to the potValue correctly
+        currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
+        currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
+        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         activePlayerPosition += 1;// Go to next player
-        // where are we at, betting still, or next round?
-        //checkBettingStatus?
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
         checkBettingStatus();
-        DebugPrint("playerPos", activePlayerPosition);
     }
 
 
     public void CallOnClick()
     {
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
+        //image.enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("call button working");
-        //remove chips from numOfChips and add to numOfChipsInPot and potValue
-        //most recent bet = amount of chips to be added to pot and numOfChipsInPot
-        //set the amount of chips to be added to pot and numOfChipsInPot to the new mostRecentBet
-        currentPlayer.mostRecentBet = mostRecentBet;
-        mostRecentBet = currentPlayer.mostRecentBet;
-        currentPlayer.numOfChips -= currentPlayer.mostRecentBet;
-        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;
+        currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
+        currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
+        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+        DebugPrint("most recent bet", currentPlayer.mostRecentBet);
         activePlayerPosition += 1;//increases active player by one position
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
         checkBettingStatus();
 
     }
     public void FoldOnClick()
     {
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("fold button working");
         currentPlayer.gameObject.SetActive(false);
         activePlayerPosition += 1;
+        //players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;//this is running off of the wrong number , it should be using the modulo thing but it cannot access this as that is apart of generate players
         checkBettingStatus();
     }
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
@@ -209,15 +209,17 @@ public class gameManager : MonoBehaviour
     public void checkBettingStatus()
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        playerClassScript bigBlindPlayer = players[(1 + gameNum) % numPlayers].GetComponent<playerClassScript>();//how would i solve this problem if the gameNum and numPlayers is defined by the generatePlayer Function, this applies also to the image problem as the activePlayer integer is not the same as it is when defined in genrate players.
         //chekd current bet, loop for ech player checking if currentPlayer.mostRecentBet = mostRecentBet
         //if true then increment to next round
         for (int i = 0; i < players.Count; i++)
         {
-            if (mostRecentBet == currentPlayer.mostRecentBet)
+            if (bigBlindPlayer.mostRecentBet==mostRecentBet)
             {
-                round++;
+                round+=1;
                 potValue += currentPlayer.numOfChipsInPot;
                 potValueText.text = Convert.ToString(potValue);
+                DebugPrint("round value is ", round); //checking what the round is, as the flop was not being dealt.
             }
             else
             {
