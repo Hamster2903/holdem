@@ -203,9 +203,9 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         currentPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         //gameNum++;
+
     }
 
-    //check betting status function
     public void checkBettingStatus()
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
