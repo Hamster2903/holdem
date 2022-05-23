@@ -47,7 +47,7 @@ public class gameManager : MonoBehaviour
     {
         deckScript.Generate();
         deckScript.Shuffle();
-        GeneratePlayers(3,1);
+        GeneratePlayers(5,1);
         GeneratePlayerObjects();
         DealToHands();
     }
@@ -167,6 +167,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
         currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
         currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+        currentPlayer.hasRaised = true;
         activePlayerPosition = (activePlayerPosition+1) % (numberPlayers);// Go to next player
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
@@ -181,6 +182,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+        currentPlayer.hasCalled = true;
         DebugPrint("most recent bet", currentPlayer.mostRecentBet);
         activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);//increases active player by one position
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
@@ -193,6 +195,7 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("fold button working");
         currentPlayer.gameObject.SetActive(false);
+        currentPlayer.hasFolded = true;
         activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
@@ -208,20 +211,19 @@ public class gameManager : MonoBehaviour
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         playerClassScript bigBlindPlayer = players[(1 + gameNumber) % numberPlayers].GetComponent<playerClassScript>();
-        for (int i = 0; i < players.Count; i++)
+        if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
-            if (bigBlindPlayer.mostRecentBet==mostRecentBet)
-            {
-                round+=1;
-                potValue += currentPlayer.numOfChipsInPot;
-                potValueText.text = Convert.ToString(potValue);
-                DebugPrint("round value is ", round); //checking what the round is, as the flop was not being dealt.
-                GameLoop();
-            }
-            else
-            {
-                //keep loopijg, null?
-            }
+            round+=1;
+            potValue += currentPlayer.numOfChipsInPot;
+            potValueText.text = Convert.ToString(potValue);
+            DebugPrint("round value is ", round); //checking what the round is, as the flop was not being dealt.
+            bigBlindPlayer.hasCalled = false;
+            bigBlindPlayer.hasFolded = false;
+            GameLoop();
+        }
+        else if(bigBlindPlayer.hasRaised == true)
+        {
+            //keep loopijg, null?
         }
     }
 }

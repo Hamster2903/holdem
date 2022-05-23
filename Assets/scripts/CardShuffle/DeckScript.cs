@@ -39,7 +39,7 @@ public class DeckScript : MonoBehaviour
                 cards.Add(newCard);
                 //sets the new cards to children of the cardgroup
                 newCard.transform.SetParent(cardGroup);
-                print(face[i] +" of "+suit[f]);
+                //print(face[i] +" of "+suit[f]);
             }
         }
     }
