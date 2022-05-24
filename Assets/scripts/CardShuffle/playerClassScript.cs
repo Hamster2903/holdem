@@ -10,7 +10,6 @@ public class playerClassScript : MonoBehaviour
     public bool hasFolded = false;
     public bool hasRaised = false;
     public bool hasCalled = false;
-    public bool hasActed;
     public bool isActive = false;
     public int mostRecentBet;
     private string playerName = "";
@@ -33,7 +32,6 @@ public class playerClassScript : MonoBehaviour
         this.isLittleBlind = newLittleBlind;
         this.isBigBlind = newBigBlind;
         this.cards = new List<GameObject>();
-        this.hasActed = false;
         this.isActive = false;
         this.isDealer = false;
         this.mostRecentBet = 0;

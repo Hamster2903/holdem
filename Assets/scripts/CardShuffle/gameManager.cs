@@ -23,6 +23,7 @@ public class gameManager : MonoBehaviour
     public int mostRecentBet;
     public int numberPlayers;
     public int gameNumber;
+    public int totalChipsInPot;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
     public bool potOver = false;
@@ -96,6 +97,7 @@ public class gameManager : MonoBehaviour
         bigBlindPlayer.mostRecentBet = 10;
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
+        potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + gameNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
 
@@ -162,11 +164,11 @@ public class gameManager : MonoBehaviour
         print("raise button working");
         string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
         raiseValue = int.Parse(raiseInputText) +mostRecentBet*2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
-        mostRecentBet=raiseValue;
+        mostRecentBet = raiseValue;
         DebugPrint("most recent bet is", mostRecentBet); //checking to see what the mostRecent bet is and if it is correctly storing the bet value so it can be distributed to the potValue correctly
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
         currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
-        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+        totalChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         currentPlayer.hasRaised = true;
         activePlayerPosition = (activePlayerPosition+1) % (numberPlayers);// Go to next player
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
@@ -182,6 +184,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+        totalChipsInPot += currentPlayer.mostRecentBet;
         currentPlayer.hasCalled = true;
         DebugPrint("most recent bet", currentPlayer.mostRecentBet);
         activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);//increases active player by one position
@@ -196,6 +199,12 @@ public class gameManager : MonoBehaviour
         print("fold button working");
         currentPlayer.gameObject.SetActive(false);
         currentPlayer.hasFolded = true;
+        if(currentPlayer.hasFolded == true)
+        {
+            Destroy(players[activePlayerPosition]);
+            DebugPrint("what is the activePlayerPosition", activePlayerPosition);
+            players.RemoveAt(activePlayerPosition);
+        }
         activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
@@ -214,10 +223,11 @@ public class gameManager : MonoBehaviour
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
             round+=1;
-            potValue += currentPlayer.numOfChipsInPot;
+
+            potValue += totalChipsInPot;
             potValueText.text = Convert.ToString(potValue);
             DebugPrint("round value is ", round); //checking what the round is, as the flop was not being dealt.
-            bigBlindPlayer.hasCalled = false;
+            bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
             bigBlindPlayer.hasFolded = false;
             GameLoop();
         }
@@ -227,8 +237,3 @@ public class gameManager : MonoBehaviour
         }
     }
 }
-//logic errors with call function
-//when you call as the first action the bigBlindPlayer.mostRecentBet automatically equals the mostRecentBet
-//when you raise 3 times in a row the if statement is true? it shouldnt be
-//not storing the correct amount of currentPlayer.numOfChipsInPot
-//potValue has the wrong value
