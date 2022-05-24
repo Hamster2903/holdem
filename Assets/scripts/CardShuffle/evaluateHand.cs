@@ -14,20 +14,12 @@ public class evaluateHand : MonoBehaviour
     int twoPair = 2;
     int onePair = 1;
     int highCard = 0;
-    //evuluate hand from stored value in player class
-    //royal flush
-    //straight flush
-    //four of a kind
-    //full house
-    //flush
-    //straight
-    //three of a kind
-    //two pair
-    //one pair
-    //high card
-
-    //set each one a number value 
-    //update in player class
-    //the highest number value will win the pot
+    
+    //must sort the best 5 card combination so that it can determine straights, 5 increasing cards
+    //must sort the best 5 card combination by suit so that it may determine flushes
+    //must determine if there are 4 cards of the same number
+    //must determine for 3 cards
+    //for a two pair, two different pairs
+    //one pair, two of the same number
 
 }

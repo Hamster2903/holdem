@@ -170,7 +170,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
         totalChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         currentPlayer.hasRaised = true;
-        activePlayerPosition = (activePlayerPosition+1) % (numberPlayers);// Go to next player
+        IncrementActivePlayer();// Go to next player
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
     }
@@ -187,7 +187,8 @@ public class gameManager : MonoBehaviour
         totalChipsInPot += currentPlayer.mostRecentBet;
         currentPlayer.hasCalled = true;
         DebugPrint("most recent bet", currentPlayer.mostRecentBet);
-        activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);//increases active player by one position
+        IncrementActivePlayer();///increases active player by one position
+        DebugPrint("current active player is at postion", activePlayerPosition);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
 
@@ -197,15 +198,14 @@ public class gameManager : MonoBehaviour
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         print("fold button working");
-        currentPlayer.gameObject.SetActive(false);
         currentPlayer.hasFolded = true;
-        if(currentPlayer.hasFolded == true)
+        if (currentPlayer.hasFolded == true)
         {
-            Destroy(players[activePlayerPosition]);
+            currentPlayer.gameObject.SetActive(false);
             DebugPrint("what is the activePlayerPosition", activePlayerPosition);
-            players.RemoveAt(activePlayerPosition);
+            IncrementActivePlayer();
+            //bugs, must make sure the folded players can no longer be interacted with i.e. they cannot be rotated to anymore and instead the rotation will skip to the next non folded player
         }
-        activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
     }
@@ -236,4 +236,22 @@ public class gameManager : MonoBehaviour
             //keep loopijg, null?
         }
     }
+    public void IncrementActivePlayer()
+    {
+        DebugPrint("active playe running", activePlayerPosition);
+        bool flag = true;//keeps track of loop running
+        while(flag)
+        {
+            activePlayerPosition = (activePlayerPosition + 1) % (numberPlayers);
+            DebugPrint(",", activePlayerPosition);
+            playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+            DebugPrint("hasfoeld?", currentPlayer.hasFolded);
+            if(currentPlayer.hasFolded == false)
+            {
+                flag = false;//loop stops
+            }
+        }
+        DebugPrint("from inside IncrementPlayer function", activePlayerPosition);
+    }
+    
 }
