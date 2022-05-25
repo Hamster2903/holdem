@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using UnityEngine.UI;
 
 public class gameManager : MonoBehaviour
@@ -253,5 +254,55 @@ public class gameManager : MonoBehaviour
         }
         DebugPrint("from inside IncrementPlayer function", activePlayerPosition);
     }
-    
+    //a function that loops through every player and checks what hand combination they have, returns
+    public void loopThroughPlayersForHand()
+    {
+        
+        for (int i = 0; i < players.Count; i++)
+        {
+            //join two lists
+            //List<GameObject> joinedList = flopList.Join(players[i].GetComponent<playerClassScript>().cards,);
+
+        }
+    }
+    public void playerHasPair()//returns boolean value so that in the 
+    {
+        //parse list into the is function, returns to player
+    }
+    public void playerHasHighCard()
+    {
+
+    }
+    public void playerHasTwoPair()
+    {
+
+    }
+    public void playerHasThreeOfAKind()
+    {
+
+    }
+    public void playerHasFourOfAKind()
+    {
+
+    }
+    public void playerHasStraight()
+    {
+
+    }
+    public void playerHasFullHouse()
+    {
+
+    }
+    public void playerHasFlush()
+    {
+
+    }
+    public void playerHasStraightFlush()
+    {
+
+    }
+    public void playerHasRoyalFlush()
+    {
+
+    }
 }
