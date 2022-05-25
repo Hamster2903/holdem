@@ -287,63 +287,63 @@ public class gameManager : MonoBehaviour
         }
         //if true then hasHighCard = true;
     }
-    public void playerHasTwoPair()
+    public void playerHasTwoPair(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasTwoPair = false;
         //check list for two different pairs
         //if true then hasTwoPair = true;
     }
-    public void playerHasThreeOfAKind()
+    public void playerHasThreeOfAKind(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasThreeOfAKind = false;
         //check list for 3 cards that are the same
         //if true then hasThreeOfAKind = true
     }
-    public void playerHasFourOfAKind()
+    public void playerHasFourOfAKind(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasFourOfAKind = false;
         //check list for 4 cards of the same value
         //if true then hasFourOfAKind = true;
     }
-    public void playerHasStraight()
+    public void playerHasStraight(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasStraight = false;
         //check list for 5 cards in increasing order
         //if true then hasStraight = true;
     }
-    public void playerHasFullHouse()//only will run if three of a kind and a pair returns true
+    public void playerHasFullHouse(List<GameObject> joinedList)//only will run if three of a kind and a pair returns true
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasFullHouse = false;
         //check list for 3 cards of the same value, check list for a pair
         //if true then hasFullHouse = true;
     }
-    public void playerHasFlush()
+    public void playerHasFlush(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasFlush = false;
         //check if 5 cards are from the same suit
         //if true then hasFlush = true;
     }
-    public void playerHasStraightFlush()
+    public void playerHasStraightFlush(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasStraightFlush = false;
         //check is list has 5 cards of increasing value of the same suit
         //if true then hasStraightFlush = true
     }
-    public void playerHasRoyalFlush()
+    public void playerHasRoyalFlush(List<GameObject> joinedList)
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         bool hasRoyalFlush = false;
         //chekc if the list has ace, king, queen, jack, 10
         //if true then royalFlush = true;
     }
-    public void checkHand()
+    public void checkHand(List<GameObject> joinedList)
     {
         //runs all the functions checking in order
 
