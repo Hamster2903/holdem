@@ -262,7 +262,7 @@ public class gameManager : MonoBehaviour
 
             List<GameObject> joinedList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             //loops through each player and determines if they have any of the hand combinations in joinedList
-            checkHand();
+            checkHand(joinedList);
             //takes highest card value 
         }
     }
