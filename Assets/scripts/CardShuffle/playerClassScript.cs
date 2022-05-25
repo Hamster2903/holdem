@@ -12,8 +12,8 @@ public class playerClassScript : MonoBehaviour
     public bool hasCalled = false;
     public bool isActive = false;
     public int mostRecentBet;
-    private string playerName = "";
-    private int valueOfCardsInHand = 0;
+    public string playerName = "";
+    public int valueOfCardsInHand = 0;
     public bool isLittleBlind;
     public bool isBigBlind;
     public bool isDealer;

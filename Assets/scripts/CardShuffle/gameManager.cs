@@ -254,55 +254,100 @@ public class gameManager : MonoBehaviour
         }
         DebugPrint("from inside IncrementPlayer function", activePlayerPosition);
     }
-    //a function that loops through every player and checks what hand combination they have, returns
-    public void loopThroughPlayersForHand()
+    public void evaluateHand()
     {
         
         for (int i = 0; i < players.Count; i++)
         {
-            //join two lists
-            //List<GameObject> joinedList = flopList.Join(players[i].GetComponent<playerClassScript>().cards,);
 
+            List<GameObject> joinedList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
+            //loops through each player and determines if they have any of the hand combinations in joinedList
+            checkHand();
+            //takes highest card value 
         }
     }
-    public void playerHasPair()//returns boolean value so that in the 
+    public void playerHasPair(List<GameObject> joinedList)//returns boolean value so that in the 
     {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         //parse list into the is function, returns to player
-    }
-    public void playerHasHighCard()
-    {
+        //check list for two same cardsz
+        bool hasPair = false;
+        //if true then hasPair = true;
 
+    }
+    public void playerHasHighCard(List<GameObject> joinedList)
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasHighCard = false;
+        //check list for ace, king, queen, jack
+        if(joinedList.Contains())//must check whether the list contains an ace || king|| queen|| jack, possibly by matching the icon face string ("1") e.g. for ace
+        {
+            hasHighCard = true;
+            currentPlayer.valueOfCardsInHand = 1;
+        }
+        //if true then hasHighCard = true;
     }
     public void playerHasTwoPair()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasTwoPair = false;
+        //check list for two different pairs
+        //if true then hasTwoPair = true;
     }
     public void playerHasThreeOfAKind()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasThreeOfAKind = false;
+        //check list for 3 cards that are the same
+        //if true then hasThreeOfAKind = true
     }
     public void playerHasFourOfAKind()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasFourOfAKind = false;
+        //check list for 4 cards of the same value
+        //if true then hasFourOfAKind = true;
     }
     public void playerHasStraight()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasStraight = false;
+        //check list for 5 cards in increasing order
+        //if true then hasStraight = true;
     }
-    public void playerHasFullHouse()
+    public void playerHasFullHouse()//only will run if three of a kind and a pair returns true
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasFullHouse = false;
+        //check list for 3 cards of the same value, check list for a pair
+        //if true then hasFullHouse = true;
     }
     public void playerHasFlush()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasFlush = false;
+        //check if 5 cards are from the same suit
+        //if true then hasFlush = true;
     }
     public void playerHasStraightFlush()
     {
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasStraightFlush = false;
+        //check is list has 5 cards of increasing value of the same suit
+        //if true then hasStraightFlush = true
     }
     public void playerHasRoyalFlush()
     {
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        bool hasRoyalFlush = false;
+        //chekc if the list has ace, king, queen, jack, 10
+        //if true then royalFlush = true;
+    }
+    public void checkHand()
+    {
+        //runs all the functions checking in order
 
     }
+    //each function will check if the player has one of these hands, it will return true if it does and increment to the next check, if not it will increment to the next check
+    //if one player has more than one hand, it will take the highest possible integer value found as the players hand
 }
