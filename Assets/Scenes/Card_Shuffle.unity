@@ -1667,6 +1667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckScript: {fileID: 988465554}
+  cardScript: {fileID: 5779892674828404715, guid: bb0c1aa6cf32740458fdbb8605750800, type: 3}
   raiseButton: {fileID: 576356940}
   callButton: {fileID: 378803122}
   foldButton: {fileID: 583580464}
@@ -1682,6 +1683,7 @@ MonoBehaviour:
   mostRecentBet: 0
   numberPlayers: 0
   gameNumber: 0
+  totalChipsInPot: 0
   activePlayerPosition: 0
   allFolded: 0
   potOver: 0
