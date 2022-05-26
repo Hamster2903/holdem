@@ -9,6 +9,7 @@ public class gameManager : MonoBehaviour
 {
        
     public DeckScript deckScript;
+    public CardScript cardScript;
     public Button raiseButton;
     public Button callButton;
     public Button foldButton;
@@ -52,6 +53,7 @@ public class gameManager : MonoBehaviour
         GeneratePlayers(5,1);
         GeneratePlayerObjects();
         DealToHands();
+        EvaluateHand();
     }
     //little blind bets half the minimum bet (5) big blind must bet 10 in this instance
     // so if player is little blind bet 5 if player is big blind must raise to 10 then set this as most recent bet
@@ -254,7 +256,7 @@ public class gameManager : MonoBehaviour
         }
         DebugPrint("from inside IncrementPlayer function", activePlayerPosition);
     }
-    public void evaluateHand()
+    public void EvaluateHand()
     {
         
         for (int i = 0; i < players.Count; i++)
@@ -262,23 +264,38 @@ public class gameManager : MonoBehaviour
 
             List<GameObject> joinedList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             //loops through each player and determines if they have any of the hand combinations in joinedList
-            checkHand(joinedList);
+            //checkHand(joinedList);
+            GetHandRank(joinedList);
+            
             //takes highest card value 
         }
+        
     }
-    public bool playerHasHighCard(List<GameObject> joinedList)
+    public void GetHandRank(List<GameObject> currentHand)
     {
-        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
-        //bool hasHighCard = false;
-        //check list for ace, king, queen, jack
-        if (joinedList.Contains(/*deckScript.faceIconString ==1*/)/*|| joinedList.Contains(etc)*/)//must check whether the list contains an ace || king|| queen|| jack, possibly by matching the icon face string ("1") e.g. for ace
+        for (int i = 0; i < currentHand.Count; i++)
         {
-            //hasHighCard = true;
-            currentPlayer.valueOfCardsInHand = 1;
+            CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            DebugPrint("suit", suit);
+            DebugPrint("face", face);
         }
-        //if true then hasHighCard = true;
+        
     }
-    public bool playerHasPair(List<GameObject> joinedList)//returns boolean value so that in the 
+    //public bool playerhashighcard(list<gameobject> joinedlist)
+    //{
+        //playerclassscript currentplayer = players[activeplayerposition % players.count].getcomponent<playerclassscript>();
+        //bool hashighcard = false;
+        //check list for ace, king, queen, jack
+        //if (joinedlist.contains(/*deckscript.faceiconstring ==1*/)/*|| joinedlist.contains(etc)*/)//must check whether the list contains an ace || king|| queen|| jack, possibly by matching the icon face string ("1") e.g. for ace
+        //{
+            //hashighcard = true;
+            //currentplayer.valueofcardsinhand = 1;
+        //}
+        //if true then hashighcard = true;
+    //}
+    /*public bool playerHasPair(List<GameObject> joinedList)//returns boolean value so that in the 
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
         //parse list into the is function, returns to player
@@ -349,6 +366,7 @@ public class gameManager : MonoBehaviour
         //runs all the functions checking in order
 
     }
+    */
     //each function will check if the player has one of these hands, it will return true if it does and increment to the next check, if not it will increment to the next check
     //if one player has more than one hand, it will take the highest possible integer value found as the players hand
 }

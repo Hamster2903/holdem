@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class cardScript : MonoBehaviour
+public class CardScript : MonoBehaviour
 {
     // defines all the variables used on the card prefabs
     public string face;

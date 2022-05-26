@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4783930646603574996}
   - component: {fileID: 1285039358038045706}
   - component: {fileID: 5235222069171245001}
-  - component: {fileID: 3684995492592602508}
+  - component: {fileID: 5779892674828404715}
   m_Layer: 5
   m_Name: cardBase
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3684995492592602508
+--- !u!114 &5779892674828404715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

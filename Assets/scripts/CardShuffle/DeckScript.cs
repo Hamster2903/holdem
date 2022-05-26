@@ -35,7 +35,7 @@ public class DeckScript : MonoBehaviour
             for (int f = 0; f < suit.Length; f++)
             {
                 GameObject newCard = Instantiate(cardPrefab);
-                newCard.GetComponent<cardScript>().UpdateCard(face[i],suit[f],iconFace[i],iconSuit[f]);
+                newCard.GetComponent<CardScript>().UpdateCard(face[i],suit[f],iconFace[i],iconSuit[f]);
                 cards.Add(newCard);
                 //sets the new cards to children of the cardgroup
                 newCard.transform.SetParent(cardGroup);
