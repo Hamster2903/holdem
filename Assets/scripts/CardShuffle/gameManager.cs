@@ -280,6 +280,10 @@ public class gameManager : MonoBehaviour
             string face = currentCardScript.face;
             DebugPrint("suit", suit);
             DebugPrint("face", face);
+            //dictionary to represent the ranking of each card? would link to the face and its integer value i.e. Ace corresponds to 1 and 14, the suits correspond in a similar way
+            //will have many if statements to determine which hand available
+            //will return an integer value for each hand, this will be used to determine winners at the end
+            //
         }
         
     }
