@@ -267,7 +267,7 @@ public class gameManager : MonoBehaviour
         }
         
     }
-    public void faceIsNumber(List<GameObject> currentHand.face)//determines whether or not the face of the card is an integer or not
+    public void faceIsNumber(List<GameObject> currentHand)//determines whether or not the face of the card is an integer or not
     {
         //return Number(face) > 0 ? true : false;
         CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
