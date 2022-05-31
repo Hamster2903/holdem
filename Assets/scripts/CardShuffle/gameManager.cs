@@ -266,7 +266,7 @@ public class gameManager : MonoBehaviour
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             getHandRank(handList);
-            DebugPrint("Is a number??", faceIsNumber(handList[0]));
+            
         }
         
     }
@@ -349,7 +349,7 @@ public class gameManager : MonoBehaviour
         }
         return count;
     }
-    public void getNumberOfFaceInHand(List<GameObject> handList, string targetFace)
+    public int getNumberOfFaceInHand(List<GameObject> handList, string targetFace)
     {
         int count = 0;
         for (int i = 0; i < handList.Count; i++)
