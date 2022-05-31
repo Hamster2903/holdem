@@ -365,11 +365,30 @@ public class gameManager : MonoBehaviour
     }
     public bool isRoyalFlush(List<GameObject> handList)
     {
-        return false;
+        if(GetNumberOfFaceInHand(handList, "Ace") == 1 && GetNumberOfFaceInHand(handList, "King") ==1 && GetNumberOfFaceInHand(handList, "Queen") ==1 && GetNumberOfFaceInHand(handList, "Jack") == 1 && GetNumberOfFaceInHand(handList, "10") ==1 && GetNumberOfSuitInHand(handList, "Clubs") >=5 || GetNumberOfSuitInHand(handList, "Diamonds") >= 5 || GetNumberOfSuitInHand(handList, "Spades") >= 5 || GetNumberOfSuitInHand(handList, "Hearts") >= 5)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     public bool isStraightFlush(List<GameObject> handList)
     {
-        return false;
+        int currentCount = 0;
+        int currentFace = 0;
+        int currentSuit = "";
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            if()
+            {
+
+            }
+        }
     }
     public bool isFourOfAKind(List<GameObject> handList)
     {
@@ -377,7 +396,18 @@ public class gameManager : MonoBehaviour
     }
     public bool isFlush(List<GameObject> handList)
     {
-        return false;
+        if(GetNumberOfSuitInHand(handList, "Diamonds") >= 5
+  || GetNumberOfSuitInHand(handList, "Spades") >= 5
+  || GetNumberOfSuitInHand(handList, "Clubs") >= 5
+  || GetNumberOfSuitInHand(handList, "Hearts") >= 5
+        )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     public bool isStraight(List<GameObject> handList)
     {
@@ -397,20 +427,38 @@ public class gameManager : MonoBehaviour
     }
     public bool isPair(List<GameObject> handList)
     {
+        int currentCount = 0;
+        int currentFace = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            currentFace = face;
+            currentCount = 1;
+            for (int n = 0; n < handList.Count; n++)
+            {
+                CardScript currentCardScript = handList[n].GetComponent<CardScript>();
+                string suit = currentCardScript.suit;
+                string face = currentCardScript.face;
+                if(currentCardScript.face == currentFace)
+                {
+                    currentCount += 1;
+                    if(currentCount ==2)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
         return false;
     }
     public int GetHandRank(List<GameObject> handList)
     {
-        // CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
-        // string suit = currentCardScript.suit;
-        // string face = currentCardScript.face;
-        /*for (int i = 0; i < currentHand.Count; i++)
-        {
-            
-
-            //DebugPrint("suit", suit);
-            //DebugPrint("face", face);
-        }*/
         handList = sortHandByFacePower(handList);
         if (isRoyalFlush(handList))
         {
