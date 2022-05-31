@@ -265,13 +265,13 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
-            getHandRank(handList);
+            GetHandRank(handList);
             
         }
         
     }
 
-    public int getFacePower(GameObject currentCard)
+    public int GetFacePower(GameObject currentCard)
     {
         CardScript currentCardScript = currentCard.GetComponent<CardScript>();
         var facePowerDictionary = new Dictionary<string, int>();
@@ -292,8 +292,8 @@ public class gameManager : MonoBehaviour
     }
     private int CompareFaceByPower(GameObject card1, GameObject card2)
     {
-        int face1Power = getFacePower(card1);
-        int face2Power = getFacePower(card2);
+        int face1Power = GetFacePower(card1);
+        int face2Power = GetFacePower(card2);
         if (face1Power == null)
         {
             if (face2Power == null)
@@ -334,7 +334,7 @@ public class gameManager : MonoBehaviour
         handList.Sort(CompareFaceByPower);
         return handList;
     }
-    public int getNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
+    public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
         
         int count = 0;
@@ -349,7 +349,7 @@ public class gameManager : MonoBehaviour
         }
         return count;
     }
-    public int getNumberOfFaceInHand(List<GameObject> handList, string targetFace)
+    public int GetNumberOfFaceInHand(List<GameObject> handList, string targetFace)
     {
         int count = 0;
         for (int i = 0; i < handList.Count; i++)
@@ -399,7 +399,7 @@ public class gameManager : MonoBehaviour
     {
         return false;
     }
-    public int getHandRank(List<GameObject> handList)
+    public int GetHandRank(List<GameObject> handList)
     {
         // CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
         // string suit = currentCardScript.suit;
