@@ -14,10 +14,10 @@ public class DeckScript : MonoBehaviour
     //defines the list of cards as game objects
     public List<GameObject> cards;
     //defines all the required values of each card as string arrays
-    string[] face = new string[] { "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King" };
+    string[] face = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
     string[] suit = new string[] { "Clubs", "Diamonds", "Hearts", "Spades" };
     string[] iconSuit = new string[] { "♣", "♦", "♥", "♠" };
-    string[] iconFace = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+    string[] iconFace = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
     
    
    

@@ -61,7 +61,7 @@ public class gameManager : MonoBehaviour
     //once all players have bet it comes back around to the small blind, they can either match the big blinds bet, raise or fold
     //the last player to act in the rotation will be the big blind, they can raise the bet, if they do everyone must act again until back to the big blind
     //make little and big blinds bet automatically, activePlayerPosition +=1 from the big blind player position
-    
+
     public void GameLoop()
     {
         if(round == 1)
@@ -118,8 +118,11 @@ public class gameManager : MonoBehaviour
                 players[i].GetComponent<playerClassScript>().cards.Add(cardToMove); //adds removed card to player list for each player.
                 cardToMove.transform.SetParent(players[i].transform);//instantiates cards from list to player grid
                 print(cardToMove);
+
             }
+         
         }
+        
     }
     
     public void GeneratePlayerObjects()
@@ -263,91 +266,144 @@ public class gameManager : MonoBehaviour
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             getHandRank(handList);
-
+            DebugPrint("Is a number??", faceIsNumber(handList[0]));
         }
         
     }
-    public void faceIsNumber(List<GameObject> currentHand)//determines whether or not the face of the card is an integer or not
+
+    public int getFacePower(GameObject currentCard)
     {
-        //return Number(face) > 0 ? true : false;
-        CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
-        string suit = currentCardScript.suit;
-        string face = currentCardScript.face;
-    }
-    public void getFacePower(List<GameObject> currentHand)
-    {
-        
-        CardScript currentCardScript = currentHand.GetComponent<CardScript>();
+        CardScript currentCardScript = currentCard.GetComponent<CardScript>();
         var facePowerDictionary = new Dictionary<string, int>();
-        facePowerDictionary.Add("1", 1);
-        facePowerDictionary.Add("Two", 2);
-        facePowerDictionary.Add("Three", 3);
-        facePowerDictionary.Add("Four", 4);
-        facePowerDictionary.Add("Five", 5);
-        facePowerDictionary.Add("Six", 6);
-        facePowerDictionary.Add("Seven", 7);
-        facePowerDictionary.Add("Eight", 8);
-        facePowerDictionary.Add("Nine", 9);
-        facePowerDictionary.Add("Ten", 10);
+        facePowerDictionary.Add("Ace", 1);
+        facePowerDictionary.Add("2", 2);
+        facePowerDictionary.Add("3", 3);
+        facePowerDictionary.Add("4", 4);
+        facePowerDictionary.Add("5", 5);
+        facePowerDictionary.Add("6", 6);
+        facePowerDictionary.Add("7", 7);
+        facePowerDictionary.Add("8", 8);
+        facePowerDictionary.Add("9", 9);
+        facePowerDictionary.Add("10", 10);
         facePowerDictionary.Add("Jack", 11);
         facePowerDictionary.Add("Queen", 12);
         facePowerDictionary.Add("King", 13);
-        facePowerDictionary.Add("Ace", 14);
-        return facePowerDictionary[currentHand.face];
+        return facePowerDictionary[currentCardScript.face];
     }
-    public void sortHandByFacePower(List<GameObject> handList)
+    private static int CompareFaceByPower(GameObject card1, GameObject card2)
     {
-
+        string face1Power = getFacePower(card1);
+        string face2Power = getFacePower(card2);
+        if (face1Power == null)
+        {
+            if (face2Power == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            if (face2Power == null)
+            {
+                return 1;
+            }
+            else
+            {
+                if (face1Power > face2Power)
+                {
+                    return 1;
+                }
+                else if (face2Power > face1Power)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
     }
-    public void getNumberOfSuitInHand(List<GameObject> handList, /*what is targetSuit?*/)
-    {
 
+    public List<GameObject> sortHandByFacePower(List<GameObject> handList)
+    {
+        handList.Sort(CompareFaceByPower);
+        return handList;
     }
-    public void getNumberOfFaceInHand(List<GameObject> handList, /*what is targetFace?*/)
+    public int getNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
-
+        
+        int count = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            if(suit == targetSuit)
+            {
+                count += 1;
+            }
+        }
+        return count;
+    }
+    public void getNumberOfFaceInHand(List<GameObject> handList, string targetFace)
+    {
+        int count = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string face = currentCardScript.face;
+            if (face == targetFace)
+            {
+                count += 1;
+            }
+        }
+        return count;
     }
     public bool isRoyalFlush(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isStraightFlush(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isFourOfAKind(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isFlush(List<GameObject> handList)
     {
-
+        return false;
     }
-    public void isStraight(List<GameObject> handList)
+    public bool isStraight(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isFullHouse(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isThreeOfAKind(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isTwoPair(List<GameObject> handList)
     {
-
+        return false;
     }
     public bool isPair(List<GameObject> handList)
     {
-
+        return false;
     }
-    public void getHandRank(List<GameObject> handList)
+    public int getHandRank(List<GameObject> handList)
     {
-        CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
-        string suit = currentCardScript.suit;
-        string face = currentCardScript.face;
+        // CardScript currentCardScript = currentHand[i].GetComponent<CardScript>();
+        // string suit = currentCardScript.suit;
+        // string face = currentCardScript.face;
         /*for (int i = 0; i < currentHand.Count; i++)
         {
             
@@ -388,7 +444,7 @@ public class gameManager : MonoBehaviour
         {
             return 8;
         }
-        else if (isPair(hand))
+        else if (isPair(handList))
         {
             return 9;
         }
