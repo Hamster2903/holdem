@@ -290,10 +290,10 @@ public class gameManager : MonoBehaviour
         facePowerDictionary.Add("King", 13);
         return facePowerDictionary[currentCardScript.face];
     }
-    private static int CompareFaceByPower(GameObject card1, GameObject card2)
+    private int CompareFaceByPower(GameObject card1, GameObject card2)
     {
-        string face1Power = getFacePower(card1);
-        string face2Power = getFacePower(card2);
+        int face1Power = getFacePower(card1);
+        int face2Power = getFacePower(card2);
         if (face1Power == null)
         {
             if (face2Power == null)
