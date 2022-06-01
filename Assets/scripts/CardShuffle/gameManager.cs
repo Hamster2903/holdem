@@ -376,22 +376,69 @@ public class gameManager : MonoBehaviour
     }
     public bool isStraightFlush(List<GameObject> handList)
     {
+        
+        for (int i = 0; i < handList.Count; i++)
+        {
+            int currentCount = 0;
+            int currentFace = 0;
+            string currentSuit = "";
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            currentFace = GetFacePower(face);
+            currentSuit = suit;
+            currentCount = 1;
+            for (int n = i+1; n < handList.Count; n++)
+            {
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                if(GetFacePower(nestedCardScript.face)==currentFace+1
+                    &&  nestedCardScript.suit == currentSuit)
+                {
+                    currentCount +=1;
+                    currentFace = GetFacePower(nestedCardScript.face);
+                    if(currentCount ==5)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+
+        }
+        return false;
+    }
+    public bool isFourOfAKind(List<GameObject> handList)
+    {
         int currentCount = 0;
         int currentFace = 0;
-        int currentSuit = "";
         for (int i = 0; i < handList.Count; i++)
         {
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            if()
+            currentFace = GetFacePower(face);
+            currentCount = 1;
+            for (int n = i+1; n < handList.Count; n++)
             {
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                if(nestedCardScript.face == currentFace)
+                {
+                    currentCount += 1;
+                    if(currentCount==4)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
             }
         }
-    }
-    public bool isFourOfAKind(List<GameObject> handList)
-    {
         return false;
     }
     public bool isFlush(List<GameObject> handList)
@@ -411,18 +458,138 @@ public class gameManager : MonoBehaviour
     }
     public bool isStraight(List<GameObject> handList)
     {
+        int currentCount = 0;
+        int currentFace = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            currentFace = GetFacePower(face);
+            currentCount = 1;
+            for (int n = i+1; n < handList.Count; n++)
+            {
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                if(GetFacePower(nestedCardScript.face) ==currentFace+1)
+                {
+                    currentCount += 1;
+                    currentFace = GetFacePower(nestedCardScript.face);
+                    if(currentCount ==5)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
         return false;
     }
     public bool isFullHouse(List<GameObject> handList)
     {
+        string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
+        string alreadyUsedFace = "";
+        for (int i = 0; i < possibleFaces.Count; i++)
+        {
+            bool foundMultipleFaces = false;
+            for (int n = 0; n < 13; n++)
+            {
+                if(alreadyUsedFace == "")
+                {
+                    if(GetNumberOfFaceInHand(handList, possibleFaces[n]) >=3)
+                    {
+                        alreadyUsedFace = possibleFaces[n];
+                        foundMultipleFaces = true;
+                        break;
+                    }
+
+                }
+                else
+                {
+                    if(possibleFaces[n] !== alreadyUsedFace&&GetNumberOfFaceInHand(handList, possibleFaces[n])>=2)
+                    {
+                        return true;
+                    }
+                }
+            }
+            if(!foundMultipleFaces)
+            {
+                alreadyUsedFace = "";
+            }
+        }
         return false;
     }
     public bool isThreeOfAKind(List<GameObject> handList)
     {
+        int currentCount = 0;
+        int currentFace = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            currentFace = GetFacePower(face);
+            currentCount = 1;
+            for (int n = i+1; n < handList.Count; n++)
+            {
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                if(nestedCardScript.face == currentFace)
+                {
+                    currentCount += 1;
+                    if(currentCount ==3)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
         return false;
     }
-    public bool isTwoPair(List<GameObject> handList)
+    public bool isTwoPair(List<GameObject> handList, string excludedFace)
     {
+        int currentCount = 0;
+        int currentFace = 0;
+        for (int i = 0; i < handList.Count; i++)
+        {
+            CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            string suit = currentCardScript.suit;
+            string face = currentCardScript.face;
+            currentFace = GetFacePower(face);
+            if(currentFace == excludedFace)
+            {
+                continue;
+            }
+            currentCount = 1;
+            for (int n = i+1; n < handList.Count; n++)
+            {
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                if(nestedCardScript.face ==currentFace)
+                {
+                    currentCount += 1;
+                    if(currentCount==2)
+                    {
+                        if(excludedFace == "")
+                        {
+                            return isTwoPair(handList, currentFace)
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
         return false;
     }
     public bool isPair(List<GameObject> handList)
@@ -434,7 +601,7 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = face;
+            currentFace = GetFacePower(face);
             currentCount = 1;
             for (int n = 0; n < handList.Count; n++)
             {
@@ -488,7 +655,7 @@ public class gameManager : MonoBehaviour
         {
             return 7;
         }
-        else if (isTwoPair(handList))
+        else if (isTwoPair(handList, ""))
         {
             return 8;
         }
