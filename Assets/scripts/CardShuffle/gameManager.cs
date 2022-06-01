@@ -296,6 +296,25 @@ public class gameManager : MonoBehaviour
         facePowerDictionary.Add("King", 13);
         return facePowerDictionary[currentCardScript.face];
     }
+    public int CompareHandByRank(GameObject player1, GameObject player2)
+    {
+        playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
+        playerClassScript currentPlayer2 = player2.GetComponent<playerClassScript>();
+        int player1Rank= currentPlayer1.valueOfCardsInHand;
+        int player2Rank = currentPlayer2.valueOfCardsInHand;
+        if (player1Rank > player2Rank)
+        {
+            return 1;
+        }
+        else if (player2Rank > player1Rank)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
     private int CompareFaceByPower(GameObject card1, GameObject card2)
     {
         int face1Power = GetFacePower(card1);
@@ -319,6 +338,10 @@ public class gameManager : MonoBehaviour
     {
         handList.Sort(CompareFaceByPower);
         return handList;
+    }
+    public List<GameObject> SortPlayerByHandRank(List<GameObject> handList)
+    {
+
     }
     public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
