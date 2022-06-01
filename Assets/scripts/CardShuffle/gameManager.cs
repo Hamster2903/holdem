@@ -53,7 +53,7 @@ public class gameManager : MonoBehaviour
         GeneratePlayers(5,1);
         GeneratePlayerObjects();
         DealToHands();
-        EvaluateHand();
+        
     }
     //little blind bets half the minimum bet (5) big blind must bet 10 in this instance
     // so if player is little blind bet 5 if player is big blind must raise to 10 then set this as most recent bet
@@ -75,6 +75,10 @@ public class gameManager : MonoBehaviour
         if(round == 3)
         {
             DealToRiver();
+        }
+        if(round == 4)
+        {
+            EvaluateHand();
         }
     }
     public void GeneratePlayers(int numPlayers, int gameNum)
@@ -265,7 +269,9 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
-            GetHandRank(handList);
+            playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>(); 
+            currentPlayer.valueOfCardsInHand =GetHandRank(handList);
+            DebugPrint("current value of cards in hand", currentPlayer.valueOfCardsInHand);
             
         }
         
@@ -294,38 +300,18 @@ public class gameManager : MonoBehaviour
     {
         int face1Power = GetFacePower(card1);
         int face2Power = GetFacePower(card2);
-        if (face1Power == null)
+
+        if (face1Power > face2Power)
         {
-            if (face2Power == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
+            return 1;
+        }
+        else if (face2Power > face1Power)
+        {
+            return -1;
         }
         else
         {
-            if (face2Power == null)
-            {
-                return 1;
-            }
-            else
-            {
-                if (face1Power > face2Power)
-                {
-                    return 1;
-                }
-                else if (face2Power > face1Power)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            return 0;
         }
     }
 
@@ -385,17 +371,17 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
+            currentFace = GetFacePower(handList[i]);
             currentSuit = suit;
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(nestedCardScript.face)==currentFace+1
+                if(GetFacePower(handList[n])==currentFace+1
                     &&  nestedCardScript.suit == currentSuit)
                 {
                     currentCount +=1;
-                    currentFace = GetFacePower(nestedCardScript.face);
+                    currentFace = GetFacePower(handList[n]);
                     if(currentCount ==5)
                     {
                         return true;
@@ -419,12 +405,12 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
+            currentFace = GetFacePower(handList[i]);
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(nestedCardScript.face == currentFace)
+                if(GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
                     if(currentCount==4)
@@ -465,15 +451,15 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
+            currentFace = GetFacePower(handList[i]);
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(nestedCardScript.face) ==currentFace+1)
+                if(GetFacePower(handList[n]) ==currentFace+1)
                 {
                     currentCount += 1;
-                    currentFace = GetFacePower(nestedCardScript.face);
+                    currentFace = GetFacePower(handList[n]);
                     if(currentCount ==5)
                     {
                         return true;
@@ -491,7 +477,7 @@ public class gameManager : MonoBehaviour
     {
         string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
         string alreadyUsedFace = "";
-        for (int i = 0; i < possibleFaces.Count; i++)
+        for (int i = 0; i < possibleFaces.Length; i++)
         {
             bool foundMultipleFaces = false;
             for (int n = 0; n < 13; n++)
@@ -508,7 +494,7 @@ public class gameManager : MonoBehaviour
                 }
                 else
                 {
-                    if(possibleFaces[n] !== alreadyUsedFace&&GetNumberOfFaceInHand(handList, possibleFaces[n])>=2)
+                    if(possibleFaces[n] != alreadyUsedFace&&GetNumberOfFaceInHand(handList, possibleFaces[n])>=2)
                     {
                         return true;
                     }
@@ -530,12 +516,12 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
+            currentFace = GetFacePower(handList[i]);
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(nestedCardScript.face == currentFace)
+                if(GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
                     if(currentCount ==3)
@@ -553,6 +539,7 @@ public class gameManager : MonoBehaviour
     }
     public bool isTwoPair(List<GameObject> handList, string excludedFace)
     {
+        DebugPrint("Running function", excludedFace);
         int currentCount = 0;
         int currentFace = 0;
         for (int i = 0; i < handList.Count; i++)
@@ -560,26 +547,31 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
-            if(currentFace == excludedFace)
+            currentFace = GetFacePower(handList[i]);
+            DebugPrint("Currentfacepower", currentFace);
+            if(face == excludedFace)
             {
+                print("Currentface is excluded");
                 continue;
             }
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(nestedCardScript.face ==currentFace)
+                DebugPrint("nestedFacePower", GetFacePower(handList[n]));
+                if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
                     if(currentCount==2)
                     {
                         if(excludedFace == "")
                         {
-                            return isTwoPair(handList, currentFace)
+                            print("Recursing");
+                            return isTwoPair(handList, nestedCardScript.face);
                         }
                         else
                         {
+                            print("returning trrue");
                             return true;
                         }
                     }
@@ -601,14 +593,13 @@ public class gameManager : MonoBehaviour
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
-            currentFace = GetFacePower(face);
+            currentFace = GetFacePower(handList[i]);
             currentCount = 1;
             for (int n = 0; n < handList.Count; n++)
             {
-                CardScript currentCardScript = handList[n].GetComponent<CardScript>();
-                string suit = currentCardScript.suit;
-                string face = currentCardScript.face;
-                if(currentCardScript.face == currentFace)
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                
+                if(GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
                     if(currentCount ==2)
