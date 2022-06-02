@@ -31,7 +31,7 @@ public class gameManager : MonoBehaviour
     public bool potOver = false;
     public List<GameObject> players;
     public GameObject playerPrefab;
-    public GameObject cardGroups;
+    //public GameObject cardGroups;
     public List<GameObject> flopList;
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
@@ -241,13 +241,44 @@ public class gameManager : MonoBehaviour
     {
         //make this reset the game to original state but keep each players chips constant
         //reset all boolean to orginal value
+        allFolded = false;
+        for (int i = 0; i < players.Count; i++)//for loop to loop through each player and set everything back to normal
+        {
+
+        }
+
         //round =0
+        round = 0;
         //potValue = 0
+        potValue = 0;
         //totalChipsInPot = 0
+        totalChipsInPot = 0;
         //most recent bet = 0
+        mostRecentBet = 0;
         //clear cards from players hand
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].GetComponent<playerClassScript>().cards.Clear();
+        }
         //clear cards from flop list
-        //regenerate deck and player hands
+        foreach (Transform item in flopGrid.transform)
+        {
+            Destroy(item.gameObject);
+        }
+        flopList.Clear();
+        //clear player positions
+
+        //clear cards from deck
+        foreach (Transform item in deckScript.cardGroup.transform)
+        {
+            Destroy(item.gameObject);
+        }
+        deckScript.cards.Clear();
+
+        //regenerate deck, player hands and player positions
+        deckScript.Generate();
+        deckScript.Shuffle();
+
     }
     public void CheckBettingStatus() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
