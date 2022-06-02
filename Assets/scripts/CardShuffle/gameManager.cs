@@ -275,7 +275,6 @@ public class gameManager : MonoBehaviour
         DistributePot();
 
     }
-
     public int GetFacePower(GameObject currentCard)
     {
         CardScript currentCardScript = currentCard.GetComponent<CardScript>();
@@ -332,7 +331,6 @@ public class gameManager : MonoBehaviour
             return 0;
         }
     }
-
     public List<GameObject> SortHandByFacePower(List<GameObject> handList)
     {
         handList.Sort(CompareFaceByPower);
@@ -399,8 +397,9 @@ public class gameManager : MonoBehaviour
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(handList[n])==currentFace+1
-                    &&  nestedCardScript.suit == currentSuit)
+                if ((GetFacePower(handList[n]) == currentFace + 1
+                || (nestedCardScript.face == "Ace"
+                    && currentFace + 1 == 14)) && nestedCardScript.suit == currentSuit)
                 {
                     currentCount +=1;
                     currentFace = GetFacePower(handList[n]);
@@ -478,7 +477,11 @@ public class gameManager : MonoBehaviour
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(handList[n]) ==currentFace+1)
+                if(GetFacePower(handList[n]) == currentFace+1
+                || (nestedCardScript.face == "Ace" 
+                    && currentFace + 1 == 14))
+                // (false && true) || true
+                // (3 / 4) + 5
                 {
                     currentCount += 1;
                     currentFace = GetFacePower(handList[n]);
