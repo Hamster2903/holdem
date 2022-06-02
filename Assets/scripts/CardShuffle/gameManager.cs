@@ -57,6 +57,7 @@ public class gameManager : MonoBehaviour
     }
     public void GameLoop()
     {
+        
         if(round == 1)
         {
             DealToFlop();
@@ -72,6 +73,9 @@ public class gameManager : MonoBehaviour
         if(round == 4)
         {
             EvaluateHand();
+            round = 0;
+            
+            //reset the game, clear all cards from players, clear cards from deck, reshuffle, re-deal cards to players
         }
     }
     public void GeneratePlayers(int numPlayers, int gameNum)
@@ -85,6 +89,11 @@ public class gameManager : MonoBehaviour
             players.Add(newPlayer);
             newPlayer.gameObject.GetComponent<Image>().enabled = false;
 
+        }
+        for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
         playerClassScript dealerPlayer = players[(-1 + gameNum) % numPlayers].GetComponent<playerClassScript>();
         playerClassScript littleBlindPlayer = players[(0 + gameNum) % numPlayers].GetComponent<playerClassScript>();
@@ -100,9 +109,7 @@ public class gameManager : MonoBehaviour
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + gameNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
-        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
-        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-        DebugPrint("active player position",activePlayerPosition);
+        
     }
     public void DealToHands()
     {
@@ -176,6 +183,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         IncrementActivePlayer();// Go to next player
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+        CheckAllFolded();
         CheckBettingStatus();
     }
 
@@ -199,6 +207,7 @@ public class gameManager : MonoBehaviour
         IncrementActivePlayer();///increases active player by one position
         DebugPrint("current active player is at postion", activePlayerPosition);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+        CheckAllFolded();
         CheckBettingStatus();
 
     }
@@ -213,18 +222,33 @@ public class gameManager : MonoBehaviour
             currentPlayer.gameObject.SetActive(false);
             DebugPrint("what is the activePlayerPosition", activePlayerPosition);
             IncrementActivePlayer();
-            //bugs, must make sure the folded players can no longer be interacted with i.e. they cannot be rotated to anymore and instead the rotation will skip to the next non folded player
         }
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+        CheckAllFolded();
         CheckBettingStatus();
     }
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
         playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        DebugPrint("amount of chips winning player has after winning pot", winningPlayer.numOfChips);
+        winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         gameNumber++;
+        round = 0;
+        
     }
-
+    public void ResetGameToOriginal()
+    {
+        //make this reset the game to original state but keep each players chips constant
+        //reset all boolean to orginal value
+        //round =0
+        //potValue = 0
+        //totalChipsInPot = 0
+        //most recent bet = 0
+        //clear cards from players hand
+        //clear cards from flop list
+        //regenerate deck and player hands
+    }
     public void CheckBettingStatus() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
@@ -232,7 +256,6 @@ public class gameManager : MonoBehaviour
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
             round+=1;
-
             potValue += totalChipsInPot;
             potValueText.text = Convert.ToString(potValue);
             DebugPrint("round value is ", round); //checking what the round is, as the flop was not being dealt.
@@ -243,6 +266,32 @@ public class gameManager : MonoBehaviour
         else if(bigBlindPlayer.hasRaised == true)
         {
             //keep loopijg, null?
+        }
+    }
+    public void CheckAllFolded()
+    {
+        int count = 0;
+        for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+
+            if (currentPlayer.hasFolded == true)
+            {
+                count += 1;
+            }
+            
+        }
+        if(count == players.Count-1)
+        {
+            allFolded = true;
+        }
+        else
+        {
+            allFolded = false;
+        }
+        if(allFolded == true)
+        {
+            DistributePot();
         }
     }
     public void IncrementActivePlayer()
