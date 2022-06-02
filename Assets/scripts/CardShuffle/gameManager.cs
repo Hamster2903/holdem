@@ -55,13 +55,6 @@ public class gameManager : MonoBehaviour
         DealToHands();
         
     }
-    //little blind bets half the minimum bet (5) big blind must bet 10 in this instance
-    // so if player is little blind bet 5 if player is big blind must raise to 10 then set this as most recent bet
-    //if players are to raise a bet it must be atleast double the previous bet
-    //once all players have bet it comes back around to the small blind, they can either match the big blinds bet, raise or fold
-    //the last player to act in the rotation will be the big blind, they can raise the bet, if they do everyone must act again until back to the big blind
-    //make little and big blinds bet automatically, activePlayerPosition +=1 from the big blind player position
-
     public void GameLoop()
     {
         if(round == 1)
@@ -221,8 +214,8 @@ public class gameManager : MonoBehaviour
     }
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
-        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
-        currentPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
+        winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         gameNumber++;
     }
 
@@ -269,12 +262,18 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
-            playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>(); 
-            currentPlayer.valueOfCardsInHand =GetHandRank(handList);
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
+            currentPlayer.valueOfCardsInHand = GetHandRank(handList);
             DebugPrint("current value of cards in hand", currentPlayer.valueOfCardsInHand);
-            
         }
-        
+        SortPlayersByHandRank();
+        /*for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            DebugPrint("item in list", currentPlayer.valueOfCardsInHand);
+        }*/
+        DistributePot();
+
     }
 
     public int GetFacePower(GameObject currentCard)
@@ -334,14 +333,14 @@ public class gameManager : MonoBehaviour
         }
     }
 
-    public List<GameObject> sortHandByFacePower(List<GameObject> handList)
+    public List<GameObject> SortHandByFacePower(List<GameObject> handList)
     {
         handList.Sort(CompareFaceByPower);
         return handList;
     }
-    public List<GameObject> SortPlayerByHandRank(List<GameObject> handList)
+    public void SortPlayersByHandRank()
     {
-
+        players.Sort(CompareHandByRank);
     }
     public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
@@ -562,7 +561,7 @@ public class gameManager : MonoBehaviour
     }
     public bool isTwoPair(List<GameObject> handList, string excludedFace)
     {
-        DebugPrint("Running function", excludedFace);
+        
         int currentCount = 0;
         int currentFace = 0;
         for (int i = 0; i < handList.Count; i++)
@@ -571,17 +570,17 @@ public class gameManager : MonoBehaviour
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
             currentFace = GetFacePower(handList[i]);
-            DebugPrint("Currentfacepower", currentFace);
+            
             if(face == excludedFace)
             {
-                print("Currentface is excluded");
+                
                 continue;
             }
             currentCount = 1;
             for (int n = i+1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                DebugPrint("nestedFacePower", GetFacePower(handList[n]));
+                
                 if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
@@ -589,12 +588,12 @@ public class gameManager : MonoBehaviour
                     {
                         if(excludedFace == "")
                         {
-                            print("Recursing");
+                           
                             return isTwoPair(handList, nestedCardScript.face);
                         }
                         else
                         {
-                            print("returning trrue");
+                            
                             return true;
                         }
                     }
@@ -640,46 +639,46 @@ public class gameManager : MonoBehaviour
     }
     public int GetHandRank(List<GameObject> handList)
     {
-        handList = sortHandByFacePower(handList);
+        handList = SortHandByFacePower(handList);
         if (isRoyalFlush(handList))
         {
-            return 1;
+            return 10;
         }
         else if (isStraightFlush(handList))
         {
-            return 2;
+            return 9;
         }
         else if (isFourOfAKind(handList))
         {
-            return 3;
+            return 8;
         }
         else if (isFullHouse(handList))
         {
-            return 4;
+            return 7;
         }
         else if (isFlush(handList))
         {
-            return 5;
+            return 6;
         }
         else if (isStraight(handList))
         {
-            return 6;
+            return 5;
         }
         else if (isThreeOfAKind(handList))
         {
-            return 7;
+            return 4;
         }
         else if (isTwoPair(handList, ""))
         {
-            return 8;
+            return 3;
         }
         else if (isPair(handList))
         {
-            return 9;
+            return 2;
         }
         else
         {
-            return 10;
+            return 1;
         }
     }
 }
