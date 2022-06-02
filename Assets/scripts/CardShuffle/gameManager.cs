@@ -100,8 +100,8 @@ public class gameManager : MonoBehaviour
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + gameNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
-
-
+        playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         DebugPrint("active player position",activePlayerPosition);
     }
     public void DealToHands()
@@ -173,6 +173,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
         totalChipsInPot +=currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         currentPlayer.hasRaised = true;
+        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         IncrementActivePlayer();// Go to next player
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         CheckBettingStatus();
@@ -181,14 +182,19 @@ public class gameManager : MonoBehaviour
 
     public void CallOnClick()
     {
+
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition % players.Count].GetComponent<playerClassScript>();
+        DebugPrint("current players amount of chips before betting", currentPlayer.numOfChips);
         print("call button working");
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
+        DebugPrint("most recent bet is", currentPlayer.mostRecentBet);
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
         totalChipsInPot += currentPlayer.mostRecentBet;
         currentPlayer.hasCalled = true;
+        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+        DebugPrint("current player chips",currentPlayer.numOfChips);
         DebugPrint("most recent bet", currentPlayer.mostRecentBet);
         IncrementActivePlayer();///increases active player by one position
         DebugPrint("current active player is at postion", activePlayerPosition);

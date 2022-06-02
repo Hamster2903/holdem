@@ -263,14 +263,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef39f891c9d0a746b0fe8361f515abf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numOfChips: 0
+  numOfChips: 1000
   numOfChipsInPot: 0
   hasFolded: 0
   hasRaised: 0
+  playerChipsText: {fileID: 384401488343264571}
   hasCalled: 0
   isActive: 0
   mostRecentBet: 0
   playerName: 
+  playerNameText: {fileID: 5088718752122171247}
   valueOfCardsInHand: 0
   isLittleBlind: 0
   isBigBlind: 0
@@ -342,7 +344,7 @@ GameObject:
   - component: {fileID: 5088718752122171244}
   - component: {fileID: 5088718752122171247}
   m_Layer: 5
-  m_Name: PlayerNameTExt
+  m_Name: PlayerNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
