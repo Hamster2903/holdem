@@ -1762,7 +1762,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 918804118}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &918804118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2113,6 +2125,7 @@ GameObject:
   - component: {fileID: 1225371814}
   - component: {fileID: 1225371816}
   - component: {fileID: 1225371815}
+  - component: {fileID: 1225371817}
   m_Layer: 0
   m_Name: BackGround
   m_TagString: Untagged
@@ -2177,6 +2190,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1225371813}
   m_CullTransparentMesh: 1
+--- !u!114 &1225371817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225371813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05309b7e393aa40439ff99523f02eb84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManagerScript: {fileID: 0}
+  get3PlayersButton: {fileID: 0}
+  get4PlayersButton: {fileID: 0}
+  get5PlayersButton: {fileID: 0}
 --- !u!1 &1253676337
 GameObject:
   m_ObjectHideFlags: 0
@@ -2417,7 +2446,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1387657701}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1387657701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2538,7 +2579,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1451548738}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1451548738
 MonoBehaviour:
   m_ObjectHideFlags: 0
