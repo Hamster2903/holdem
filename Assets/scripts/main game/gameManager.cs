@@ -48,9 +48,9 @@ public class gameManager : MonoBehaviour
     }
     void Start()
     {
+        GeneratePlayers(5, 1);
         deckScript.Generate();
         deckScript.Shuffle();
-        GeneratePlayers(5,1);
         GeneratePlayerObjects();
         DealToHands();
         
@@ -388,6 +388,10 @@ public class gameManager : MonoBehaviour
     {
         //chekc if there is 1 player in the list
         //
+        if(players.Count == 1)
+        {
+
+        }
     }
     public void IncrementActivePlayer()
     {
