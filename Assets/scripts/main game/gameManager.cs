@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class gameManager : MonoBehaviour
 {
        
@@ -23,7 +23,8 @@ public class gameManager : MonoBehaviour
     public int raiseValue;
     public int round = 0;
     public int mostRecentBet;
-    public int gameNumber;
+    public int handNumber;
+    public int playerNumInput;
     public int totalChipsInPot;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
@@ -38,6 +39,7 @@ public class gameManager : MonoBehaviour
     public bool debug = false;
     //make bool checking if playerName  so each player can see what their cards is but not what others are
     
+    //allows easier to understand debugging
     public void DebugPrint(string prefix, object message)
     {
         if(debug)
@@ -47,14 +49,16 @@ public class gameManager : MonoBehaviour
     }
     void Start()
     {
-        GeneratePlayers(5, 1);
+        DebugPrint("the number of players selected was ", playerNumInput);
+        GeneratePlayers(playerNumInput, 1);
         deckScript.Generate();
         deckScript.Shuffle();
-        GeneratePlayerObjects();
+        GeneratePlayerObjectsAroundTable();
         DealToHands();
         
     }
-    public void GameLoop()
+    //is used to keep track of the rounds and what occurs in each
+    public void RoundLoop()
     {
         
         if(round == 1)
@@ -73,14 +77,15 @@ public class gameManager : MonoBehaviour
         {
             EvaluateHand();
             round = 0;
-            StartNextGame();
-            
-            //reset the game, clear all cards from players, clear cards from deck, reshuffle, re-deal cards to players
+            StartNextHand();
+
         }
     }
-    public void GeneratePlayers(int numPlayers, int gameNum)
+    //generates an amount of players from 3 to 5 and gives them specific positional roles, i.e. it sets a player as a littleBlind player and gives their class variables values
+    public void GeneratePlayers(int numPlayers, int handNum)
     {
-        gameNumber = gameNum;
+        playerNumInput = numPlayers;
+        handNumber = handNum;
         players.Clear();
         for (int i = 0; i < numPlayers; i++)
         {
@@ -94,9 +99,9 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
-        playerClassScript dealerPlayer = players[(-1 + gameNum) % numPlayers].GetComponent<playerClassScript>();
-        playerClassScript littleBlindPlayer = players[(0 + gameNum) % numPlayers].GetComponent<playerClassScript>();
-        playerClassScript bigBlindPlayer = players[(1 + gameNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript dealerPlayer = players[(-1 + handNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript littleBlindPlayer = players[(0 + handNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript bigBlindPlayer = players[(1 + handNum) % numPlayers].GetComponent<playerClassScript>();
         dealerPlayer.isDealer = true;//set position 0 to dealer button, position 1 to little blind, position 2 to big blind
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
@@ -106,11 +111,12 @@ public class gameManager : MonoBehaviour
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
-        activePlayerPosition = (2 + gameNum) % numPlayers;
+        activePlayerPosition = (2 + handNum) % numPlayers;
         DebugPrint("ENABLING IMAGE IN GENERATE PLAYERS", 0);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         
     }
+    //deals two card game objects from the deck to the players hands, also adds the cards and their values to the players specific card list
     public void DealToHands()
     {
         for (int i = 0; i < players.Count; i++)
@@ -127,8 +133,8 @@ public class gameManager : MonoBehaviour
         }
         
     }
-    
-    public void GeneratePlayerObjects()
+    //generates the playerPrefab objects in the specified arrangement around the table image at either position 123, 1234,12345
+    public void GeneratePlayerObjectsAroundTable()
     {
         int count = 0;
         
@@ -141,6 +147,7 @@ public class gameManager : MonoBehaviour
         }
 
     }
+    //removes cards from the deck list and then adds them to the flop list
     public void DealToFlop()
     {
         for (int i = 0; i < 3; i++)
@@ -151,6 +158,7 @@ public class gameManager : MonoBehaviour
             cardToMove.transform.SetParent(flopGrid.transform);//puts card in game object grid
         }
     }
+    //removes cards from the deck list and then adds them to the flop list
     public void DealToTurn()
     {
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
@@ -158,6 +166,7 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
+    //removes cards from the deck list and then adds them to the flop list
     public void DealToRiver()
     {
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
@@ -165,6 +174,7 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
+    //allows the player to raise their bet to a specified integer amount from their amount of chips and then incrementing the player by one
     public void RaiseOnClick()
     {
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
@@ -182,8 +192,7 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
         CheckBettingStatus();
     }
-
-
+    //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
     public void CallOnClick()
     {
 
@@ -195,13 +204,13 @@ public class gameManager : MonoBehaviour
         totalChipsInPot += currentPlayer.mostRecentBet;
         currentPlayer.hasCalled = true;
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-        IncrementActivePlayer();///increases active player by one position
-        
+        IncrementActivePlayer();//increases active player by one position
         CheckIfPlayerHasValidChips();
         CheckAllFolded();
         CheckBettingStatus();
 
     }
+    //folds the players hand and removes them from the bettiing for remainder of the hand
     public void FoldOnClick()
     {
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
@@ -213,23 +222,22 @@ public class gameManager : MonoBehaviour
             currentPlayer.gameObject.SetActive(false);
             IncrementActivePlayer();
         }
-        
         CheckIfPlayerHasValidChips();
         CheckAllFolded();
         CheckBettingStatus();
     }
+    //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
         playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
-        gameNumber++;
+        handNumber++;
         round = 0;
-        
     }
-    public void StartNextGame()
+    //resets all the boolean values that are unimportant for the players identification, i.e. everything except player name and numOfChips
+    public void StartNextHand()
     {
-        //make this reset the game to original state but keep each players chips constant
         //reset all boolean to orginal value
         allFolded = false;
         for (int i = 0; i < players.Count; i++)//for loop to loop through each player and set everything back to normal
@@ -272,18 +280,17 @@ public class gameManager : MonoBehaviour
         }
         flopList.Clear();
         //clear player positions
-        //regenerate deck, player hands and player positions
-
         deckScript.Generate();
         deckScript.Shuffle();
-        ReGeneratePlayers(5,1);
+        ReGeneratePlayers(playerNumInput,1);
         DealToHands();
-        GameLoop();
+        RoundLoop();
     }
-    public void ReGeneratePlayers(int numPlayers, int gameNum)
+    //this function regenerates the players with the new values required, i.e. a new little blind and big blind player is created, new original active player is defined
+    public void ReGeneratePlayers(int numPlayers, int handNum)
     {
         
-        gameNumber = gameNum;
+        handNumber = handNum;
         /*for (int i = 0; i < numPlayers; i++)
         {
             GameObject newPlayer = Instantiate(playerPrefab);
@@ -296,9 +303,9 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
-        playerClassScript dealerPlayer = players[(-1 + gameNum) % numPlayers].GetComponent<playerClassScript>();
-        playerClassScript littleBlindPlayer = players[(0 + gameNum) % numPlayers].GetComponent<playerClassScript>();
-        playerClassScript bigBlindPlayer = players[(1 + gameNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript dealerPlayer = players[(-1 + handNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript littleBlindPlayer = players[(0 + handNum) % numPlayers].GetComponent<playerClassScript>();
+        playerClassScript bigBlindPlayer = players[(1 + handNum) % numPlayers].GetComponent<playerClassScript>();
         dealerPlayer.isDealer = true;//set position 0 to dealer button, position 1 to little blind, position 2 to big blind
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
@@ -308,14 +315,14 @@ public class gameManager : MonoBehaviour
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
-        activePlayerPosition = (2 + gameNum) % numPlayers;
+        activePlayerPosition = (2 + handNum) % numPlayers;
         DebugPrint("CHANGING PCITRUE IN REGERNATION", 0);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
     public void CheckBettingStatus() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        playerClassScript bigBlindPlayer = players[(1 + gameNumber) % players.Count].GetComponent<playerClassScript>();
+        playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
             round+=1;
@@ -323,7 +330,7 @@ public class gameManager : MonoBehaviour
             potValueText.text = Convert.ToString(potValue);
             bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
             bigBlindPlayer.hasFolded = false;
-            GameLoop();
+            RoundLoop();
         }
         else if(bigBlindPlayer.hasRaised == true)
         {
@@ -356,7 +363,7 @@ public class gameManager : MonoBehaviour
             //set player that is remaining to winning player
             DebugPrint("all has folded", 0);
             DistributePot();
-            StartNextGame();
+            StartNextHand();
         }
     }
     public void CheckIfPlayerHasValidChips()
@@ -403,7 +410,8 @@ public class gameManager : MonoBehaviour
             }
         }
     }
-    public void EvaluateHand()//runs GetHandRank for each player
+    //gets and sets each players hand value to a number, sorts the players hand and distributes the pot
+    public void EvaluateHand()
     {
         
         for (int i = 0; i < players.Count; i++)
@@ -413,14 +421,10 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
         SortPlayersByHandRank();
-        /*for (int i = 0; i < players.Count; i++)
-        {
-            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            DebugPrint("item in list", currentPlayer.valueOfCardsInHand);
-        }*/
         DistributePot();
 
     }
+    //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
     {
         CardScript currentCardScript = currentCard.GetComponent<CardScript>();
@@ -440,6 +444,7 @@ public class gameManager : MonoBehaviour
         facePowerDictionary.Add("King", 13);
         return facePowerDictionary[currentCardScript.face];
     }
+    //compares hands by ranking of hand
     public int CompareHandByRank(GameObject player1, GameObject player2)
     {
         playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
@@ -459,6 +464,7 @@ public class gameManager : MonoBehaviour
             return 0;
         }
     }
+    //compares cards in order of power
     private int CompareFaceByPower(GameObject card1, GameObject card2)
     {
         int face1Power = GetFacePower(card1);
@@ -477,15 +483,18 @@ public class gameManager : MonoBehaviour
             return 0;
         }
     }
+    //sorts the players hand in order of increasing face power
     public List<GameObject> SortHandByFacePower(List<GameObject> handList)
     {
         handList.Sort(CompareFaceByPower);
         return handList;
     }
+    //sorts players in order of hand rank
     public void SortPlayersByHandRank()
     {
         players.Sort(CompareHandByRank);
     }
+    //counts and returns the amount of a specific suit in a players hand
     public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
         
@@ -501,6 +510,7 @@ public class gameManager : MonoBehaviour
         }
         return count;
     }
+    //counts and returns the amount of a specific face in a players hand
     public int GetNumberOfFaceInHand(List<GameObject> handList, string targetFace)
     {
         int count = 0;
@@ -786,6 +796,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //this first sorts each players hand by its face rank and then returns an integer value
     public int GetHandRank(List<GameObject> handList)
     {
         handList = SortHandByFacePower(handList);
