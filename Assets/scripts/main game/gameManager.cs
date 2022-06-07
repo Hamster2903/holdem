@@ -177,50 +177,65 @@ public class gameManager : MonoBehaviour
     //allows the player to raise their bet to a specified integer amount from their amount of chips and then incrementing the player by one
     public void RaiseOnClick()
     {
-        
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
-        bool isAValidRaiseInput;
-        int a;
-        isAValidRaiseInput = int.TryParse(raiseInputText, out a);
-        DebugPrint("isa valid raise inpuit", isAValidRaiseInput);
-        if(!isAValidRaiseInput)
+        if(currentPlayer.isAllIn == true)
         {
-            raiseInput.text = "please input a number!";
+            IncrementActivePlayer();
         }
         else
         {
-            players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
-            raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
-            mostRecentBet = raiseValue;
-            currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
-            currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
-            totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-            currentPlayer.hasRaised = true;
-            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-            IncrementActivePlayer();// Go to next player
-            CheckIfPlayerHasValidChips();
-            CheckAllFolded();
-            CheckIfRoundCanIncrement();
+            string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
+            bool isAValidRaiseInput;
+            int a;
+            isAValidRaiseInput = int.TryParse(raiseInputText, out a);
+            DebugPrint("isa valid raise inpuit", isAValidRaiseInput);
+            if (!isAValidRaiseInput)
+            {
+                raiseInput.text = "please input a number!";
+            }
+            else
+            {
+                players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
+                raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
+                mostRecentBet = raiseValue;
+                currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
+                currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
+                CheckIfPlayerGoesAllIn();
+                if (currentPlayer.isAllIn == true)
+                {
+                    IncrementActivePlayer();
+                }
+                totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+                currentPlayer.hasRaised = true;
+                currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+                IncrementActivePlayer();// Go to next player
+                CheckAllFolded();
+                CheckIfRoundCanIncrement();
+            }
         }
+        
         
     }
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
     public void CallOnClick()
     {
-
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
-        currentPlayer.numOfChipsInPot +=currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+        CheckIfPlayerGoesAllIn();
+        if (currentPlayer.isAllIn == true)
+        {
+            IncrementActivePlayer();
+        }
+        currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
         totalChipsInPot += currentPlayer.mostRecentBet;
         currentPlayer.hasCalled = true;
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         IncrementActivePlayer();//increases active player by one position
-        CheckIfPlayerHasValidChips();
         CheckAllFolded();
         CheckIfRoundCanIncrement();
+        
 
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
@@ -228,16 +243,15 @@ public class gameManager : MonoBehaviour
     {
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-
         currentPlayer.hasFolded = true;
         if (currentPlayer.hasFolded == true)
         {
             currentPlayer.gameObject.SetActive(false);
             IncrementActivePlayer();
         }
-        CheckIfPlayerHasValidChips();
         CheckAllFolded();
         CheckIfRoundCanIncrement();
+        
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
@@ -304,13 +318,6 @@ public class gameManager : MonoBehaviour
     {
         
         handNumber = handNum;
-        /*for (int i = 0; i < numPlayers; i++)
-        {
-            GameObject newPlayer = Instantiate(playerPrefab);
-            players.Add(newPlayer);
-            newPlayer.gameObject.GetComponent<Image>().enabled = false;
-
-        }*/
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
@@ -386,12 +393,16 @@ public class gameManager : MonoBehaviour
         if ((currentPlayer.numOfChips -=mostRecentBet)<=0)
         {
             print("player is going all in!");
-            currentPlayer.mostRecentBet = currentPlayer.numOfChips;
-            mostRecentBet = currentPlayer.numOfChips;
-            //exlude player from all betting going forward, create new bool, cjheck on each function, remove the mthe same way fold does
+            //resets the bet to the total amount of chips in the player
+            currentPlayer.mostRecentBet = currentPlayer.numOfChips+=mostRecentBet;
+            currentPlayer.mostRecentBet = mostRecentBet;
+            currentPlayer.numOfChips = 0;
+            currentPlayer.isAllIn = true;
+            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
     }
-    public void CheckIfPlayerHasValidChips()
+    //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
+    public void CheckIfPlayerIsValid()
     {
         for (int i = 0; i < players.Count; i++)
         {
@@ -439,12 +450,12 @@ public class gameManager : MonoBehaviour
     //gets and sets each players hand value to a number, sorts the players hand and distributes the pot
     public void EvaluateHand()
     {
-        
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
+            CheckIfPlayerIsValid();
         }
         SortPlayersByHandRank();
         DistributePot();
