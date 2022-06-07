@@ -374,7 +374,6 @@ GameObject:
   - component: {fileID: 510450364}
   - component: {fileID: 510450367}
   - component: {fileID: 510450368}
-  - component: {fileID: 510450369}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -492,47 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05309b7e393aa40439ff99523f02eb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManagerScript: {fileID: 510450369}
---- !u!114 &510450369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510450362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66f5cc8b10d333049a757f42bf60de67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deckScript: {fileID: 0}
-  cardScript: {fileID: 0}
-  raiseButton: {fileID: 0}
-  callButton: {fileID: 0}
-  foldButton: {fileID: 0}
-  raiseInput: {fileID: 0}
-  potValueText: {fileID: 0}
-  littleBlindBetValue: 5
-  bigBlindBetValue: 10
-  potValue: 0
-  minimumBetValue: 10
-  callValue: 0
-  raiseValue: 0
-  round: 0
-  mostRecentBet: 0
-  handNumber: 0
-  playerNumInput: 0
-  totalChipsInPot: 0
-  activePlayerPosition: 0
-  allFolded: 0
-  potOver: 0
-  players: []
-  playerPrefab: {fileID: 0}
-  flopList: []
-  flopGrid: {fileID: 0}
-  playerPositions: []
-  isPlayerName: 0
-  debug: 0
+  gameManagerScript: {fileID: 0}
 --- !u!1 &575728252
 GameObject:
   m_ObjectHideFlags: 0
