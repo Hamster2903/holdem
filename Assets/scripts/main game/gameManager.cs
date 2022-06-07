@@ -112,7 +112,6 @@ public class gameManager : MonoBehaviour
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + handNum) % numPlayers;
-        DebugPrint("ENABLING IMAGE IN GENERATE PLAYERS", 0);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
         
     }
@@ -188,7 +187,6 @@ public class gameManager : MonoBehaviour
             bool isAValidRaiseInput;
             int a;
             isAValidRaiseInput = int.TryParse(raiseInputText, out a);
-            DebugPrint("isa valid raise inpuit", isAValidRaiseInput);
             if (!isAValidRaiseInput)
             {
                 raiseInput.text = "please input a number!";
@@ -260,6 +258,7 @@ public class gameManager : MonoBehaviour
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasFolded = true;
+        DebugPrint("this player has folded", currentPlayer.hasFolded);
         if (currentPlayer.hasFolded == true)
         {
             currentPlayer.gameObject.SetActive(false);
@@ -328,6 +327,7 @@ public class gameManager : MonoBehaviour
         ReGeneratePlayers(playerNumInput,handNumber);
         DealToHands();
         RoundLoop();
+        CheckAllFolded();
     }
     //this function regenerates the players with the new values required, i.e. a new little blind and big blind player is created, new original active player is defined
     public void ReGeneratePlayers(int numPlayers, int handNum)
@@ -353,11 +353,11 @@ public class gameManager : MonoBehaviour
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + handNum) % numPlayers;
-        DebugPrint("CHANGING PCITRUE IN REGERNATION", 0);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
     public void CheckIfRoundCanIncrement() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
+        CheckAllFolded();
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
@@ -387,6 +387,8 @@ public class gameManager : MonoBehaviour
             }
             
         }
+        DebugPrint("the amount of players in the list is ", players.Count);
+        DebugPrint("where is the count atm",count);
         if(count == players.Count-1)
         {
             allFolded = true;
@@ -398,6 +400,7 @@ public class gameManager : MonoBehaviour
         if(allFolded == true)
         {
             //set player that is remaining to winning player
+            CheckIfGameShouldEnd();
             DistributePot();
             Invoke("StartNextHand", 1/2);
         }
@@ -407,7 +410,6 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         if ((currentPlayer.numOfChips)<=0)
         {
-            print("player is going all in!");
             //resets the bet to the total amount of chips in the player
             currentPlayer.mostRecentBet = currentPlayer.numOfChips+=mostRecentBet;
             mostRecentBet=currentPlayer.mostRecentBet;
@@ -419,6 +421,7 @@ public class gameManager : MonoBehaviour
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
     public void CheckIfPlayerIsValid()
     {
+        CheckAllFolded();
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
@@ -433,7 +436,6 @@ public class gameManager : MonoBehaviour
     public void CheckIfGameShouldEnd()
     {
         //chekc if there is 1 player in the list
-        //
         if(players.Count == 1)
         {
             SceneManager.LoadScene(4);
@@ -447,16 +449,12 @@ public class gameManager : MonoBehaviour
         }
         bool flag = true; //keeps track of loop running
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
-        DebugPrint("disabling active player", activePlayerPosition);
         while (flag)
         {
             activePlayerPosition = (activePlayerPosition + 1) % (players.Count);
-            DebugPrint("playwr count is",players.Count);
-            DebugPrint("incremented active player to", activePlayerPosition);
             playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
             if(currentPlayer.hasFolded == false)
             {
-                DebugPrint("enabling active player", activePlayerPosition);
                 players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
                 flag = false;//loop stops
             }
@@ -689,8 +687,6 @@ public class gameManager : MonoBehaviour
                 if(GetFacePower(handList[n]) == currentFace+1
                 || (nestedCardScript.face == "Ace" 
                     && currentFace + 1 == 14))
-                // (false && true) || true
-                // (3 / 4) + 5
                 {
                     currentCount += 1;
                     currentFace = GetFacePower(handList[n]);
