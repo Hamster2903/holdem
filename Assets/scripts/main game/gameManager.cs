@@ -144,7 +144,6 @@ public class gameManager : MonoBehaviour
             players[count].transform.position = item.position;
             count++;
         }
-
     }
     //removes cards from the deck list and then adds them to the flop list
     public void DealToFlop()
@@ -259,11 +258,8 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasFolded = true;
         DebugPrint("this player has folded", currentPlayer.hasFolded);
-        if (currentPlayer.hasFolded == true)
-        {
-            currentPlayer.gameObject.SetActive(false);
-            IncrementActivePlayer();
-        }
+        currentPlayer.gameObject.SetActive(false);
+        IncrementActivePlayer();
         CheckAllFolded();
         CheckIfRoundCanIncrement();
         
@@ -285,6 +281,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)//for loop to loop through each player and set everything back to normal
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+
             currentPlayer.gameObject.SetActive(true);
             currentPlayer.numOfChipsInPot = 0;
             currentPlayer.hasFolded = false;
@@ -380,6 +377,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            DebugPrint("this player is folded", currentPlayer.hasFolded);
 
             if (currentPlayer.hasFolded == true)
             {
@@ -387,8 +385,8 @@ public class gameManager : MonoBehaviour
             }
             
         }
-        DebugPrint("the amount of players in the list is ", players.Count);
-        DebugPrint("where is the count atm",count);
+        //DebugPrint("the amount of players in the list is ", players.Count);
+        //DebugPrint("where is the count atm",count);
         if(count == players.Count-1)
         {
             allFolded = true;
