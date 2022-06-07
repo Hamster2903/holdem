@@ -295,7 +295,7 @@ public class gameManager : MonoBehaviour
         //clear player positions
         deckScript.Generate();
         deckScript.Shuffle();
-        ReGeneratePlayers(playerNumInput,1);
+        ReGeneratePlayers(playerNumInput,handNumber);
         DealToHands();
         RoundLoop();
     }
@@ -315,6 +315,7 @@ public class gameManager : MonoBehaviour
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+            players[i].gameObject.GetComponent<Image>().enabled = false;
         }
         playerClassScript dealerPlayer = players[(-1 + handNum) % numPlayers].GetComponent<playerClassScript>();
         playerClassScript littleBlindPlayer = players[(0 + handNum) % numPlayers].GetComponent<playerClassScript>();
@@ -379,6 +380,17 @@ public class gameManager : MonoBehaviour
             StartNextHand();
         }
     }
+    public void CheckIfPlayerGoesAllIn()
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        if ((currentPlayer.numOfChips -=mostRecentBet)<=0)
+        {
+            print("player is going all in!");
+            currentPlayer.mostRecentBet = currentPlayer.numOfChips;
+            mostRecentBet = currentPlayer.numOfChips;
+            //exlude player from all betting going forward, create new bool, cjheck on each function, remove the mthe same way fold does
+        }
+    }
     public void CheckIfPlayerHasValidChips()
     {
         for (int i = 0; i < players.Count; i++)
@@ -387,7 +399,8 @@ public class gameManager : MonoBehaviour
             if(currentPlayer.numOfChips <=0)
             {
                 players.RemoveAt(i);
-                Destroy(currentPlayer);
+                playerNumInput -= 1;
+                currentPlayer.gameObject.SetActive(false);
             }
         }
     }
