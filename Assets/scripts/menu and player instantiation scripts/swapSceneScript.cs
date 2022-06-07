@@ -18,8 +18,23 @@ public class swapSceneScript : MonoBehaviour
     {
         SceneManager.LoadScene(2);
     }
+    public void SwapToInformationScene()
+    {
+        SceneManager.LoadScene(3);
+    }
     public void QuitGame()
     {
         Application.Quit();
+    }
+    public void MuteToggle(bool muted)
+    {
+        if(muted)
+        {
+            AudioListener.volume = 0;
+        }
+        else
+        {
+            AudioListener.volume = 1;
+        }
     }
 }

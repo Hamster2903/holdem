@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Card_Shuffle.unity
     guid: cfdae95b1c925ea4e9036eff5b315fac
+  - enabled: 1
+    path: Assets/Scenes/InformationScene.unity
+    guid: c2861645dd1e0b445b5f3f1450037e1c
   m_configObjects: {}
