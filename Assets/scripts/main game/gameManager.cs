@@ -50,7 +50,7 @@ public class gameManager : MonoBehaviour
     void Start()
     {
         DebugPrint("the number of players selected was ", playerNumInput);
-        GeneratePlayers(3, 1);
+        GeneratePlayers(PlayerPrefs.GetInt("players"), 1);
         deckScript.Generate();
         deckScript.Shuffle();
         GeneratePlayerObjectsAroundTable();
@@ -84,7 +84,7 @@ public class gameManager : MonoBehaviour
     //generates an amount of players from 3 to 5 and gives them specific positional roles, i.e. it sets a player as a littleBlind player and gives their class variables values
     public void GeneratePlayers(int numPlayers, int handNum)
     {
-        playerNumInput = numPlayers;
+        playerNumInput =numPlayers;
         handNumber = handNum;
         players.Clear();
         for (int i = 0; i < numPlayers; i++)
