@@ -22,6 +22,10 @@ public class swapSceneScript : MonoBehaviour
     {
         SceneManager.LoadScene(3);
     }
+    public void SwapToGameOverScene()
+    {
+        SceneManager.LoadScene(4);
+    }
     public void QuitGame()
     {
         Application.Quit();

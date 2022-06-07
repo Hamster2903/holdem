@@ -203,14 +203,23 @@ public class gameManager : MonoBehaviour
                 CheckIfPlayerGoesAllIn();
                 if (currentPlayer.isAllIn == true)
                 {
+                    totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+                    currentPlayer.hasRaised = true;
+                    currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+                    CheckAllFolded();
+                    CheckIfRoundCanIncrement();
                     IncrementActivePlayer();
                 }
-                totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-                currentPlayer.hasRaised = true;
-                currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-                IncrementActivePlayer();// Go to next player
-                CheckAllFolded();
-                CheckIfRoundCanIncrement();
+                else
+                {
+                    totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+                    currentPlayer.hasRaised = true;
+                    currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+                    CheckAllFolded();
+                    CheckIfRoundCanIncrement();
+                    IncrementActivePlayer();
+                }
+                
             }
         }
         
@@ -226,17 +235,24 @@ public class gameManager : MonoBehaviour
         CheckIfPlayerGoesAllIn();
         if (currentPlayer.isAllIn == true)
         {
-            IncrementActivePlayer();
+            currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+            totalChipsInPot += currentPlayer.mostRecentBet;
+            currentPlayer.hasCalled = true;
+            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+            IncrementActivePlayer();//increases active player by one position
+            CheckAllFolded();
+            CheckIfRoundCanIncrement();
         }
-        currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
-        totalChipsInPot += currentPlayer.mostRecentBet;
-        currentPlayer.hasCalled = true;
-        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-        IncrementActivePlayer();//increases active player by one position
-        CheckAllFolded();
-        CheckIfRoundCanIncrement();
-        
-
+        else
+        {
+            currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
+            totalChipsInPot += currentPlayer.mostRecentBet;
+            currentPlayer.hasCalled = true;
+            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+            IncrementActivePlayer();//increases active player by one position
+            CheckAllFolded();
+            CheckIfRoundCanIncrement();
+        }
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
     public void FoldOnClick()
@@ -390,12 +406,12 @@ public class gameManager : MonoBehaviour
     public void CheckIfPlayerGoesAllIn()
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        if ((currentPlayer.numOfChips -=mostRecentBet)<=0)
+        if ((currentPlayer.numOfChips)<=0)
         {
             print("player is going all in!");
             //resets the bet to the total amount of chips in the player
             currentPlayer.mostRecentBet = currentPlayer.numOfChips+=mostRecentBet;
-            currentPlayer.mostRecentBet = mostRecentBet;
+            mostRecentBet=currentPlayer.mostRecentBet;
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
@@ -421,7 +437,7 @@ public class gameManager : MonoBehaviour
         //
         if(players.Count == 1)
         {
-
+            SceneManager.LoadScene(4);
         }
     }
     public void IncrementActivePlayer()
@@ -457,6 +473,7 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
             CheckIfPlayerIsValid();
         }
+        CheckIfGameShouldEnd();
         SortPlayersByHandRank();
         DistributePot();
 
