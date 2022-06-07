@@ -398,9 +398,8 @@ public class gameManager : MonoBehaviour
         if(allFolded == true)
         {
             //set player that is remaining to winning player
-            DebugPrint("all has folded", 0);
             DistributePot();
-            StartNextHand();
+            Invoke("StartNextHand", 1/2);
         }
     }
     public void CheckIfPlayerGoesAllIn()
@@ -473,7 +472,7 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
             CheckIfPlayerIsValid();
         }
-        CheckIfGameShouldEnd();
+        Invoke("CheckIfGameShouldEnd", 1);
         SortPlayersByHandRank();
         DistributePot();
 
