@@ -37,8 +37,6 @@ public class gameManager : MonoBehaviour
     public List<GameObject> playerPositions;
     public bool isPlayerName;
     public bool debug = false;
-    //make bool checking if playerName  so each player can see what their cards is but not what others are
-    
     //allows easier to understand debugging
     public void DebugPrint(string prefix, object message)
     {
@@ -64,14 +62,17 @@ public class gameManager : MonoBehaviour
         if(round == 1)
         {
             DealToFlop();
+            CheckIfPlayerIsValid();
         }
         if(round == 2)
         {
             DealToTurn();
+            CheckIfPlayerIsValid();
         }
         if(round == 3)
         {
             DealToRiver();
+            CheckIfPlayerIsValid();
         }
         if(round == 4)
         {
@@ -177,51 +178,44 @@ public class gameManager : MonoBehaviour
     {
         print("RaiseOnClick");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        if(currentPlayer.isAllIn == true)
+        string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
+        bool isAValidRaiseInput;
+        int a;
+        isAValidRaiseInput = int.TryParse(raiseInputText, out a);
+        if (!isAValidRaiseInput)
         {
-            IncrementActivePlayer();
+            raiseInput.text = "please input a number!";
         }
         else
         {
-            string raiseInputText = raiseInput.text;//sets the string value recorded in the input text to an integer which will be used to represent features on the player script
-            bool isAValidRaiseInput;
-            int a;
-            isAValidRaiseInput = int.TryParse(raiseInputText, out a);
-            if (!isAValidRaiseInput)
+            players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
+            raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
+            mostRecentBet = raiseValue;
+            currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
+            currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
+            CheckIfPlayerIsAlreadyAllIn();
+            CheckIfPlayerIsAllIn();
+            //this chunk of code runs the raise calculations if the currentPlayer is not all in and has not gone all in previously
+            if (currentPlayer.hasGoneAllIn == false || currentPlayer.isAllIn == false)
             {
-                raiseInput.text = "please input a number!";
+                RaiseCalculations();
+                CheckAllFolded();
+                CheckIfRoundCanIncrement();
+                IncrementActivePlayer();
             }
-            else
-            {
-                players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
-                raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
-                mostRecentBet = raiseValue;
-                currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
-                currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
-                CheckIfPlayerGoesAllIn();
-                if (currentPlayer.isAllIn == true)
-                {
-                    totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-                    currentPlayer.hasRaised = true;
-                    currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-                    CheckAllFolded();
-                    CheckIfRoundCanIncrement();
-                    IncrementActivePlayer();
-                }
-                else
-                {
-                    totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-                    currentPlayer.hasRaised = true;
-                    currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-                    CheckAllFolded();
-                    CheckIfRoundCanIncrement();
-                    IncrementActivePlayer();
-                }
-                
-            }
+            
         }
         
         
+        
+    }
+    //placed raise calculations in function so broader function is easier to understand
+    public void RaiseCalculations()
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
+        currentPlayer.hasRaised = true;
+        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
     public void CallOnClick()
@@ -231,27 +225,25 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
-        CheckIfPlayerGoesAllIn();
-        if (currentPlayer.isAllIn == true)
+        CheckIfPlayerIsAlreadyAllIn();//checks if the player is already all in from a prvious bet, if they are increments to next player skipping their turn
+        CheckIfPlayerIsAllIn();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
+        //this block of code runs if the other two functions are not successful and will complete the required action
+        if((currentPlayer.hasGoneAllIn== false) || (currentPlayer.isAllIn = false))
         {
-            currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
-            totalChipsInPot += currentPlayer.mostRecentBet;
-            currentPlayer.hasCalled = true;
-            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+            CallCalculations();
             CheckAllFolded();
             IncrementActivePlayer();//increases active player by one position
             CheckIfRoundCanIncrement();
         }
-        else
-        {
-            currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;//the players cumulative bet in the current pot has their mostRecentBet added to it
-            totalChipsInPot += currentPlayer.mostRecentBet;
-            currentPlayer.hasCalled = true;
-            currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-            CheckAllFolded();
-            IncrementActivePlayer();//increases active player by one position
-            CheckIfRoundCanIncrement();
-        }
+        
+    }
+    public void CallCalculations()
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
+        totalChipsInPot += currentPlayer.mostRecentBet;
+        currentPlayer.hasCalled = true;
+        currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
     public void FoldOnClick()
@@ -295,14 +287,9 @@ public class gameManager : MonoBehaviour
             currentPlayer.hasCalled = false;
             currentPlayer.mostRecentBet = 0;
         }
-
-        //round =0
         round = 0;
-        //potValue = 0
         potValue = 0;
-        //totalChipsInPot = 0
         totalChipsInPot = 0;
-        //most recent bet = 0
         mostRecentBet = 0;
         //clear cards from players hand
         foreach (GameObject player in players)
@@ -411,7 +398,7 @@ public class gameManager : MonoBehaviour
             Invoke("StartNextHand", 1/2);
         }
     }
-    public void CheckIfPlayerGoesAllIn()
+    public void CheckIfPlayerIsAllIn()
     {
         print("CheckIfPlayerGoesAllIn");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
@@ -423,6 +410,14 @@ public class gameManager : MonoBehaviour
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
+        }
+    }
+    public void CheckIfPlayerIsAlreadyAllIn()
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        if(currentPlayer.isAllIn == true)
+        {
+            currentPlayer.hasGoneAllIn = true;
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
@@ -584,6 +579,7 @@ public class gameManager : MonoBehaviour
         }
         return count;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isRoyalFlush(List<GameObject> handList)
     {
         if(GetNumberOfFaceInHand(handList, "Ace") == 1 && GetNumberOfFaceInHand(handList, "King") ==1 && GetNumberOfFaceInHand(handList, "Queen") ==1 && GetNumberOfFaceInHand(handList, "Jack") == 1 && GetNumberOfFaceInHand(handList, "10") ==1 && GetNumberOfSuitInHand(handList, "Clubs") >=5 || GetNumberOfSuitInHand(handList, "Diamonds") >= 5 || GetNumberOfSuitInHand(handList, "Spades") >= 5 || GetNumberOfSuitInHand(handList, "Hearts") >= 5)
@@ -595,6 +591,7 @@ public class gameManager : MonoBehaviour
             return false;
         }
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isStraightFlush(List<GameObject> handList)
     {
         
@@ -632,6 +629,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isFourOfAKind(List<GameObject> handList)
     {
         int currentCount = 0;
@@ -663,6 +661,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isFlush(List<GameObject> handList)
     {
         if(GetNumberOfSuitInHand(handList, "Diamonds") >= 5
@@ -711,6 +710,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isFullHouse(List<GameObject> handList)
     {
         string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
@@ -745,6 +745,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isThreeOfAKind(List<GameObject> handList)
     {
         int currentCount = 0;
@@ -775,6 +776,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isTwoPair(List<GameObject> handList, string excludedFace)
     {
         
@@ -822,6 +824,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isPair(List<GameObject> handList)
     {
         int currentCount = 0;
