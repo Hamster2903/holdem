@@ -175,6 +175,7 @@ public class gameManager : MonoBehaviour
     //allows the player to raise their bet to a specified integer amount from their amount of chips and then incrementing the player by one
     public void RaiseOnClick()
     {
+        print("RaiseOnClick");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         if(currentPlayer.isAllIn == true)
         {
@@ -225,6 +226,7 @@ public class gameManager : MonoBehaviour
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
     public void CallOnClick()
     {
+        print("CallOnClick");
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
@@ -236,8 +238,8 @@ public class gameManager : MonoBehaviour
             totalChipsInPot += currentPlayer.mostRecentBet;
             currentPlayer.hasCalled = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-            IncrementActivePlayer();//increases active player by one position
             CheckAllFolded();
+            IncrementActivePlayer();//increases active player by one position
             CheckIfRoundCanIncrement();
         }
         else
@@ -246,27 +248,30 @@ public class gameManager : MonoBehaviour
             totalChipsInPot += currentPlayer.mostRecentBet;
             currentPlayer.hasCalled = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-            IncrementActivePlayer();//increases active player by one position
             CheckAllFolded();
+            IncrementActivePlayer();//increases active player by one position
             CheckIfRoundCanIncrement();
         }
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
     public void FoldOnClick()
     {
+        print("FoldOnClick");
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasFolded = true;
-        DebugPrint("this player has folded", currentPlayer.hasFolded);
+        print(currentPlayer.hasFolded);
+        DebugPrint("player"+activePlayerPosition+ "has folded", currentPlayer.hasFolded);
         currentPlayer.gameObject.SetActive(false);
-        IncrementActivePlayer();
         CheckAllFolded();
+        IncrementActivePlayer();
         CheckIfRoundCanIncrement();
         
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
     public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
+        print("DistributePot");
         playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
@@ -276,6 +281,7 @@ public class gameManager : MonoBehaviour
     //resets all the boolean values that are unimportant for the players identification, i.e. everything except player name and numOfChips
     public void StartNextHand()
     {
+        print("startNextHand");
         //reset all boolean to orginal value
         allFolded = false;
         for (int i = 0; i < players.Count; i++)//for loop to loop through each player and set everything back to normal
@@ -329,7 +335,7 @@ public class gameManager : MonoBehaviour
     //this function regenerates the players with the new values required, i.e. a new little blind and big blind player is created, new original active player is defined
     public void ReGeneratePlayers(int numPlayers, int handNum)
     {
-        
+        print("Regenerateplayers");
         handNumber = handNum;
         for (int i = 0; i < players.Count; i++)
         {
@@ -354,7 +360,7 @@ public class gameManager : MonoBehaviour
     }
     public void CheckIfRoundCanIncrement() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
-        CheckAllFolded();
+        print("checkIfroundCanIncrement");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
@@ -373,6 +379,7 @@ public class gameManager : MonoBehaviour
     }
     public void CheckAllFolded()
     {
+        print("CheckAllFolded");
         int count = 0;
         for (int i = 0; i < players.Count; i++)
         {
@@ -405,6 +412,7 @@ public class gameManager : MonoBehaviour
     }
     public void CheckIfPlayerGoesAllIn()
     {
+        print("CheckIfPlayerGoesAllIn");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         if ((currentPlayer.numOfChips)<=0)
         {
@@ -419,6 +427,7 @@ public class gameManager : MonoBehaviour
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
     public void CheckIfPlayerIsValid()
     {
+        print("CheckIfPlayerIsAValid");
         CheckAllFolded();
         for (int i = 0; i < players.Count; i++)
         {
@@ -433,6 +442,7 @@ public class gameManager : MonoBehaviour
     }
     public void CheckIfGameShouldEnd()
     {
+        print("CheckIfGameShouldEnd");
         //chekc if there is 1 player in the list
         if(players.Count == 1)
         {
@@ -441,6 +451,7 @@ public class gameManager : MonoBehaviour
     }
     public void IncrementActivePlayer()
     {
+        print("IncrementActivePlayer");
         if (round == 4 || allFolded)
         {
             return; // TODO: figure this shit out
@@ -461,6 +472,7 @@ public class gameManager : MonoBehaviour
     //gets and sets each players hand value to a number, sorts the players hand and distributes the pot
     public void EvaluateHand()
     {
+        print("EvaluateHand");
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
