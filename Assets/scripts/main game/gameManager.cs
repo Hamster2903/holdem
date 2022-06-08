@@ -368,9 +368,10 @@ public class gameManager : MonoBehaviour
             round+=1;
             potValue += totalChipsInPot;
             potValueText.text = Convert.ToString(potValue);
-            bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
-            bigBlindPlayer.hasFolded = false;
             RoundLoop();
+            bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
+            //bigBlindPlayer.hasFolded = false;
+            
         }
         else if(bigBlindPlayer.hasRaised == true)
         {
@@ -452,10 +453,7 @@ public class gameManager : MonoBehaviour
     public void IncrementActivePlayer()
     {
         print("IncrementActivePlayer");
-        if (round == 4 || allFolded)
-        {
-            return; // TODO: figure this shit out
-        }
+        
         bool flag = true; //keeps track of loop running
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         while (flag)
