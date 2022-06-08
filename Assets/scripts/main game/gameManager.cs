@@ -428,7 +428,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            if(currentPlayer.numOfChips <=0)
+            if(currentPlayer.numOfChips<=0/*currentPlayer.hasGoneAllIn == true||currentPlayer.isAllIn ==true*/)
             {
                 players.RemoveAt(i);
                 playerNumInput -= 1;
