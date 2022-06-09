@@ -501,10 +501,11 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
+        CheckIfPlayerIsValid(players.Count - 1);
         CheckIfGameShouldEnd();
         SortPlayersByHandRank();
         DistributePotAtHandEvaluation();
-        CheckIfPlayerIsValid(players.Count - 1);
+        
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
