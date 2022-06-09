@@ -270,7 +270,7 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void DistributePotAtHandEvaluation()//will be run when players cards are evaluated or everyone folds
+    public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
@@ -395,21 +395,13 @@ public class gameManager : MonoBehaviour
         }
         if(allFolded == true)
         {
-            //set player that is remaining to winning player
-            for (int i = 0; i < players.Count; i++)
-            {
-                playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-                if(currentPlayer.hasFolded == false)
-                {
-                    DistributePotIfFold(i);
-                    CheckIfPlayerIsValid(i);
-                }
-            }
+            
             CheckIfGameShouldEnd();
+            DistributePot();
             StartNextHand();
         }
     }
-    public void DistributePotIfFold(int winningPlayerInt)
+    /*public void DistributePotIfFold(int winningPlayerInt)
     {
         print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
@@ -417,7 +409,7 @@ public class gameManager : MonoBehaviour
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
         round = 0;
-    }
+    }*/
     public void CheckIfPlayerIsAllIn()
     {
         print("CheckIfPlayerGoesAllIn");
@@ -504,7 +496,7 @@ public class gameManager : MonoBehaviour
         CheckIfPlayerIsValid(players.Count - 1);
         CheckIfGameShouldEnd();
         SortPlayersByHandRank();
-        DistributePotAtHandEvaluation();
+        DistributePot();
         
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
