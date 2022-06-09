@@ -673,7 +673,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1022, y: 482.77}
+  m_AnchoredPosition: {x: -800, y: 547.54}
   m_SizeDelta: {x: 261.094, y: 84.613}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &317382974
@@ -1893,7 +1893,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1084.3966, y: 502.6201}
+  m_AnchoredPosition: {x: 907, y: 547.54}
   m_SizeDelta: {x: 36.931, y: 44.92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &930827344
@@ -2100,7 +2100,7 @@ MonoBehaviour:
   round: 0
   mostRecentBet: 0
   handNumber: 0
-  playerNumInput: 0
+  numberOfOriginalPlayers: 0
   totalChipsInPot: 0
   activePlayerPosition: 0
   allFolded: 0
@@ -2699,11 +2699,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 2
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 40
+    m_MaxSize: 50
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1

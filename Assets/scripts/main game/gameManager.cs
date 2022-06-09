@@ -208,8 +208,11 @@ public class gameManager : MonoBehaviour
             }
             AddChipsToPot();
             CheckAllFolded();
-            CheckIfRoundCanIncrement();
-            IncrementActivePlayer();
+            if(!CheckIfRoundCanIncrement())
+            {
+                IncrementActivePlayer();
+            }
+
         }
     }
     //this updates the pot value text
@@ -245,8 +248,11 @@ public class gameManager : MonoBehaviour
         }
         AddChipsToPot();
         CheckAllFolded();
-        CheckIfRoundCanIncrement();
-        IncrementActivePlayer();//increases active player by one position
+        if (!CheckIfRoundCanIncrement())
+        {
+            IncrementActivePlayer();//increases active player by one position
+        }
+        
 
     }
     public void CallCalculations()
@@ -357,23 +363,23 @@ public class gameManager : MonoBehaviour
         print(activePlayerPosition);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
-    public void CheckIfRoundCanIncrement() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
+    public bool CheckIfRoundCanIncrement() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
     {
         print("checkIfroundCanIncrement");
-        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
             round+=1;
             RoundLoop();
             bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
-            //bigBlindPlayer.hasFolded = false;
-            
+            return true;
         }
         else if(bigBlindPlayer.hasRaised == true)
         {
-            //keep loopijg, null?
+            return false;
         }
+        return false;
+
     }
     public void CheckAllFolded()
     {
@@ -382,8 +388,6 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            DebugPrint("this player is folded", currentPlayer.hasFolded);
-
             if (currentPlayer.hasFolded == true)
             {
                 count += 1;
