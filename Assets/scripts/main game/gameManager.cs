@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class gameManager : MonoBehaviour
 {
+       
     public DeckScript deckScript;
     public CardScript cardScript;
     public Button raiseButton;
