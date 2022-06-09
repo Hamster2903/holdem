@@ -62,17 +62,17 @@ public class gameManager : MonoBehaviour
         if(round == 1)
         {
             DealToFlop();
-            CheckIfPlayerIsValid();
+            
         }
         if(round == 2)
         {
             DealToTurn();
-            CheckIfPlayerIsValid();
+
         }
         if(round == 3)
         {
             DealToRiver();
-            CheckIfPlayerIsValid();
+
         }
         if(round == 4)
         {
@@ -182,12 +182,18 @@ public class gameManager : MonoBehaviour
         bool isAValidRaiseInput;
         int a;
         isAValidRaiseInput = int.TryParse(raiseInputText, out a);
-        if (!isAValidRaiseInput)
+        if (!isAValidRaiseInput || int.Parse(raiseInputText) > currentPlayer.numOfChips)
         {
-            raiseInput.text = "please input a number!";
+            raiseInput.text = "please input a valid number!";
         }
         else
         {
+            if (int.Parse(raiseInput.text) <= mostRecentBet)
+            {
+                CallOnClick();
+                return;
+            }
+            currentPlayer.hasRaised = true;
             players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
             raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
             mostRecentBet = raiseValue;
@@ -199,22 +205,26 @@ public class gameManager : MonoBehaviour
             if (currentPlayer.hasGoneAllIn == false || currentPlayer.isAllIn == false)
             {
                 RaiseCalculations();
-                CheckAllFolded();
-                CheckIfRoundCanIncrement();
-                IncrementActivePlayer();
+
             }
-            
+            AddChipsToPot();
+            CheckAllFolded();
+            CheckIfRoundCanIncrement();
+            IncrementActivePlayer();
         }
-        
-        
-        
+    }
+    public void AddChipsToPot()
+    {
+        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        potValue += mostRecentBet;
+        potValueText.text = Convert.ToString(potValue);
     }
     //placed raise calculations in function so broader function is easier to understand
     public void RaiseCalculations()
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-        currentPlayer.hasRaised = true;
+        
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
@@ -223,6 +233,7 @@ public class gameManager : MonoBehaviour
         print("CallOnClick");
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
+        currentPlayer.hasCalled = true;
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         CheckIfPlayerIsAlreadyAllIn();//checks if the player is already all in from a prvious bet, if they are increments to next player skipping their turn
@@ -231,18 +242,19 @@ public class gameManager : MonoBehaviour
         if((currentPlayer.hasGoneAllIn== false) || (currentPlayer.isAllIn = false))
         {
             CallCalculations();
-            CheckAllFolded();
-            IncrementActivePlayer();//increases active player by one position
-            CheckIfRoundCanIncrement();
         }
-        
+        AddChipsToPot();
+        CheckAllFolded();
+        CheckIfRoundCanIncrement();
+        IncrementActivePlayer();//increases active player by one position
+
     }
     public void CallCalculations()
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
         totalChipsInPot += currentPlayer.mostRecentBet;
-        currentPlayer.hasCalled = true;
+        
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
@@ -353,8 +365,6 @@ public class gameManager : MonoBehaviour
         if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
         {
             round+=1;
-            potValue += totalChipsInPot;
-            potValueText.text = Convert.ToString(potValue);
             RoundLoop();
             bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
             //bigBlindPlayer.hasFolded = false;
@@ -402,11 +412,12 @@ public class gameManager : MonoBehaviour
     {
         print("CheckIfPlayerGoesAllIn");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        if ((currentPlayer.numOfChips)<=0)
+        if (currentPlayer.mostRecentBet>=currentPlayer.numOfChips)
         {
             //resets the bet to the total amount of chips in the player
+            raiseValue = currentPlayer.numOfChips;
             currentPlayer.mostRecentBet = currentPlayer.numOfChips+=mostRecentBet;
-            mostRecentBet=currentPlayer.mostRecentBet;
+            mostRecentBet=currentPlayer.numOfChips;
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
@@ -421,18 +432,30 @@ public class gameManager : MonoBehaviour
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
-    public void CheckIfPlayerIsValid()
+    public void CheckIfPlayerIsValid(int WinningPlayer)
     {
         print("CheckIfPlayerIsAValid");
         CheckAllFolded();
         for (int i = 0; i < players.Count; i++)
         {
+            DebugPrint("i",i);
+            DebugPrint("winningplayer", WinningPlayer);
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            if(currentPlayer.numOfChips<=0/*currentPlayer.hasGoneAllIn == true||currentPlayer.isAllIn ==true*/)
+            DebugPrint("numofchips", currentPlayer.numOfChips);
+            if (currentPlayer.numOfChips == 0 && i != WinningPlayer) //currentPlayer.isAllIn == true
             {
+                DebugPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA homocide", 2);
                 players.RemoveAt(i);
+                DebugPrint("players in list is length", players.Count);
                 playerNumInput -= 1;
                 currentPlayer.gameObject.SetActive(false);
+                //movesd player indexd down 1
+                i--;
+                //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
+                if (i < WinningPlayer) 
+                {
+                    WinningPlayer--;
+                }
             }
         }
     }
@@ -471,10 +494,10 @@ public class gameManager : MonoBehaviour
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
-            CheckIfPlayerIsValid();
         }
         Invoke("CheckIfGameShouldEnd", 1);
         SortPlayersByHandRank();
+        CheckIfPlayerIsValid(players.Count-1);
         DistributePot();
 
     }
