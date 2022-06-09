@@ -206,12 +206,9 @@ public class gameManager : MonoBehaviour
 
             }
             AddChipsToPot();
+            IncrementActivePlayer();
+            CheckIfRoundCanIncrement();
             CheckAllFolded();
-            if(!CheckIfRoundCanIncrement())
-            {
-                IncrementActivePlayer();
-            }
-
         }
     }
     //this updates the pot value text
@@ -246,12 +243,9 @@ public class gameManager : MonoBehaviour
             CallCalculations();
         }
         AddChipsToPot();
+        IncrementActivePlayer();
+        CheckIfRoundCanIncrement();
         CheckAllFolded();
-        if (!CheckIfRoundCanIncrement())
-        {
-            IncrementActivePlayer();//increases active player by one position
-        }
-    
     }
     public void CallCalculations()
     {
