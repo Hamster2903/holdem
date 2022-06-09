@@ -373,6 +373,7 @@ public class gameManager : MonoBehaviour
         return false;
 
     }
+    //checks if every player except 1 is folded
     public void CheckAllFolded()
     {
         print("CheckAllFolded");
