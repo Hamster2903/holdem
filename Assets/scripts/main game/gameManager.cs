@@ -198,7 +198,7 @@ public class gameManager : MonoBehaviour
             raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
             mostRecentBet = raiseValue;
             currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
-            currentPlayer.numOfChips -= mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
+            currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
             CheckIfPlayerIsAlreadyAllIn();
             CheckIfPlayerIsAllIn();
             //this chunk of code runs the raise calculations if the currentPlayer is not all in and has not gone all in previously
@@ -213,6 +213,7 @@ public class gameManager : MonoBehaviour
             IncrementActivePlayer();
         }
     }
+    //this updates the pot value text
     public void AddChipsToPot()
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
