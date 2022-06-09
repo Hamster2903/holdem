@@ -65,12 +65,12 @@ public class gameManager : MonoBehaviour
         }
         if(round == 2)
         {
-            DealToTurn();
+            DealToTurnAndRiver();
 
         }
         if(round == 3)
         {
-            DealToRiver();
+            DealToTurnAndRiver();
 
         }
         if(round == 4)
@@ -157,15 +157,7 @@ public class gameManager : MonoBehaviour
         }
     }
     //removes cards from the deck list and then adds them to the flop list
-    public void DealToTurn()
-    {
-        GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
-        deckScript.cards.Remove(cardToMove); //removes card from list
-        flopList.Add(cardToMove);
-        cardToMove.transform.SetParent(flopGrid.transform);
-    }
-    //removes cards from the deck list and then adds them to the flop list
-    public void DealToRiver()
+    public void DealToTurnAndRiver()
     {
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
         deckScript.cards.Remove(cardToMove); //removes card from list
@@ -207,12 +199,9 @@ public class gameManager : MonoBehaviour
 
             }
             AddChipsToPot();
+            IncrementActivePlayer();
+            CheckIfRoundCanIncrement();
             CheckAllFolded();
-            if(!CheckIfRoundCanIncrement())
-            {
-                IncrementActivePlayer();
-            }
-
         }
     }
     //this updates the pot value text
@@ -227,7 +216,6 @@ public class gameManager : MonoBehaviour
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-        
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
@@ -247,20 +235,16 @@ public class gameManager : MonoBehaviour
             CallCalculations();
         }
         AddChipsToPot();
+        IncrementActivePlayer();
+        CheckIfRoundCanIncrement();
         CheckAllFolded();
-        if (!CheckIfRoundCanIncrement())
-        {
-            IncrementActivePlayer();//increases active player by one position
-        }
         
-
     }
     public void CallCalculations()
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
         totalChipsInPot += currentPlayer.mostRecentBet;
-        
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
@@ -273,8 +257,8 @@ public class gameManager : MonoBehaviour
         print(currentPlayer.hasFolded);
         DebugPrint("player"+activePlayerPosition+ "has folded", currentPlayer.hasFolded);
         currentPlayer.gameObject.SetActive(false);
-        CheckAllFolded();
         IncrementActivePlayer();
+        CheckAllFolded();
         CheckIfRoundCanIncrement();
         
     }
@@ -367,18 +351,17 @@ public class gameManager : MonoBehaviour
     {
         print("checkIfroundCanIncrement");
         playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
-        if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
+        if (bigBlindPlayer.hasCalled == true || bigBlindPlayer.hasFolded == true)
         {
-            round+=1;
+            round += 1;
             RoundLoop();
             bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
             return true;
         }
-        else if(bigBlindPlayer.hasRaised == true)
+        else
         {
             return false;
         }
-        return false;
 
     }
     public void CheckAllFolded()
