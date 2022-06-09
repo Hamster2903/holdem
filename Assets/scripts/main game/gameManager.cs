@@ -206,12 +206,9 @@ public class gameManager : MonoBehaviour
 
             }
             AddChipsToPot();
+            IncrementActivePlayer();
+            CheckIfRoundCanIncrement();
             CheckAllFolded();
-            if(!CheckIfRoundCanIncrement())
-            {
-                IncrementActivePlayer();
-            }
-
         }
     }
     //this updates the pot value text
@@ -246,13 +243,9 @@ public class gameManager : MonoBehaviour
             CallCalculations();
         }
         AddChipsToPot();
+        IncrementActivePlayer();
+        CheckIfRoundCanIncrement();
         CheckAllFolded();
-        if (!CheckIfRoundCanIncrement())
-        {
-            IncrementActivePlayer();//increases active player by one position
-        }
-        
-
     }
     public void CallCalculations()
     {
@@ -272,15 +265,15 @@ public class gameManager : MonoBehaviour
         print(currentPlayer.hasFolded);
         DebugPrint("player"+activePlayerPosition+ "has folded", currentPlayer.hasFolded);
         currentPlayer.gameObject.SetActive(false);
-        CheckAllFolded();
+        
         IncrementActivePlayer();
         CheckIfRoundCanIncrement();
-        
+        CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void DistributePot()//will be run when players cards are evaluated or everyone folds
+    public void DistributePotAtHandEvaluation()//will be run when players cards are evaluated or everyone folds
     {
-        print("DistributePot");
+        print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
@@ -392,8 +385,6 @@ public class gameManager : MonoBehaviour
             }
             
         }
-        //DebugPrint("the amount of players in the list is ", players.Count);
-        //DebugPrint("where is the count atm",count);
         if(count == players.Count-1)
         {
             allFolded = true;
@@ -405,10 +396,27 @@ public class gameManager : MonoBehaviour
         if(allFolded == true)
         {
             //set player that is remaining to winning player
+            for (int i = 0; i < players.Count; i++)
+            {
+                playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+                if(currentPlayer.hasFolded == false)
+                {
+                    DistributePotIfFold(i);
+                    CheckIfPlayerIsValid(i);
+                }
+            }
             CheckIfGameShouldEnd();
-            DistributePot();
-            Invoke("StartNextHand", 1/2);
+            StartNextHand();
         }
+    }
+    public void DistributePotIfFold(int winningPlayerInt)
+    {
+        print("DistributePotAtHandEvaluation");
+        playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
+        winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
+        handNumber++;
+        round = 0;
     }
     public void CheckIfPlayerIsAllIn()
     {
@@ -493,10 +501,10 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
-        Invoke("CheckIfGameShouldEnd", 1);
+        CheckIfGameShouldEnd();
         SortPlayersByHandRank();
+        DistributePotAtHandEvaluation();
         CheckIfPlayerIsValid(players.Count - 1);
-        DistributePot();
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
