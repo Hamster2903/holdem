@@ -318,7 +318,6 @@ public class gameManager : MonoBehaviour
         ReGeneratePlayers(numberOfOriginalPlayers,handNumber);
         DealToHands();
         RoundLoop();
-        CheckAllFolded();
     }
     //this function regenerates the players with the new values required, i.e. a new little blind and big blind player is created, new original active player is defined
     public void ReGeneratePlayers(int numPlayers, int handNum)
@@ -418,23 +417,23 @@ public class gameManager : MonoBehaviour
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
-    public void CheckIfPlayerIsValid(int WinningPlayer)
+    public void CheckIfPlayerIsValid(int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
         CheckAllFolded();
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips == 0 && i != WinningPlayer) //currentPlayer.isAllIn == true
+            if (currentPlayer.numOfChips == 0 && i != winningPlayerInt) 
             {
                 players.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
                 //movesd player indexd down 1
                 i--;
                 //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
-                if (i < WinningPlayer) 
+                if (i < winningPlayerInt) 
                 {
-                    WinningPlayer--;
+                    winningPlayerInt--;
                 }
             }
         }
@@ -479,9 +478,8 @@ public class gameManager : MonoBehaviour
         }
         Invoke("CheckIfGameShouldEnd", 1);
         SortPlayersByHandRank();
-        CheckIfPlayerIsValid(players.Count-1);
+        CheckIfPlayerIsValid(players.Count - 1);
         DistributePot();
-
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
