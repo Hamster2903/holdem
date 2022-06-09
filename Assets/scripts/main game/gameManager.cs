@@ -53,13 +53,6 @@ public class gameManager : MonoBehaviour
         GeneratePlayerObjectsAroundTable();
         DealToHands();
     }
-
-
-    /// <summary>
-    /// GENERATE FUNCTIONS
-    /// </summary>
-
-
     //is used to keep track of the rounds and what occurs in each
     public void RoundLoop()
     {
@@ -178,12 +171,6 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
-
-    /// <summary>
-    /// BUTTON FUNCTIONS
-    /// </summary>
-
-
     //allows the player to raise their bet to a specified integer amount from their amount of chips and then incrementing the player by one
     public void RaiseOnClick()
     {
@@ -284,12 +271,6 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-
-
-
-
-
-
     public void DistributePotAtHandEvaluation()//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
