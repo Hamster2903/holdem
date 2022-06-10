@@ -15,6 +15,7 @@ public class gameManager : MonoBehaviour
     public Button foldButton;
     public InputField raiseInput;
     public Text potValueText;
+    public Text errorMessageText;
     public int littleBlindBetValue = 5;
     public int bigBlindBetValue = 10;
     public int potValue = 0;
@@ -182,13 +183,15 @@ public class gameManager : MonoBehaviour
         isAValidRaiseInput = int.TryParse(raiseInputText, out a);
         if (!isAValidRaiseInput || int.Parse(raiseInputText) > currentPlayer.numOfChips)
         {
-            raiseInput.text = "please input a valid number!";
+            errorMessageText.text = "please input a valid number!";
         }
         else
         {
             if (int.Parse(raiseInput.text) <= mostRecentBet)
             {
                 CallOnClick();
+                raiseInput.text = "";
+                errorMessageText.text = "";
                 return;
             }
             currentPlayer.hasRaised = true;
@@ -230,6 +233,8 @@ public class gameManager : MonoBehaviour
     public void CallOnClick()
     {
         print("CallOnClick");
+        raiseInput.text = "";
+        errorMessageText.text = "";
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasCalled = true;
@@ -259,6 +264,8 @@ public class gameManager : MonoBehaviour
     public void FoldOnClick()
     {
         print("FoldOnClick");
+        raiseInput.text = "";
+        errorMessageText.text = "";
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasFolded = true;
