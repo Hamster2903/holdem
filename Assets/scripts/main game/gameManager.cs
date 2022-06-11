@@ -116,7 +116,6 @@ public class gameManager : MonoBehaviour
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + handNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
-        
     }
     //deals two card game objects from the deck to the players hands, also adds the cards and their values to the players specific card list
     public void DealToHands()
@@ -208,7 +207,6 @@ public class gameManager : MonoBehaviour
             AddChipsToPot();
             IncrementActivePlayer();
             CheckIfRoundCanIncrement();
-            CheckAllFolded();
         }
     }
     //this updates the pot value text
@@ -249,7 +247,6 @@ public class gameManager : MonoBehaviour
         AddChipsToPot();
         IncrementActivePlayer();
         CheckIfRoundCanIncrement();
-        CheckAllFolded();
     }
     public void CallCalculations()
     {
@@ -406,13 +403,20 @@ public class gameManager : MonoBehaviour
         }
         if(allFolded == true)
         {
-            //CheckIfPlayerIsValid();
+            for (int i = 0; i < players.Count; i++)
+            {
+                playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+                if (currentPlayer.hasFolded == false)
+                {
+                    CheckIfPlayerIsValid(players,i);
+                    DistributePotIfFold(i);
+                }
+            }
             CheckIfGameShouldEnd();
-            DistributePot();
             StartNextHand();
         }
     }
-    /*public void DistributePotIfFold(int winningPlayerInt)
+    public void DistributePotIfFold(int winningPlayerInt)
     {
         print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
@@ -420,7 +424,7 @@ public class gameManager : MonoBehaviour
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
         round = 0;
-    }*/
+    }
     public void CheckIfPlayerIsAllIn()
     {
         print("CheckIfPlayerGoesAllIn");
@@ -438,16 +442,16 @@ public class gameManager : MonoBehaviour
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
-    public void CheckIfPlayerIsValid(int winningPlayerInt)
+    public void CheckIfPlayerIsValid(List<GameObject> tempPlayers,int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
         //CheckAllFolded();
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < tempPlayers.Count; i++)
         {
-            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
             if (currentPlayer.numOfChips == 0 && i != winningPlayerInt) 
             {
-                players.RemoveAt(i);
+                tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
                 //movesd player indexd down 1
                 i--;
@@ -497,8 +501,8 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
-        SortPlayersByHandRank();
-        CheckIfPlayerIsValid(players.Count - 1);
+        List<GameObject> tempPlayers = SortPlayersByHandRank();
+        CheckIfPlayerIsValid(tempPlayers,players.Count - 1);
         CheckIfGameShouldEnd();
         DistributePot();
         
@@ -569,10 +573,12 @@ public class gameManager : MonoBehaviour
         return handList;
     }
     //sorts players in order of hand rank
-    public void SortPlayersByHandRank()
+    public List<GameObject> SortPlayersByHandRank()
     {
+        List<GameObject> tempPlayers = new List<GameObject>(players);
         print("SortPlayersByHandRank");
-        players.Sort(CompareHandByRank);
+        tempPlayers.Sort(CompareHandByRank);
+        return tempPlayers;
     }
     //counts and returns the amount of a specific suit in a players hand
     public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
