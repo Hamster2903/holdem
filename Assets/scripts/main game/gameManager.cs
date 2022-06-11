@@ -17,8 +17,6 @@ public class gameManager : MonoBehaviour
     public Text potValueText;
     public Text mostRecentBetText;
     public Text errorMessageText;
-    public int littleBlindBetValue = 5;
-    public int bigBlindBetValue = 10;
     public int potValue = 0;
     public int minimumBetValue = 10;
     public int callValue;
@@ -30,14 +28,12 @@ public class gameManager : MonoBehaviour
     public int totalChipsInPot;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
-    public bool potOver = false;
     public List<GameObject> players;
     public GameObject playerPrefab;
     //public GameObject cardGroups;
     public List<GameObject> flopList;
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
-    public bool isPlayerName;
     public bool debug = false;
     //allows easier to understand debugging
     public void DebugPrint(string prefix, object message)
