@@ -58,7 +58,7 @@ public class gameManager : MonoBehaviour
     //is used to keep track of the rounds and what occurs in each
     public void RoundLoop()
     {
-        
+        print("RoundLoop");
         if(round == 1)
         {
             DealToFlop();
@@ -85,6 +85,7 @@ public class gameManager : MonoBehaviour
     //generates an amount of players from 3 to 5 and gives them specific positional roles, i.e. it sets a player as a littleBlind player and gives their class variables values
     public void GeneratePlayers(int numPlayers, int handNum)
     {
+        print("GeneratePlayers");
         handNumber = handNum;
         numberOfOriginalPlayers = numPlayers;
         players.Clear();
@@ -124,6 +125,7 @@ public class gameManager : MonoBehaviour
     //deals two card game objects from the deck to the players hands, also adds the cards and their values to the players specific card list
     public void DealToHands()
     {
+        print("DealToHands");
         for (int i = 0; i < players.Count; i++)
         {
             for (int j = 0; j < 2; j++)
@@ -140,8 +142,8 @@ public class gameManager : MonoBehaviour
     //generates the playerPrefab objects in the specified arrangement around the table image at either position 123, 1234,12345
     public void GeneratePlayerObjectsAroundTable()
     {
+        print("GeneratePlayerObjectsAroundTable");
         int count = 0;
-        
         GameObject playerPositionsParent = playerPositions[players.Count - 3];//defines player position in objects as its position in the list
         foreach (Transform item in playerPositionsParent.transform)//for each position in the list instantiates players
         {
@@ -153,6 +155,7 @@ public class gameManager : MonoBehaviour
     //removes cards from the deck list and then adds them to the flop list
     public void DealToFlop()
     {
+        print("DealToFlop");
         for (int i = 0; i < 3; i++)
         {
             GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
@@ -164,6 +167,7 @@ public class gameManager : MonoBehaviour
     //removes cards from the deck list and then adds them to the flop list
     public void DealCardToTable()
     {
+        print("DealCardToTable");
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
         deckScript.cards.Remove(cardToMove); //removes card from list
         flopList.Add(cardToMove);
@@ -214,6 +218,7 @@ public class gameManager : MonoBehaviour
     //this updates the pot value text
     public void AddChipsToPot()
     {
+        print("addChipsToPot");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         potValue += mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
@@ -221,6 +226,7 @@ public class gameManager : MonoBehaviour
     //placed raise calculations in function so broader function is easier to understand
     public void RaiseCalculations()
     {
+        print("RaiseCalculations");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         mostRecentBetText.text = Convert.ToString(mostRecentBet);
@@ -251,6 +257,7 @@ public class gameManager : MonoBehaviour
     }
     public void CallCalculations()
     {
+        print("CallCalculations");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
         totalChipsInPot += currentPlayer.mostRecentBet;
@@ -403,7 +410,7 @@ public class gameManager : MonoBehaviour
         }
         if(allFolded == true)
         {
-            
+            CheckIfPlayerIsValid(count);
             CheckIfGameShouldEnd();
             DistributePot();
             StartNextHand();
@@ -430,6 +437,7 @@ public class gameManager : MonoBehaviour
             mostRecentBet=currentPlayer.numOfChips;
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
+            DebugPrint("the current player is all in is ", currentPlayer.isAllIn);
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
     }
@@ -437,7 +445,7 @@ public class gameManager : MonoBehaviour
     public void CheckIfPlayerIsValid(int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
-        CheckAllFolded();
+        //CheckAllFolded();
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
@@ -567,6 +575,7 @@ public class gameManager : MonoBehaviour
     //sorts players in order of hand rank
     public void SortPlayersByHandRank()
     {
+        print("SortPlayersByHandRank");
         players.Sort(CompareHandByRank);
     }
     //counts and returns the amount of a specific suit in a players hand
