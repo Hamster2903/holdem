@@ -15,6 +15,7 @@ public class gameManager : MonoBehaviour
     public Button foldButton;
     public InputField raiseInput;
     public Text potValueText;
+    public Text mostRecentBetText;
     public Text errorMessageText;
     public int littleBlindBetValue = 5;
     public int bigBlindBetValue = 10;
@@ -65,12 +66,12 @@ public class gameManager : MonoBehaviour
         }
         if(round == 2)
         {
-            DealToTurn();
+            DealCardToTable();
 
         }
         if(round == 3)
         {
-            DealToRiver();
+            DealCardToTable();
 
         }
         if(round == 4)
@@ -114,6 +115,7 @@ public class gameManager : MonoBehaviour
         bigBlindPlayer.playerChipsText.text = Convert.ToString(bigBlindPlayer.numOfChips);
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
+        mostRecentBetText.text = Convert.ToString(mostRecentBet);
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + handNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
@@ -130,7 +132,6 @@ public class gameManager : MonoBehaviour
                 deckScript.cards.Remove(cardToMove); //removes card from list
                 players[i].GetComponent<playerClassScript>().cards.Add(cardToMove); //adds removed card to player list for each player.
                 cardToMove.transform.SetParent(players[i].transform);//instantiates cards from list to player grid
-
             }
          
         }
@@ -161,15 +162,7 @@ public class gameManager : MonoBehaviour
         }
     }
     //removes cards from the deck list and then adds them to the flop list
-    public void DealToTurn()
-    {
-        GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
-        deckScript.cards.Remove(cardToMove); //removes card from list
-        flopList.Add(cardToMove);
-        cardToMove.transform.SetParent(flopGrid.transform);
-    }
-    //removes cards from the deck list and then adds them to the flop list
-    public void DealToRiver()
+    public void DealCardToTable()
     {
         GameObject cardToMove = deckScript.cards[0]; //defines the card about to be moved and then selects it from the top of the list
         deckScript.cards.Remove(cardToMove); //removes card from list
@@ -200,10 +193,11 @@ public class gameManager : MonoBehaviour
             errorMessageText.text = "";
             currentPlayer.hasRaised = true;
             players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
-            raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
+            raiseValue = int.Parse(raiseInputText) + mostRecentBet;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
             mostRecentBet = raiseValue;
             currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
             currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
+            mostRecentBetText.text = Convert.ToString(mostRecentBet);
             CheckIfPlayerIsAllIn();
             //this chunk of code runs the raise calculations if the currentPlayer is not all in and has not gone all in previously
             if (currentPlayer.isAllIn == false)
@@ -229,7 +223,7 @@ public class gameManager : MonoBehaviour
     {
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
-        
+        mostRecentBetText.text = Convert.ToString(mostRecentBet);
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //allows the player to match the previous bet from their amount of chips and then incrementing the player by one
@@ -243,6 +237,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.hasCalled = true;
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
+        mostRecentBetText.text = Convert.ToString(mostRecentBet);
         CheckIfPlayerIsAllIn();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
         //this block of code runs if the other two functions are not successful and will complete the required action
         if(currentPlayer.isAllIn ==false)
@@ -259,7 +254,7 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
         totalChipsInPot += currentPlayer.mostRecentBet;
-        
+        mostRecentBetText.text = Convert.ToString(mostRecentBet);
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
     //folds the players hand and removes them from the bettiing for remainder of the hand
