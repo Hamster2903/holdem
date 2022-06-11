@@ -190,10 +190,10 @@ public class gameManager : MonoBehaviour
             if (int.Parse(raiseInput.text) <= mostRecentBet)
             {
                 CallOnClick();
-                raiseInput.text = "";
-                errorMessageText.text = "";
                 return;
             }
+            raiseInput.text = "";
+            errorMessageText.text = "";
             currentPlayer.hasRaised = true;
             players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
             raiseValue = int.Parse(raiseInputText) + mostRecentBet * 2;//raise value is equal to the players input + 2 times the most recent bet because to raise the bet it must be atleast two times the previous bet
