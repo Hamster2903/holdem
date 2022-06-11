@@ -106,8 +106,12 @@ public class gameManager : MonoBehaviour
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
         littleBlindPlayer.mostRecentBet =5;
+        littleBlindPlayer.numOfChips -= littleBlindPlayer.mostRecentBet;
+        littleBlindPlayer.playerChipsText.text = Convert.ToString(littleBlindPlayer.numOfChips);
         potValue += littleBlindPlayer.mostRecentBet;
         bigBlindPlayer.mostRecentBet = 10;
+        bigBlindPlayer.numOfChips -= bigBlindPlayer.mostRecentBet;
+        bigBlindPlayer.playerChipsText.text = Convert.ToString(bigBlindPlayer.numOfChips);
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
@@ -200,10 +204,9 @@ public class gameManager : MonoBehaviour
             mostRecentBet = raiseValue;
             currentPlayer.mostRecentBet = mostRecentBet;//the pslayers mostRecentBet is set equal to the global mostRecentBet so that the players mostRecentBet is updated
             currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
-            CheckIfPlayerIsAlreadyAllIn();
             CheckIfPlayerIsAllIn();
             //this chunk of code runs the raise calculations if the currentPlayer is not all in and has not gone all in previously
-            if (currentPlayer.hasGoneAllIn == false || currentPlayer.isAllIn == false)
+            if (currentPlayer.isAllIn == false)
             {
                 RaiseCalculations();
 
@@ -240,10 +243,9 @@ public class gameManager : MonoBehaviour
         currentPlayer.hasCalled = true;
         currentPlayer.mostRecentBet = mostRecentBet;//the players mostRecentBet is set equal to the previous global mostRecentBet
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
-        CheckIfPlayerIsAlreadyAllIn();//checks if the player is already all in from a prvious bet, if they are increments to next player skipping their turn
         CheckIfPlayerIsAllIn();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
         //this block of code runs if the other two functions are not successful and will complete the required action
-        if((currentPlayer.hasGoneAllIn== false) || (currentPlayer.isAllIn = false))
+        if(currentPlayer.isAllIn = false)
         {
             CallCalculations();
         }
@@ -351,8 +353,12 @@ public class gameManager : MonoBehaviour
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
         littleBlindPlayer.mostRecentBet = 5;
+        littleBlindPlayer.numOfChips -= littleBlindPlayer.mostRecentBet;
+        littleBlindPlayer.playerChipsText.text = Convert.ToString(littleBlindPlayer.numOfChips);
         potValue += littleBlindPlayer.mostRecentBet;
         bigBlindPlayer.mostRecentBet = 10;
+        bigBlindPlayer.numOfChips -= bigBlindPlayer.mostRecentBet;
+        bigBlindPlayer.playerChipsText.text = Convert.ToString(bigBlindPlayer.numOfChips);
         potValue += bigBlindPlayer.mostRecentBet;
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
@@ -430,14 +436,6 @@ public class gameManager : MonoBehaviour
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
-        }
-    }
-    public void CheckIfPlayerIsAlreadyAllIn()
-    {
-        playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        if(currentPlayer.isAllIn == true)
-        {
-            currentPlayer.hasGoneAllIn = true;
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
