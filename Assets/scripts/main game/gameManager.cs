@@ -245,7 +245,7 @@ public class gameManager : MonoBehaviour
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         CheckIfPlayerIsAllIn();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
         //this block of code runs if the other two functions are not successful and will complete the required action
-        if(currentPlayer.isAllIn = false)
+        if(currentPlayer.isAllIn ==false)
         {
             CallCalculations();
         }
