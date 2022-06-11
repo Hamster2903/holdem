@@ -867,7 +867,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1406279430}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToPlayerCreationScene
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
