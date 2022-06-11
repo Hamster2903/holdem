@@ -410,7 +410,7 @@ public class gameManager : MonoBehaviour
         }
         if(allFolded == true)
         {
-            CheckIfPlayerIsValid(count);
+            //CheckIfPlayerIsValid();
             CheckIfGameShouldEnd();
             DistributePot();
             StartNextHand();
@@ -501,9 +501,9 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
+        SortPlayersByHandRank();
         CheckIfPlayerIsValid(players.Count - 1);
         CheckIfGameShouldEnd();
-        SortPlayersByHandRank();
         DistributePot();
         
     }
