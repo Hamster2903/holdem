@@ -409,7 +409,7 @@ public class gameManager : MonoBehaviour
                 playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
                 if (currentPlayer.hasFolded == false)
                 {
-                    CheckIfPlayerIsValid(players,i);
+                    CheckIfTempPlayerIsValid(players,i);
                     DistributePotIfFold(i);
                 }
             }
@@ -442,11 +442,10 @@ public class gameManager : MonoBehaviour
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
     }
-    //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
-    public void CheckIfPlayerIsValid(List<GameObject> tempPlayers, int winningPlayerInt)
+    //checks if the temporary players list are allowed to keep playing
+    public void CheckIfTempPlayerIsValid(List<GameObject> tempPlayers, int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
-        //CheckAllFolded();
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
@@ -464,6 +463,7 @@ public class gameManager : MonoBehaviour
             }
         }
     }
+    //runs to check if players should if they eventually get 0 chips somewhow
     public void CheckIfPlayerChipBalanceIsAllowed()
     {
         print("CjeckifplayerChipbalanceisallowed");
@@ -518,7 +518,7 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
         List<GameObject> tempPlayers = SortPlayersByHandRank();
-        CheckIfPlayerIsValid(tempPlayers,tempPlayers.Count - 1);
+        CheckIfTempPlayerIsValid(tempPlayers,tempPlayers.Count - 1);
         CheckIfGameShouldEnd();
         DistributePot(tempPlayers);
         
