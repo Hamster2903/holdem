@@ -896,6 +896,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    //checks if player has an ace king queen or jack
     public bool isHighCard(List<GameObject> handList)
     {
         if(GetNumberOfFaceInHand(handList, "Ace") ==1 || GetNumberOfFaceInHand(handList, "King")==1 || GetNumberOfFaceInHand(handList, "Queen")==1 || GetNumberOfFaceInHand(handList, "Jack")==1)
