@@ -271,10 +271,10 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void DistributePot(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
+    public void DistributePot()//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = tempPlayers[tempPlayers.Count - 1].GetComponent<playerClassScript>();
+        playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
@@ -442,14 +442,13 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt)
-            {
+            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt
                 tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
                 //movesd player indexd down 1
                 i--;
                 //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
-                if (i < winningPlayerInt)
+                if (i < winningPlayerInt) 
                 {
                     winningPlayerInt--;
                 }
@@ -520,7 +519,6 @@ public class gameManager : MonoBehaviour
         CheckIfTempPlayersListChipsValid(tempPlayers,tempPlayers.Count - 1);
         CheckIfGameShouldEndFromTempPlayersList(tempPlayers);
         DistributePot(tempPlayers);
-        
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
