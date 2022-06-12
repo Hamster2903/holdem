@@ -25,7 +25,6 @@ public class gameManager : MonoBehaviour
     public int mostRecentBet;
     public int handNumber;
     public int numberOfOriginalPlayers;
-    public int totalChipsInPot;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
     public List<GameObject> players;
@@ -217,12 +216,11 @@ public class gameManager : MonoBehaviour
         potValue += mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
     }
-    //placed raise calculations in function so broader function is easier to understand
+    //placed raise calculations in function so broader function is easier to understand, raise calculations updates the players chips, only runs if player is not all in
     public void RaiseCalculations()
     {
         print("RaiseCalculations");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        totalChipsInPot += currentPlayer.mostRecentBet;//the players total numberOfChipsInPot has the playersMostRecentBet added to it so that the player cumulative bet in the pot is updated
         mostRecentBetText.text = Convert.ToString(mostRecentBet);
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
@@ -248,12 +246,11 @@ public class gameManager : MonoBehaviour
         IncrementActivePlayer();
         CheckIfRoundCanIncrement();
     }
+    //calculations updates the players chips, only runs if player is not all in
     public void CallCalculations()
     {
         print("CallCalculations");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        currentPlayer.numOfChipsInPot += currentPlayer.mostRecentBet;
-        totalChipsInPot += currentPlayer.mostRecentBet;
         mostRecentBetText.text = Convert.ToString(mostRecentBet);
         currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
     }
@@ -294,7 +291,6 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
 
             currentPlayer.gameObject.SetActive(true);
-            currentPlayer.numOfChipsInPot = 0;
             currentPlayer.hasFolded = false;
             currentPlayer.hasRaised = false;
             currentPlayer.hasCalled = false;
@@ -302,7 +298,6 @@ public class gameManager : MonoBehaviour
         }
         round = 0;
         potValue = 0;
-        totalChipsInPot = 0;
         mostRecentBet = 0;
         //clear cards from players hand
         foreach (GameObject player in players)
@@ -359,7 +354,6 @@ public class gameManager : MonoBehaviour
         mostRecentBet = bigBlindPlayer.mostRecentBet;
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (handNum + 2) % numPlayers;
-        print(activePlayerPosition);
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
     public bool CheckIfRoundCanIncrement() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
@@ -438,18 +432,17 @@ public class gameManager : MonoBehaviour
             mostRecentBet=currentPlayer.numOfChips;
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
-            DebugPrint("the current player is all in is ", currentPlayer.isAllIn);
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
     }
-    //checks if the temporary players list are allowed to keep playing
+    //checks if the temporary players list are allowed to keep playing, removes players that lose all in bets
     public void CheckIfTempPlayerIsValid(List<GameObject> tempPlayers, int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips <= 0 && i != winningPlayerInt)
+            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt)
             {
                 tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
@@ -471,7 +464,6 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            DebugPrint("current player num of chips is " + i, currentPlayer.numOfChips);
             if (currentPlayer.numOfChips <=0)
             {
                 players.RemoveAt(i);
@@ -484,7 +476,7 @@ public class gameManager : MonoBehaviour
     {
         print("CheckIfGameShouldEnd");
         //chekc if there is 1 player in the list
-        if(players.Count == 1)
+        if(players.Count == 1 )
         {
             SceneManager.LoadScene(4);
         }
@@ -588,7 +580,7 @@ public class gameManager : MonoBehaviour
         handList.Sort(CompareFaceByPower);
         return handList;
     }
-    //sorts players in order of hand rank
+    //makes new players list so it is sorted in order of hand rank so that the orginal players list is not ordered wrong
     public List<GameObject> SortPlayersByHandRank()
     {
         List<GameObject> tempPlayers = new List<GameObject>(players);
@@ -904,43 +896,58 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
+    public bool isHighCard(List<GameObject> handList)
+    {
+        if(GetNumberOfFaceInHand(handList, "Ace") ==1 || GetNumberOfFaceInHand(handList, "King")==1 || GetNumberOfFaceInHand(handList, "Queen")==1 || GetNumberOfFaceInHand(handList, "Jack")==1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     //this first sorts each players hand by its face rank and then returns an integer value
     public int GetHandRank(List<GameObject> handList)
     {
         handList = SortHandByFacePower(handList);
         if (isRoyalFlush(handList))
         {
-            return 10;
+            return 11;
         }
         else if (isStraightFlush(handList))
         {
-            return 9;
+            return 10;
         }
         else if (isFourOfAKind(handList))
         {
-            return 8;
+            return 9;
         }
         else if (isFullHouse(handList))
         {
-            return 7;
+            return 8;
         }
         else if (isFlush(handList))
         {
-            return 6;
+            return 7;
         }
         else if (isStraight(handList))
         {
-            return 5;
+            return 6;
         }
         else if (isThreeOfAKind(handList))
         {
-            return 4;
+            return 5;
         }
         else if (isTwoPair(handList, ""))
         {
-            return 3;
+            return 4;
         }
         else if (isPair(handList))
+        {
+            return 3;
+        }
+        else if (isHighCard(handList))
         {
             return 2;
         }
