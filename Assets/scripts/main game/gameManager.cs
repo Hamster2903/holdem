@@ -442,7 +442,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt
+            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt)
                 tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
                 //movesd player indexd down 1
@@ -962,4 +962,3 @@ public class gameManager : MonoBehaviour
             return 1;
         }
     }
-}
