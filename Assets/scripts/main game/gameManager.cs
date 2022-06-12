@@ -271,10 +271,10 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void DistributePot()//will be run when players cards are evaluated or everyone folds
+    public void DistributePotAtHandEvaluation(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
+        playerClassScript winningPlayer = players[tempPlayers.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
@@ -324,6 +324,7 @@ public class gameManager : MonoBehaviour
         deckScript.Shuffle();
         CheckIfPlayersListChipsValid();
         ReGeneratePlayers(players.Count, handNumber);
+        CheckIfPlayersListChipsValid();
         DealToHands();
         RoundLoop();
     }
@@ -521,7 +522,7 @@ public class gameManager : MonoBehaviour
         List<GameObject> tempPlayers = SortPlayersByHandRank();
         CheckIfTempPlayersListChipsValid(tempPlayers, tempPlayers.Count - 1);
         CheckIfGameShouldEndFromTempPlayersList(tempPlayers);
-        DistributePot();
+        DistributePotAtHandEvaluation(tempPlayers);
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
