@@ -522,7 +522,7 @@ public class gameManager : MonoBehaviour
         List<GameObject> tempPlayers = sort_players_by_hand_rank();
         check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
         check_if_game_should_end_temp_players_list(tempPlayers);
-        distribute_pot_at_hand_evaluation(players);
+        distribute_pot_at_hand_evaluation(tempPlayers);
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int get_face_power(GameObject currentCard)
