@@ -274,10 +274,10 @@ public class gameManager : MonoBehaviour
         CheckAllFolded();
     }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void DistributePot()//will be run when players cards are evaluated or everyone folds
+    public void DistributePot(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = players[players.Count - 1].GetComponent<playerClassScript>();
+        playerClassScript winningPlayer = tempPlayers[tempPlayers.Count - 1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
@@ -327,7 +327,8 @@ public class gameManager : MonoBehaviour
         //clear player positions
         deckScript.Generate();
         deckScript.Shuffle();
-        ReGeneratePlayers(numberOfOriginalPlayers,handNumber);
+        CheckIfPlayerChipBalanceIsAllowed();
+        ReGeneratePlayers(players.Count,handNumber);
         DealToHands();
         RoundLoop();
     }
@@ -442,24 +443,39 @@ public class gameManager : MonoBehaviour
         }
     }
     //checks if the player is allowed to keep playing, not allowed if they fail an all in bet
-    public void CheckIfPlayerIsValid(List<GameObject> tempPlayers,int winningPlayerInt)
+    public void CheckIfPlayerIsValid(List<GameObject> tempPlayers, int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
         //CheckAllFolded();
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips == 0 && i != winningPlayerInt) 
+            if (currentPlayer.numOfChips <= 0 && i != winningPlayerInt)
             {
                 tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
                 //movesd player indexd down 1
                 i--;
                 //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
-                if (i < winningPlayerInt) 
+                if (i < winningPlayerInt)
                 {
                     winningPlayerInt--;
                 }
+            }
+        }
+    }
+    public void CheckIfPlayerChipBalanceIsAllowed()
+    {
+        print("CjeckifplayerChipbalanceisallowed");
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            DebugPrint("current player num of chips is " + i, currentPlayer.numOfChips);
+            if (currentPlayer.numOfChips <=0)
+            {
+                players.RemoveAt(i);
+                currentPlayer.gameObject.SetActive(false);
             }
         }
     }
@@ -502,9 +518,9 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
         List<GameObject> tempPlayers = SortPlayersByHandRank();
-        CheckIfPlayerIsValid(tempPlayers,players.Count - 1);
+        CheckIfPlayerIsValid(tempPlayers,tempPlayers.Count - 1);
         CheckIfGameShouldEnd();
-        DistributePot();
+        DistributePot(tempPlayers);
         
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
