@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class gameManager : MonoBehaviour
 {
-       
+
     public DeckScript deckScript;
     public CardScript cardScript;
     public Button raiseButton;
@@ -37,7 +37,7 @@ public class gameManager : MonoBehaviour
     //allows easier to understand debugging
     public void DebugPrint(string prefix, object message)
     {
-        if(debug)
+        if (debug)
         {
             print(prefix + ": " + message);
         }
@@ -54,22 +54,22 @@ public class gameManager : MonoBehaviour
     public void RoundLoop()
     {
         print("RoundLoop");
-        if(round == 1)
+        if (round == 1)
         {
             DealToFlop();
-            
+
         }
-        if(round == 2)
+        if (round == 2)
         {
             DealCardToTable();
 
         }
-        if(round == 3)
+        if (round == 3)
         {
             DealCardToTable();
 
         }
-        if(round == 4)
+        if (round == 4)
         {
             EvaluateHand();
             round = 0;
@@ -102,7 +102,7 @@ public class gameManager : MonoBehaviour
         dealerPlayer.isDealer = true;//set position 0 to dealer button, position 1 to little blind, position 2 to big blind
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
-        littleBlindPlayer.mostRecentBet =5;
+        littleBlindPlayer.mostRecentBet = 5;
         littleBlindPlayer.numOfChips -= littleBlindPlayer.mostRecentBet;
         littleBlindPlayer.playerChipsText.text = Convert.ToString(littleBlindPlayer.numOfChips);
         potValue += littleBlindPlayer.mostRecentBet;
@@ -129,9 +129,9 @@ public class gameManager : MonoBehaviour
                 players[i].GetComponent<playerClassScript>().cards.Add(cardToMove); //adds removed card to player list for each player.
                 cardToMove.transform.SetParent(players[i].transform);//instantiates cards from list to player grid
             }
-         
+
         }
-        
+
     }
     //generates the playerPrefab objects in the specified arrangement around the table image at either position 123, 1234,12345
     public void GeneratePlayerObjectsAroundTable()
@@ -238,7 +238,7 @@ public class gameManager : MonoBehaviour
         mostRecentBetText.text = Convert.ToString(mostRecentBet);
         CheckIfPlayerIsAllIn();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
         //this block of code runs if the other two functions are not successful and will complete the required action
-        if(currentPlayer.isAllIn ==false)
+        if (currentPlayer.isAllIn == false)
         {
             CallCalculations();
         }
@@ -264,7 +264,7 @@ public class gameManager : MonoBehaviour
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
         currentPlayer.hasFolded = true;
         print(currentPlayer.hasFolded);
-        DebugPrint("player"+activePlayerPosition+ "has folded", currentPlayer.hasFolded);
+        DebugPrint("player" + activePlayerPosition + "has folded", currentPlayer.hasFolded);
         currentPlayer.gameObject.SetActive(false);
         IncrementActivePlayer();
         CheckIfRoundCanIncrement();
@@ -323,7 +323,7 @@ public class gameManager : MonoBehaviour
         deckScript.Generate();
         deckScript.Shuffle();
         CheckIfPlayersListChipsValid();
-        ReGeneratePlayers(players.Count,handNumber);
+        ReGeneratePlayers(players.Count, handNumber);
         DealToHands();
         RoundLoop();
     }
@@ -360,14 +360,14 @@ public class gameManager : MonoBehaviour
     {
         print("checkIfroundCanIncrement");
         playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
-        if (bigBlindPlayer.hasCalled==true || bigBlindPlayer.hasFolded == true)
+        if (bigBlindPlayer.hasCalled == true || bigBlindPlayer.hasFolded == true)
         {
-            round+=1;
+            round += 1;
             RoundLoop();
             bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
             return true;
         }
-        else if(bigBlindPlayer.hasRaised == true)
+        else if (bigBlindPlayer.hasRaised == true)
         {
             return false;
         }
@@ -386,9 +386,9 @@ public class gameManager : MonoBehaviour
             {
                 count += 1;
             }
-            
+
         }
-        if(count == players.Count-1)
+        if (count == players.Count - 1)
         {
             allFolded = true;
         }
@@ -396,14 +396,14 @@ public class gameManager : MonoBehaviour
         {
             allFolded = false;
         }
-        if(allFolded == true)
+        if (allFolded == true)
         {
             for (int i = 0; i < players.Count; i++)
             {
                 playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
                 if (currentPlayer.hasFolded == false)
                 {
-                    CheckIfTempPlayersListChipsValid(players,i);
+                    CheckIfTempPlayersListChipsValid(players, i);
                     DistributePotIfFold(i);
                 }
             }
@@ -424,12 +424,12 @@ public class gameManager : MonoBehaviour
     {
         print("CheckIfPlayerGoesAllIn");
         playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-        if (currentPlayer.mostRecentBet>=currentPlayer.numOfChips)
+        if (currentPlayer.mostRecentBet >= currentPlayer.numOfChips)
         {
             //resets the bet to the total amount of chips in the player
             raiseValue = currentPlayer.numOfChips;
-            currentPlayer.mostRecentBet = currentPlayer.numOfChips+=mostRecentBet;
-            mostRecentBet=currentPlayer.numOfChips;
+            currentPlayer.mostRecentBet = currentPlayer.numOfChips += mostRecentBet;
+            mostRecentBet = currentPlayer.numOfChips;
             currentPlayer.numOfChips = 0;
             currentPlayer.isAllIn = true;
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
@@ -442,19 +442,19 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < tempPlayers.Count; i++)
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips <= 0&& i !=winningPlayerInt)
+            if (currentPlayer.numOfChips <= 0 && i != winningPlayerInt)
                 tempPlayers.RemoveAt(i);
-                currentPlayer.gameObject.SetActive(false);
-                //movesd player indexd down 1
-                i--;
-                //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
-                if (i < winningPlayerInt) 
-                {
-                    winningPlayerInt--;
-                }
+            currentPlayer.gameObject.SetActive(false);
+            //movesd player indexd down 1
+            i--;
+            //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
+            if (i < winningPlayerInt)
+            {
+                winningPlayerInt--;
             }
         }
     }
+
     //runs to check if players should if they eventually get 0 chips somewhow
     public void CheckIfPlayersListChipsValid()
     {
@@ -463,7 +463,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            if (currentPlayer.numOfChips <=0)
+            if (currentPlayer.numOfChips <= 0)
             {
                 players.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
@@ -475,7 +475,7 @@ public class gameManager : MonoBehaviour
     {
         print("CheckIfGameShouldEnd");
         //chekc if there is 1 player in the list
-        if(players.Count == 1 )
+        if (players.Count == 1)
         {
             SceneManager.LoadScene(4);
         }
@@ -491,14 +491,14 @@ public class gameManager : MonoBehaviour
     public void IncrementActivePlayer()
     {
         print("IncrementActivePlayer");
-        
+
         bool flag = true; //keeps track of loop running
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = false;
         while (flag)
         {
             activePlayerPosition = (activePlayerPosition + 1) % (players.Count);
             playerClassScript currentPlayer = players[activePlayerPosition].GetComponent<playerClassScript>();
-            if(currentPlayer.hasFolded == false)
+            if (currentPlayer.hasFolded == false)
             {
                 players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
                 flag = false;//loop stops
@@ -512,13 +512,13 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
-            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>(); 
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
         List<GameObject> tempPlayers = SortPlayersByHandRank();
-        CheckIfTempPlayersListChipsValid(tempPlayers,tempPlayers.Count - 1);
+        CheckIfTempPlayersListChipsValid(tempPlayers, tempPlayers.Count - 1);
         CheckIfGameShouldEndFromTempPlayersList(tempPlayers);
-        DistributePot(tempPlayers);
+        DistributePot();
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int GetFacePower(GameObject currentCard)
@@ -545,7 +545,7 @@ public class gameManager : MonoBehaviour
     {
         playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
         playerClassScript currentPlayer2 = player2.GetComponent<playerClassScript>();
-        int player1Rank= currentPlayer1.valueOfCardsInHand;
+        int player1Rank = currentPlayer1.valueOfCardsInHand;
         int player2Rank = currentPlayer2.valueOfCardsInHand;
         if (player1Rank > player2Rank)
         {
@@ -596,13 +596,13 @@ public class gameManager : MonoBehaviour
     //counts and returns the amount of a specific suit in a players hand
     public int GetNumberOfSuitInHand(List<GameObject> handList, string targetSuit)
     {
-        
+
         int count = 0;
         for (int i = 0; i < handList.Count; i++)
         {
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
             string suit = currentCardScript.suit;
-            if(suit == targetSuit)
+            if (suit == targetSuit)
             {
                 count += 1;
             }
@@ -627,7 +627,7 @@ public class gameManager : MonoBehaviour
     //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isRoyalFlush(List<GameObject> handList)
     {
-        if(GetNumberOfFaceInHand(handList, "Ace") == 1 && GetNumberOfFaceInHand(handList, "King") ==1 && GetNumberOfFaceInHand(handList, "Queen") ==1 && GetNumberOfFaceInHand(handList, "Jack") == 1 && GetNumberOfFaceInHand(handList, "10") ==1 && GetNumberOfSuitInHand(handList, "Clubs") >=5 || GetNumberOfSuitInHand(handList, "Diamonds") >= 5 || GetNumberOfSuitInHand(handList, "Spades") >= 5 || GetNumberOfSuitInHand(handList, "Hearts") >= 5)
+        if (GetNumberOfFaceInHand(handList, "Ace") == 1 && GetNumberOfFaceInHand(handList, "King") == 1 && GetNumberOfFaceInHand(handList, "Queen") == 1 && GetNumberOfFaceInHand(handList, "Jack") == 1 && GetNumberOfFaceInHand(handList, "10") == 1 && GetNumberOfSuitInHand(handList, "Clubs") >= 5 || GetNumberOfSuitInHand(handList, "Diamonds") >= 5 || GetNumberOfSuitInHand(handList, "Spades") >= 5 || GetNumberOfSuitInHand(handList, "Hearts") >= 5)
         {
             return true;
         }
@@ -639,7 +639,7 @@ public class gameManager : MonoBehaviour
     //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isStraightFlush(List<GameObject> handList)
     {
-        
+
         for (int i = 0; i < handList.Count; i++)
         {
             int currentCount = 0;
@@ -651,16 +651,16 @@ public class gameManager : MonoBehaviour
             currentFace = GetFacePower(handList[i]);
             currentSuit = suit;
             currentCount = 1;
-            for (int n = i+1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
                 if ((GetFacePower(handList[n]) == currentFace + 1
                 || (nestedCardScript.face == "Ace"
                     && currentFace + 1 == 14)) && nestedCardScript.suit == currentSuit)
                 {
-                    currentCount +=1;
+                    currentCount += 1;
                     currentFace = GetFacePower(handList[n]);
-                    if(currentCount ==5)
+                    if (currentCount == 5)
                     {
                         return true;
                     }
@@ -686,13 +686,13 @@ public class gameManager : MonoBehaviour
             string face = currentCardScript.face;
             currentFace = GetFacePower(handList[i]);
             currentCount = 1;
-            for (int n = i+1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(handList[n]) == currentFace)
+                if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
-                    if(currentCount==4)
+                    if (currentCount == 4)
                     {
                         return true;
                     }
@@ -709,7 +709,7 @@ public class gameManager : MonoBehaviour
     //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isFlush(List<GameObject> handList)
     {
-        if(GetNumberOfSuitInHand(handList, "Diamonds") >= 5
+        if (GetNumberOfSuitInHand(handList, "Diamonds") >= 5
   || GetNumberOfSuitInHand(handList, "Spades") >= 5
   || GetNumberOfSuitInHand(handList, "Clubs") >= 5
   || GetNumberOfSuitInHand(handList, "Hearts") >= 5
@@ -733,16 +733,16 @@ public class gameManager : MonoBehaviour
             string face = currentCardScript.face;
             currentFace = GetFacePower(handList[i]);
             currentCount = 1;
-            for (int n = i+1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(handList[n]) == currentFace+1
-                || (nestedCardScript.face == "Ace" 
+                if (GetFacePower(handList[n]) == currentFace + 1
+                || (nestedCardScript.face == "Ace"
                     && currentFace + 1 == 14))
                 {
                     currentCount += 1;
                     currentFace = GetFacePower(handList[n]);
-                    if(currentCount ==5)
+                    if (currentCount == 5)
                     {
                         return true;
                     }
@@ -765,9 +765,9 @@ public class gameManager : MonoBehaviour
             bool foundMultipleFaces = false;
             for (int n = 0; n < 13; n++)
             {
-                if(alreadyUsedFace == "")
+                if (alreadyUsedFace == "")
                 {
-                    if(GetNumberOfFaceInHand(handList, possibleFaces[n]) >=3)
+                    if (GetNumberOfFaceInHand(handList, possibleFaces[n]) >= 3)
                     {
                         alreadyUsedFace = possibleFaces[n];
                         foundMultipleFaces = true;
@@ -777,13 +777,13 @@ public class gameManager : MonoBehaviour
                 }
                 else
                 {
-                    if(possibleFaces[n] != alreadyUsedFace&&GetNumberOfFaceInHand(handList, possibleFaces[n])>=2)
+                    if (possibleFaces[n] != alreadyUsedFace && GetNumberOfFaceInHand(handList, possibleFaces[n]) >= 2)
                     {
                         return true;
                     }
                 }
             }
-            if(!foundMultipleFaces)
+            if (!foundMultipleFaces)
             {
                 alreadyUsedFace = "";
             }
@@ -802,13 +802,13 @@ public class gameManager : MonoBehaviour
             string face = currentCardScript.face;
             currentFace = GetFacePower(handList[i]);
             currentCount = 1;
-            for (int n = i+1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if(GetFacePower(handList[n]) == currentFace)
+                if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
-                    if(currentCount ==3)
+                    if (currentCount == 3)
                     {
                         return true;
                     }
@@ -824,7 +824,7 @@ public class gameManager : MonoBehaviour
     //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool isTwoPair(List<GameObject> handList, string excludedFace)
     {
-        
+
         int currentCount = 0;
         int currentFace = 0;
         for (int i = 0; i < handList.Count; i++)
@@ -833,30 +833,30 @@ public class gameManager : MonoBehaviour
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
             currentFace = GetFacePower(handList[i]);
-            
-            if(face == excludedFace)
+
+            if (face == excludedFace)
             {
-                
+
                 continue;
             }
             currentCount = 1;
-            for (int n = i+1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                
+
                 if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
-                    if(currentCount==2)
+                    if (currentCount == 2)
                     {
-                        if(excludedFace == "")
+                        if (excludedFace == "")
                         {
-                           
+
                             return isTwoPair(handList, nestedCardScript.face);
                         }
                         else
                         {
-                            
+
                             return true;
                         }
                     }
@@ -884,11 +884,11 @@ public class gameManager : MonoBehaviour
             for (int n = 0; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                
-                if(GetFacePower(handList[n]) == currentFace)
+
+                if (GetFacePower(handList[n]) == currentFace)
                 {
                     currentCount += 1;
-                    if(currentCount ==2)
+                    if (currentCount == 2)
                     {
                         return true;
                     }
@@ -904,7 +904,7 @@ public class gameManager : MonoBehaviour
     //checks if player has an ace king queen or jack
     public bool isHighCard(List<GameObject> handList)
     {
-        if(GetNumberOfFaceInHand(handList, "Ace") ==1 || GetNumberOfFaceInHand(handList, "King")==1 || GetNumberOfFaceInHand(handList, "Queen")==1 || GetNumberOfFaceInHand(handList, "Jack")==1)
+        if (GetNumberOfFaceInHand(handList, "Ace") == 1 || GetNumberOfFaceInHand(handList, "King") == 1 || GetNumberOfFaceInHand(handList, "Queen") == 1 || GetNumberOfFaceInHand(handList, "Jack") == 1)
         {
             return true;
         }
@@ -962,3 +962,4 @@ public class gameManager : MonoBehaviour
             return 1;
         }
     }
+}
