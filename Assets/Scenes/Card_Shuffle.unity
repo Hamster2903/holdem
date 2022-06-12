@@ -1013,7 +1013,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 988465555}
         m_TargetAssemblyTypeName: gameManager, Assembly-CSharp
-        m_MethodName: CallOnClick
+        m_MethodName: call_on_click
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1526,7 +1526,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 988465555}
         m_TargetAssemblyTypeName: gameManager, Assembly-CSharp
-        m_MethodName: RaiseOnClick
+        m_MethodName: raise_on_click
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1659,7 +1659,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 988465555}
         m_TargetAssemblyTypeName: gameManager, Assembly-CSharp
-        m_MethodName: FoldOnClick
+        m_MethodName: fold_on_click
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2148,14 +2148,12 @@ MonoBehaviour:
   mostRecentBetText: {fileID: 1074675481}
   errorMessageText: {fileID: 1722813750}
   potValue: 0
-  minimumBetValue: 10
   callValue: 0
   raiseValue: 0
   round: 0
   mostRecentBet: 0
   handNumber: 0
   numberOfOriginalPlayers: 0
-  totalChipsInPot: 0
   activePlayerPosition: 0
   allFolded: 0
   players: []
