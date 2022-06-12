@@ -322,7 +322,7 @@ public class gameManager : MonoBehaviour
         //clear player positions
         deckScript.Generate();
         deckScript.Shuffle();
-        CheckIfPlayerChipBalanceIsAllowed();
+        CheckIfPlayersListChipsValid();
         ReGeneratePlayers(players.Count,handNumber);
         DealToHands();
         RoundLoop();
@@ -403,11 +403,11 @@ public class gameManager : MonoBehaviour
                 playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
                 if (currentPlayer.hasFolded == false)
                 {
-                    CheckIfTempPlayerIsValid(players,i);
+                    CheckIfTempPlayersListChipsValid(players,i);
                     DistributePotIfFold(i);
                 }
             }
-            CheckIfGameShouldEnd();
+            CheckIfGameShouldEndPlayersList();
             StartNextHand();
         }
     }
@@ -436,7 +436,7 @@ public class gameManager : MonoBehaviour
         }
     }
     //checks if the temporary players list are allowed to keep playing, removes players that lose all in bets
-    public void CheckIfTempPlayerIsValid(List<GameObject> tempPlayers, int winningPlayerInt)
+    public void CheckIfTempPlayersListChipsValid(List<GameObject> tempPlayers, int winningPlayerInt)
     {
         print("CheckIfPlayerIsAValid");
         for (int i = 0; i < tempPlayers.Count; i++)
@@ -457,7 +457,7 @@ public class gameManager : MonoBehaviour
         }
     }
     //runs to check if players should if they eventually get 0 chips somewhow
-    public void CheckIfPlayerChipBalanceIsAllowed()
+    public void CheckIfPlayersListChipsValid()
     {
         print("CjeckifplayerChipbalanceisallowed");
 
@@ -472,11 +472,18 @@ public class gameManager : MonoBehaviour
         }
     }
     //this checks if there is 1 player in the list of players and sends the game to the game over scene
-    public void CheckIfGameShouldEnd()
+    public void CheckIfGameShouldEndPlayersList()
     {
         print("CheckIfGameShouldEnd");
         //chekc if there is 1 player in the list
         if(players.Count == 1 )
+        {
+            SceneManager.LoadScene(4);
+        }
+    }
+    public void CheckIfGameShouldEndFromTempPlayersList(List<GameObject> tempPlayers)
+    {
+        if (tempPlayers.Count == 1)
         {
             SceneManager.LoadScene(4);
         }
@@ -510,8 +517,8 @@ public class gameManager : MonoBehaviour
             currentPlayer.valueOfCardsInHand = GetHandRank(handList);
         }
         List<GameObject> tempPlayers = SortPlayersByHandRank();
-        CheckIfTempPlayerIsValid(tempPlayers,tempPlayers.Count - 1);
-        CheckIfGameShouldEnd();
+        CheckIfTempPlayersListChipsValid(tempPlayers,tempPlayers.Count - 1);
+        CheckIfGameShouldEndFromTempPlayersList(tempPlayers);
         DistributePot(tempPlayers);
         
     }
