@@ -443,15 +443,18 @@ public class gameManager : MonoBehaviour
         {
             playerClassScript currentPlayer = tempPlayers[i].GetComponent<playerClassScript>();
             if (currentPlayer.numOfChips <= 0 && i != winningPlayerInt)
-                tempPlayers.RemoveAt(i);
-            currentPlayer.gameObject.SetActive(false);
-            //movesd player indexd down 1
-            i--;
-            //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
-            if (i < winningPlayerInt)
             {
-                winningPlayerInt--;
+                tempPlayers.RemoveAt(i);
+                currentPlayer.gameObject.SetActive(false);
+                //movesd player indexd down 1
+                i--;
+                //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
+                if (i < winningPlayerInt)
+                {
+                    winningPlayerInt--;
+                }
             }
+            
         }
     }
 
