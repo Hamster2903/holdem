@@ -26,6 +26,7 @@ public class gameManager : MonoBehaviour
     public int numberOfOriginalPlayers;
     public int activePlayerPosition = 0;
     public bool allFolded = false;
+    public GameObject informationScene;
     public List<GameObject> players;
     public GameObject playerPrefab;
     //public GameObject cardGroups;
@@ -34,6 +35,14 @@ public class gameManager : MonoBehaviour
     public List<GameObject> playerPositions;
     public bool debug = false;
     //allows easier to understand debugging
+    public void swap_to_information_scene_on_click()
+    {
+        informationScene.SetActive(true);
+    }
+    public void swap_back_to_game_scene_on_click()
+    {
+        informationScene.SetActive(false);
+    }
     public void debug_print(string prefix, object message)
     {
         if (debug)
@@ -90,15 +99,17 @@ public class gameManager : MonoBehaviour
             newPlayer.gameObject.GetComponent<Image>().enabled = false;
 
         }
+        //updates each players chip text
         for (int i = 0; i < players.Count; i++)
         {
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.playerChipsText.text = Convert.ToString(currentPlayer.numOfChips);
         }
+        //set position 0 to dealer button, position 1 to little blind, position 2 to big blind
         playerClassScript dealerPlayer = players[(-1 + handNum) % numPlayers].GetComponent<playerClassScript>();
         playerClassScript littleBlindPlayer = players[(0 + handNum) % numPlayers].GetComponent<playerClassScript>();
         playerClassScript bigBlindPlayer = players[(1 + handNum) % numPlayers].GetComponent<playerClassScript>();
-        dealerPlayer.isDealer = true;//set position 0 to dealer button, position 1 to little blind, position 2 to big blind
+        dealerPlayer.isDealer = true;
         littleBlindPlayer.isLittleBlind = true;
         bigBlindPlayer.isBigBlind = true;
         littleBlindPlayer.mostRecentBet = 5;
@@ -273,7 +284,7 @@ public class gameManager : MonoBehaviour
     public void distribute_pot_at_hand_evaluation(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = players[tempPlayers.Count - 1].GetComponent<playerClassScript>();
+        playerClassScript winningPlayer = players[tempPlayers.Count-1].GetComponent<playerClassScript>();
         winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
@@ -403,6 +414,7 @@ public class gameManager : MonoBehaviour
                 playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
                 if (currentPlayer.hasFolded == false)
                 {
+                    //uses the player found at position i for as the parameter as this is the winning player
                     check_if_temp_players_list_chips_valid(players, i);
                     distribute_pot_if_fold(i);
                 }
@@ -411,11 +423,12 @@ public class gameManager : MonoBehaviour
             start_next_hand();
         }
     }
+    //distributes the pot to the player at position i found in the checkallfolded function
     public void distribute_pot_if_fold(int winningPlayerInt)
     {
         print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
-        winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        winningPlayer.numOfChips += potValue;
         winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
         round = 0;
@@ -519,10 +532,14 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.valueOfCardsInHand = get_hand_rank(handList);
         }
-        List<GameObject> tempPlayers = sort_players_by_hand_rank();
-        check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
-        check_if_game_should_end_temp_players_list(tempPlayers);
-        distribute_pot_at_hand_evaluation(tempPlayers);
+        players = sort_players_by_hand_rank();
+        //List<GameObject> tempPlayers =  sort_players_by_hand_rank();
+        //check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
+        check_if_players_list_chips_valid();
+        //check_if_game_should_end_temp_players_list(tempPlayers);
+        check_if_game_should_end_players_list();
+        //distribute_pot_at_hand_evaluation(tempPlayers);
+        distribute_pot_at_hand_evaluation(players);
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int get_face_power(GameObject currentCard)
@@ -856,7 +873,7 @@ public class gameManager : MonoBehaviour
                         if (excludedFace == "")
                         {
 
-                            return is_two_pair(handList, nestedCardScript.face);
+                            return is_two_pair(handList, nestedCardScript.face);//re runs function passing in the face we just found so it no longer searches for it
                         }
                         else
                         {
