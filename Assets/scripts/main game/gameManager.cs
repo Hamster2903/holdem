@@ -95,9 +95,10 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < numPlayers; i++)
         {
             GameObject newPlayer = Instantiate(playerPrefab);
+            playerClassScript currentPlayer = newPlayer.GetComponent<playerClassScript>();
+            currentPlayer.playerId = i;
             players.Add(newPlayer);
             newPlayer.gameObject.GetComponent<Image>().enabled = false;
-
         }
         //updates each players chip text
         for (int i = 0; i < players.Count; i++)
@@ -125,6 +126,19 @@ public class gameManager : MonoBehaviour
         potValueText.text = Convert.ToString(potValue);
         activePlayerPosition = (2 + handNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
+    }
+    //gets the players id for each player
+    public playerClassScript get_player_by_id(int playerId)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            if (currentPlayer.playerId == playerId)
+            {
+                return currentPlayer;
+            }
+        }
+        return null;
     }
     //deals two card game objects from the deck to the players hands, also adds the cards and their values to the players specific card list
     public void deal_to_hands()
@@ -284,9 +298,11 @@ public class gameManager : MonoBehaviour
     public void distribute_pot_at_hand_evaluation(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
     {
         print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = players[tempPlayers.Count-1].GetComponent<playerClassScript>();
-        winningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
-        winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
+        playerClassScript winningPlayer = tempPlayers[tempPlayers.Count-1].GetComponent<playerClassScript>();
+        playerClassScript realWinningPlayer = get_player_by_id(winningPlayer.playerId);
+        //real winning player is the real player version of tempPlayers, essentially players list without messing up rotations
+        realWinningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        realWinningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
         round = 0;
     }
@@ -468,10 +484,8 @@ public class gameManager : MonoBehaviour
                     winningPlayerInt--;
                 }
             }
-            
         }
     }
-
     //runs to check if players should if they eventually get 0 chips somewhow
     public void check_if_players_list_chips_valid()
     {

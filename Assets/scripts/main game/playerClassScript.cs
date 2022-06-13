@@ -22,4 +22,5 @@ public class playerClassScript : MonoBehaviour
     public bool isBigBlind;
     public bool isDealer;
     public List<GameObject> cards;
+    public int playerId;
 }
