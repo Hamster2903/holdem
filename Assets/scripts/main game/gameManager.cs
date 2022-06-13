@@ -34,15 +34,17 @@ public class gameManager : MonoBehaviour
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
     public bool debug = false;
-    //allows easier to understand debugging
+    //activates the information scene over the top of the game scene
     public void swap_to_information_scene_on_click()
     {
         informationScene.SetActive(true);
     }
+    //deactivates the information scene over the top of the game scene
     public void swap_back_to_game_scene_on_click()
     {
         informationScene.SetActive(false);
     }
+    //allows easier to understand debugging, cant print a string and another message/object
     public void debug_print(string prefix, object message)
     {
         if (debug)
@@ -221,12 +223,7 @@ public class gameManager : MonoBehaviour
             currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players total number of chips has the raise value subtracted from it so that the players cumulative number of chips is updated
             mostRecentBetText.text = Convert.ToString(mostRecentBet);
             check_if_player_is_all_in();
-            //this chunk of code runs the raise calculations if the currentPlayer is not all in and has not gone all in previously
-            if (currentPlayer.isAllIn == false)
-            {
-                raise_calculations();
-
-            }
+            raise_calculations();
             add_chips_to_pot();
             increment_active_player();
             check_if_round_can_increment();
@@ -261,16 +258,12 @@ public class gameManager : MonoBehaviour
         currentPlayer.numOfChips -= currentPlayer.mostRecentBet;//the players cumulative amount of chips has their mostRecentBet subtracted from it
         mostRecentBetText.text = Convert.ToString(mostRecentBet);
         check_if_player_is_all_in();//chceks if player is going to go all in with their current bet they are trying, if they are then it updates values and skips to next player
-        //this block of code runs if the other two functions are not successful and will complete the required action
-        if (currentPlayer.isAllIn == false)
-        {
-            call_calculations();
-        }
+        call_calculations();
         add_chips_to_pot();
         increment_active_player();
         check_if_round_can_increment();
     }
-    //calculations updates the players chips, only runs if player is not all in
+    //calculations updates the players chips
     public void call_calculations()
     {
         print("CallCalculations");
@@ -575,7 +568,7 @@ public class gameManager : MonoBehaviour
         facePowerDictionary.Add("King", 13);
         return facePowerDictionary[currentCardScript.face];
     }
-    //compares hands by ranking of hand
+    //compares hands in order of rank
     public int compare_hand_by_rank(GameObject player1, GameObject player2)
     {
         playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
