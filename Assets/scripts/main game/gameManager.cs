@@ -613,7 +613,7 @@ public class gameManager : MonoBehaviour
         handList.Sort(compare_face_by_power);
         return handList;
     }
-    //makes new players list so it is sorted in order of hand rank so that the orginal players list is not ordered wrong
+    //makes new temporary players list that is sorted in order of hand rank so that the orginal players list is not ordered wrong and does not ruin rotation
     public List<GameObject> sort_players_by_hand_rank()
     {
         List<GameObject> tempPlayers = new List<GameObject>(players);
