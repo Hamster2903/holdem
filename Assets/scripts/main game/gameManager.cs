@@ -532,14 +532,14 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.valueOfCardsInHand = get_hand_rank(handList);
         }
-        players = sort_players_by_hand_rank();
-        //List<GameObject> tempPlayers =  sort_players_by_hand_rank();
-        //check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
-        check_if_players_list_chips_valid();
-        //check_if_game_should_end_temp_players_list(tempPlayers);
-        check_if_game_should_end_players_list();
-        //distribute_pot_at_hand_evaluation(tempPlayers);
-        distribute_pot_at_hand_evaluation(players);
+        //players = sort_players_by_hand_rank();
+        List<GameObject> tempPlayers =  sort_players_by_hand_rank();
+        check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
+        //check_if_players_list_chips_valid();
+        check_if_game_should_end_temp_players_list(tempPlayers);
+        //check_if_game_should_end_players_list();
+        distribute_pot_at_hand_evaluation(tempPlayers);
+        //distribute_pot_at_hand_evaluation(players);
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int get_face_power(GameObject currentCard)

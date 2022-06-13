@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class playerClassScript : MonoBehaviour
 {
-    
     public int numOfChips = 1000;
     public int numOfChipsInPot = 0;
     public bool hasFolded = false;
@@ -23,7 +22,4 @@ public class playerClassScript : MonoBehaviour
     public bool isBigBlind;
     public bool isDealer;
     public List<GameObject> cards;
-
-
-   
 }
