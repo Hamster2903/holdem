@@ -394,7 +394,7 @@ public class gameManager : MonoBehaviour
         return false;
 
     }
-    //checks if every player except 1 is folded
+    //checks if every player except 1 is folded, determines the remaining player as the player that will be given chips at the distribution
     public void check_all_folded()
     {
         print("CheckAllFolded");
@@ -479,7 +479,7 @@ public class gameManager : MonoBehaviour
             }
         }
     }
-    //runs to check if players should if they eventually get 0 chips somewhow
+    //runs to check if players should be removed if they eventually get 0 chips
     public void check_if_players_list_chips_valid()
     {
         print("CjeckifplayerChipbalanceisallowed");
@@ -529,7 +529,7 @@ public class gameManager : MonoBehaviour
             }
         }
     }
-    //gets and sets each players hand value to a number, sorts the players hand and distributes the pot
+    //gets and sets each players hand value to a number, sorts the players hand and distributes the pot to the player who will win
     public void evaluate_hand()
     {
         print("EvaluateHand");
@@ -539,14 +539,10 @@ public class gameManager : MonoBehaviour
             playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
             currentPlayer.valueOfCardsInHand = get_hand_rank(handList);
         }
-        //players = sort_players_by_hand_rank();
         List<GameObject> tempPlayers =  sort_players_by_hand_rank();
         check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
-        //check_if_players_list_chips_valid();
         check_if_game_should_end_temp_players_list(tempPlayers);
-        //check_if_game_should_end_players_list();
         distribute_pot_at_hand_evaluation(tempPlayers);
-        //distribute_pot_at_hand_evaluation(players);
     }
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int get_face_power(GameObject currentCard)
@@ -610,7 +606,7 @@ public class gameManager : MonoBehaviour
     //sorts the players hand in order of increasing face power
     public List<GameObject> sort_hand_by_face_power(List<GameObject> handList)
     {
-        handList.Sort(compare_face_by_power);
+        handList.Sort(compare_face_by_power);//sorts hand using compare face by power 
         return handList;
     }
     //makes new temporary players list that is sorted in order of hand rank so that the orginal players list is not ordered wrong and does not ruin rotation
@@ -766,7 +762,7 @@ public class gameManager : MonoBehaviour
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
                 if (get_face_power(handList[n]) == currentFace + 1
                 || (nestedCardScript.face == "Ace"
-                    && currentFace + 1 == 14))
+                    && currentFace + 1 == 14))//handles the circumstance when the ace is needed to make a straight, it must  be both a 1 and 14, this is the circumstance in which it must be 14
                 {
                     currentCount += 1;
                     currentFace = get_face_power(handList[n]);
@@ -941,7 +937,7 @@ public class gameManager : MonoBehaviour
             return false;
         }
     }
-    //this first sorts each players hand by its face rank and then returns an integer value
+    //this first sorts each players hand by its face rank and then returns an integer value which can be used to set players hand values
     public int get_hand_rank(List<GameObject> handList)
     {
         handList = sort_hand_by_face_power(handList);
