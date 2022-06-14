@@ -16,7 +16,7 @@ public class CardScript : MonoBehaviour
     public Text iconSuitTextLeft;
     public Text iconFaceTextRight;
     //sets the card prefab with values defined in list on DeckScript
-    public void UpdateCard(string _face, string _suit, string _iconSuit, string _iconFace)
+    public void update_card(string _face, string _suit, string _iconSuit, string _iconFace)
     {
         face = _face;
         suit = _suit;      

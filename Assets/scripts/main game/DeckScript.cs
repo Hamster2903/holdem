@@ -22,7 +22,7 @@ public class DeckScript : MonoBehaviour
    
    
     //Generate() destroys and clears each game object in th list prior to generating the new list and card prefabs
-    public void Generate()
+    public void generate()
     {
         foreach (Transform item in cardGroup.transform)
         {
@@ -35,7 +35,7 @@ public class DeckScript : MonoBehaviour
             for (int f = 0; f < suit.Length; f++)
             {
                 GameObject newCard = Instantiate(cardPrefab);
-                newCard.GetComponent<CardScript>().UpdateCard(face[i],suit[f],iconFace[i],iconSuit[f]);
+                newCard.GetComponent<CardScript>().update_card(face[i],suit[f],iconFace[i],iconSuit[f]);
                 cards.Add(newCard);
                 //sets the new cards to children of the cardgroup
                 newCard.transform.SetParent(cardGroup);
@@ -44,7 +44,7 @@ public class DeckScript : MonoBehaviour
         }
     }
     //shuffle removes the cards from the list, randomises there positions and re instates them in the list in their new positions
-    public void Shuffle()
+    public void shuffle()
     {
         for (int i = 0; i < 52; i++)
         {
