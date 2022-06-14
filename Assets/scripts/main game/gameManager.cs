@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class gameManager : MonoBehaviour
 {
-
+    //defining variables used in game
     public DeckScript deckScript;
     public CardScript cardScript;
     public Button raiseButton;
@@ -29,11 +29,25 @@ public class gameManager : MonoBehaviour
     public GameObject informationScene;
     public List<GameObject> players;
     public GameObject playerPrefab;
-    //public GameObject cardGroups;
     public List<GameObject> flopList;
     public GameObject flopGrid;
     public List<GameObject> playerPositions;
     public bool debug = false;
+
+
+    //runs on start, generates players, deck, shuffles deck, places the players around the table and deals them cards
+    void Start()
+    {
+        generate_players(PlayerPrefs.GetInt("players"), 1);
+        deckScript.generate();
+        deckScript.shuffle();
+        generate_player_objects_around_table();
+        deal_to_hands();
+    }
+
+
+    //GENERIC FUNCTIONS
+
     //activates the information scene over the top of the game scene
     public void swap_to_information_scene_on_click()
     {
@@ -52,14 +66,10 @@ public class gameManager : MonoBehaviour
             print(prefix + ": " + message);
         }
     }
-    void Start()
-    {
-        generate_players(PlayerPrefs.GetInt("players"), 1);
-        deckScript.generate();
-        deckScript.shuffle();
-        generate_player_objects_around_table();
-        deal_to_hands();
-    }
+
+
+    //ROUND INCREMENTATION IS CONTROLLED HERE ASWELL AS WHAT HAPPENS WHEN ROUNDS INCREMENT, i.e. DEAL TO FLOP and DEAL TO CARD
+
     //is used to keep track of the rounds and what occurs in each
     public void round_tracker()
     {
@@ -82,11 +92,32 @@ public class gameManager : MonoBehaviour
         if (round == 4)
         {
             evaluate_hand();
-            round = 0;
             start_next_hand();
 
         }
     }
+    public bool check_if_round_can_increment() //this function checks if the big blind player folds are calls the most recent bet, if they do either the round can increment, if not everyone will keep playing
+    {
+        print("checkIfroundCanIncrement");
+        playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
+        if (bigBlindPlayer.hasCalled == true || bigBlindPlayer.hasFolded == true)
+        {
+            round += 1;
+            round_tracker();
+            bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
+            return true;
+        }
+        else if (bigBlindPlayer.hasRaised == true)
+        {
+            return false;
+        }
+        return false;
+
+    }
+
+
+    //INITIAL GENERATION OF PLAYERS, ONLY RUNS AT START
+
     //generates an amount of players from 3 to 5 and gives them specific positional roles, i.e. it sets a player as a littleBlind player and gives their class variables values
     public void generate_players(int numPlayers, int handNum)
     {
@@ -129,19 +160,11 @@ public class gameManager : MonoBehaviour
         activePlayerPosition = (2 + handNum) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
-    //gets the players id for each player
-    public playerClassScript get_player_by_id(int playerId)
-    {
-        for (int i = 0; i < players.Count; i++)
-        {
-            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            if (currentPlayer.playerId == playerId)
-            {
-                return currentPlayer;
-            }
-        }
-        return null;
-    }
+    
+
+
+    //THESE INSTANTIATE PREFABS AT DIFFERENT POSITIONS, PLAYERS AT TABLE ,DEAL CARDS TO PLAYERS AND THE TABLE
+
     //deals two card game objects from the deck to the players hands, also adds the cards and their values to the players specific card list
     public void deal_to_hands()
     {
@@ -193,6 +216,10 @@ public class gameManager : MonoBehaviour
         flopList.Add(cardToMove);
         cardToMove.transform.SetParent(flopGrid.transform);
     }
+
+
+    //BUTTONS, THESE RUN WHEN PLAYERS CLICK THE BUTTONS, CONTROLS THE ROTATION OF PLAYERS,CALL OTHER FUNCTIONS LIKE CHECKALLFOLDED
+
     //allows the player to raise their bet to a specified integer amount from their amount of chips and then incrementing the player by one
     public void raise_on_click()
     {
@@ -287,18 +314,53 @@ public class gameManager : MonoBehaviour
         check_if_round_can_increment();
         check_all_folded();
     }
+
+
+
+    //DISTRIBUTION OF CHIPS, THESE RUN WHEN BEFORE A NEW HAND BEGINS
+
+
+    //gets and sets each players hand value to a number, sorts the players hand and distributes the pot to the player who will win
+    public void evaluate_hand()
+    {
+        print("EvaluateHand");
+        for (int i = 0; i < players.Count; i++)
+        {
+            List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            currentPlayer.valueOfCardsInHand = get_hand_rank(handList);
+        }
+        List<GameObject> tempPlayers = sort_players_by_hand_rank();
+        check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);//checks if the players should be removed if they failed an all in bet, uses temp players so the rotation is not bugged
+        check_if_game_should_end_temp_players_list(tempPlayers);//checks if the temporary players list is of  1 player
+        distribute_pot_at_hand_evaluation(tempPlayers);//distributes the pot at to the winning player, the winning player is determined by the temporary list as not to screw up the rotation in later hands, the winning player is then converted back into the real players position or players list using a unique playerId given to each player
+    }
     //will add the amount of chips in the pot to the winning player determined by the evaluatehand function
-    public void distribute_pot_at_hand_evaluation(List<GameObject> tempPlayers)//will be run when players cards are evaluated or everyone folds
+    public void distribute_pot_at_hand_evaluation(List<GameObject> tempPlayers)//will be run when players cards are evaluated at round 4
     {
         print("DistributePotAtHandEvaluation");
         playerClassScript winningPlayer = tempPlayers[tempPlayers.Count-1].GetComponent<playerClassScript>();
-        playerClassScript realWinningPlayer = get_player_by_id(winningPlayer.playerId);
         //real winning player is the real player version of tempPlayers, essentially players list without messing up rotations
-        realWinningPlayer.numOfChips += potValue;//sets potValue to 0, sets numOfChipsInPot and adds to numOfChips on playerClassScript of player who won
+        playerClassScript realWinningPlayer = get_player_by_id(winningPlayer.playerId);
+        realWinningPlayer.numOfChips += potValue;//adds to numOfChips on playerClassScript of player who won
         realWinningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
         handNumber++;
         round = 0;
     }
+    //distributes the pot to the player at position i found in the checkallfolded function
+    public void distribute_pot_if_fold(int winningPlayerInt)
+    {
+        print("DistributePotAtHandEvaluation");
+        playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
+        winningPlayer.numOfChips += potValue;
+        winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
+        handNumber++;
+        round = 0;
+    }
+
+
+    //FUNCTIONS THAT RUN WHEN A NEW HAND WILL START, AFTER A PLAYER WINS
+
     //resets all the boolean values that are unimportant for the players identification, i.e. everything except player name and numOfChips
     public void start_next_hand()
     {
@@ -376,24 +438,11 @@ public class gameManager : MonoBehaviour
         activePlayerPosition = (handNum + 2) % numPlayers;
         players[activePlayerPosition].gameObject.GetComponent<Image>().enabled = true;
     }
-    public bool check_if_round_can_increment() //this function must be responsible for checking whether or not the round may increase, it must check whether or not the big-blind players bet is equal to the most recent bet (the little blinds bet), if it is not then the game will keep looping
-    {
-        print("checkIfroundCanIncrement");
-        playerClassScript bigBlindPlayer = players[(1 + handNumber) % players.Count].GetComponent<playerClassScript>();
-        if (bigBlindPlayer.hasCalled == true || bigBlindPlayer.hasFolded == true)
-        {
-            round += 1;
-            round_tracker();
-            bigBlindPlayer.hasCalled = false;//resets the values for bigBlind and littleBlind back to false
-            return true;
-        }
-        else if (bigBlindPlayer.hasRaised == true)
-        {
-            return false;
-        }
-        return false;
+    
 
-    }
+    //THESE FUNCTIONS CHECK FOR CERTAIN THINGS, i.e. IF EVERYONE IS FOLDED, IF A PLAYER WILL GO ALL IN WITH THEIR BETS, IF A PLAYER NEEDS TO BE REMOVED FROM THE GAME
+
+    
     //checks if every player except 1 is folded, determines the remaining player as the player that will be given chips at the distribution
     public void check_all_folded()
     {
@@ -432,16 +481,6 @@ public class gameManager : MonoBehaviour
             start_next_hand();
         }
     }
-    //distributes the pot to the player at position i found in the checkallfolded function
-    public void distribute_pot_if_fold(int winningPlayerInt)
-    {
-        print("DistributePotAtHandEvaluation");
-        playerClassScript winningPlayer = players[winningPlayerInt].GetComponent<playerClassScript>();
-        winningPlayer.numOfChips += potValue;
-        winningPlayer.playerChipsText.text = Convert.ToString(winningPlayer.numOfChips);
-        handNumber++;
-        round = 0;
-    }
     //checks if the players bet will set them in debt, if it does sets the players to have gone all in
     public void check_if_player_is_all_in()
     {
@@ -469,9 +508,9 @@ public class gameManager : MonoBehaviour
             {
                 tempPlayers.RemoveAt(i);
                 currentPlayer.gameObject.SetActive(false);
-                //movesd player indexd down 1
+                //moves player index down 1
                 i--;
-                //moves the winning player down 1 to compensate for this as players are removed at i and the list lengthddecreases by one
+                //moves the winning player down 1 to compensate for this as players are removed at i and the list length decreases by one
                 if (i < winningPlayerInt)
                 {
                     winningPlayerInt--;
@@ -511,6 +550,10 @@ public class gameManager : MonoBehaviour
             SceneManager.LoadScene(4);
         }
     }
+    
+
+    //PLAYER INCREMENTATION, WHICH PLAYER IS ACTING
+    
     //this increments the active player to 1 position along the list
     public void increment_active_player()
     {
@@ -529,21 +572,10 @@ public class gameManager : MonoBehaviour
             }
         }
     }
-    //gets and sets each players hand value to a number, sorts the players hand and distributes the pot to the player who will win
-    public void evaluate_hand()
-    {
-        print("EvaluateHand");
-        for (int i = 0; i < players.Count; i++)
-        {
-            List<GameObject> handList = flopList.Concat(players[i].GetComponent<playerClassScript>().cards).ToList();//joins both flopList cards and the list of cards on the player
-            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
-            currentPlayer.valueOfCardsInHand = get_hand_rank(handList);
-        }
-        List<GameObject> tempPlayers =  sort_players_by_hand_rank();
-        check_if_temp_players_list_chips_valid(tempPlayers, tempPlayers.Count - 1);
-        check_if_game_should_end_temp_players_list(tempPlayers);
-        distribute_pot_at_hand_evaluation(tempPlayers);
-    }
+    
+
+    //GETTING CARD FACE AND SUIT VALUES, i.e. NUMBER OF A CERTAIN CARD FACE OR SUIT IN A PLAYERS HAND
+
     //sets each card face string as equivalent to a number, uses the card game object as a parameter
     public int get_face_power(GameObject currentCard)
     {
@@ -563,59 +595,6 @@ public class gameManager : MonoBehaviour
         facePowerDictionary.Add("Queen", 12);
         facePowerDictionary.Add("King", 13);
         return facePowerDictionary[currentCardScript.face];
-    }
-    //compares hands in order of rank
-    public int compare_hand_by_rank(GameObject player1, GameObject player2)
-    {
-        playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
-        playerClassScript currentPlayer2 = player2.GetComponent<playerClassScript>();
-        int player1Rank = currentPlayer1.valueOfCardsInHand;
-        int player2Rank = currentPlayer2.valueOfCardsInHand;
-        if (player1Rank > player2Rank)
-        {
-            return 1;
-        }
-        else if (player2Rank > player1Rank)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    //compares cards in order of power
-    private int compare_face_by_power(GameObject card1, GameObject card2)
-    {
-        int face1Power = get_face_power(card1);
-        int face2Power = get_face_power(card2);
-
-        if (face1Power > face2Power)
-        {
-            return 1;
-        }
-        else if (face2Power > face1Power)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    //sorts the players hand in order of increasing face power
-    public List<GameObject> sort_hand_by_face_power(List<GameObject> handList)
-    {
-        handList.Sort(compare_face_by_power);//sorts hand using compare face by power 
-        return handList;
-    }
-    //makes new temporary players list that is sorted in order of hand rank so that the orginal players list is not ordered wrong and does not ruin rotation
-    public List<GameObject> sort_players_by_hand_rank()
-    {
-        List<GameObject> tempPlayers = new List<GameObject>(players);
-        print("SortPlayersByHandRank");
-        tempPlayers.Sort(compare_hand_by_rank);
-        return tempPlayers;
     }
     //counts and returns the amount of a specific suit in a players hand
     public int get_number_of_suit_in_hand(List<GameObject> handList, string targetSuit)
@@ -648,6 +627,89 @@ public class gameManager : MonoBehaviour
         }
         return count;
     }
+
+
+    //SORTING OF HANDS AND PLAYERS, PLAYERS ARE SORTED WHEN THE POT NEEDS TO BE DISTRIBUTED, HANDS/CARDS IN THE HAND ARE SORTED SO THE BOOLEAN FUNCTIONS BELOW CAN WORK AS REQUIRED (THEY RELY ON HANDS TO BE SORTED IN ORDER)
+
+    //compares two players hands in order of rank
+    public int compare_hand_by_rank(GameObject player1, GameObject player2)
+    {
+        playerClassScript currentPlayer1 = player1.GetComponent<playerClassScript>();
+        playerClassScript currentPlayer2 = player2.GetComponent<playerClassScript>();
+        int player1Rank = currentPlayer1.valueOfCardsInHand;
+        int player2Rank = currentPlayer2.valueOfCardsInHand;
+        if (player1Rank > player2Rank)
+        {
+            return 1;
+        }
+        else if (player2Rank > player1Rank)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    //compares two cards in order of power
+    private int compare_face_by_power(GameObject card1, GameObject card2)
+    {
+        int face1Power = get_face_power(card1);
+        int face2Power = get_face_power(card2);
+
+        if (face1Power > face2Power)
+        {
+            return 1;
+        }
+        else if (face2Power > face1Power)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    //sorts the players hand in order of increasing face power
+    public List<GameObject> sort_hand_by_face_power(List<GameObject> handList)
+    {
+        handList.Sort(compare_face_by_power);//sorts hand using compare face by power so the straight functions can work smoother
+        return handList;
+    }
+    
+
+    //IMPORTANT
+    //makes new temporary players list that is sorted in order of hand rank so that the orginal players list is not ordered wrong and does not ruin rotation
+    public List<GameObject> sort_players_by_hand_rank()
+    {
+        //temp players is a clone of the players list so calculations can be done to it avoiding bugs regarding list sorting and rotation (if the players list was sorted it would be permanently in that order and would need to be "unsorted" for rotation to be accurate)
+        List<GameObject> tempPlayers = new List<GameObject>(players);
+        print("SortPlayersByHandRank");
+        tempPlayers.Sort(compare_hand_by_rank);
+        return tempPlayers;
+    }
+    //gets the players id for each player so it can be used to reference their actuall information in the pot distribution to avoid the sorting of players list, this knows where each player is, the playerId parameter is the position i in the for loop as it loops through in generates players
+    public playerClassScript get_player_by_id(int playerId)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            playerClassScript currentPlayer = players[i].GetComponent<playerClassScript>();
+            if (currentPlayer.playerId == playerId)
+            {
+                return currentPlayer;
+            }
+        }
+        return null;
+    }
+    //EXPLANATION OF THE TEMPORARY PLAYERS LIST, 
+    //the temporary players list was made because of a bug resulting from the players being sorted, after the players were sorted they would be in that order for the entire next hand and so the rotation
+    //of hands would mess up (go to the wrong spot)
+    //the temp players list is a cloned list of players which allows for sorting and distributing without interacting with the rotation of players
+    //this required a playerId to be created to keep track of where the tempPlayers corresponded to the actual player, and so the playerId is used to reference the players in the playersList for calculations
+
+
+    //CHECKING IF A HAND LIST CONTAINS A CERTAIN RANK OF HAND
+
     //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
     public bool is_royal_flush(List<GameObject> handList)
     {
@@ -713,7 +775,7 @@ public class gameManager : MonoBehaviour
             for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if (get_face_power(handList[n]) == currentFace)
+                if (get_face_power(handList[n]) == currentFace)//checks if the power of the face incremented 1 across is equal to the power of the face before it
                 {
                     currentCount += 1;
                     if (currentCount == 4)
@@ -753,6 +815,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < handList.Count; i++)
         {
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            //getting the cards suit and face string and storing it
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
             currentFace = get_face_power(handList[i]);
@@ -760,13 +823,13 @@ public class gameManager : MonoBehaviour
             for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if (get_face_power(handList[n]) == currentFace + 1
+                if (get_face_power(handList[n]) == currentFace + 1//this is checking if the integer value of the face found is +1 from the previous
                 || (nestedCardScript.face == "Ace"
                     && currentFace + 1 == 14))//handles the circumstance when the ace is needed to make a straight, it must  be both a 1 and 14, this is the circumstance in which it must be 14
                 {
                     currentCount += 1;
                     currentFace = get_face_power(handList[n]);
-                    if (currentCount == 5)
+                    if (currentCount == 5)//if it finds 5 cards of increasing value it returns true for a straight
                     {
                         return true;
                     }
@@ -779,7 +842,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
-    //checks if the hand is of this type,returns true or false depending on whether or not the hand is this
+    //checks if the hand contains 3 cards of 1 face and 2 other cards of the same face
     public bool is_full_house(List<GameObject> handList)
     {
         string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
@@ -789,11 +852,11 @@ public class gameManager : MonoBehaviour
             bool foundMultipleFaces = false;
             for (int n = 0; n < 13; n++)
             {
-                if (alreadyUsedFace == "")
+                if (alreadyUsedFace == "")//if the 
                 {
-                    if (get_number_of_face_in_hand(handList, possibleFaces[n]) >= 3)
+                    if (get_number_of_face_in_hand(handList, possibleFaces[n]) >= 3)//checks if the type of face at index n is greater than 3
                     {
-                        alreadyUsedFace = possibleFaces[n];
+                        alreadyUsedFace = possibleFaces[n];//excludes the 3 cards found from the remaining search
                         foundMultipleFaces = true;
                         break;
                     }
@@ -801,7 +864,7 @@ public class gameManager : MonoBehaviour
                 }
                 else
                 {
-                    if (possibleFaces[n] != alreadyUsedFace && get_number_of_face_in_hand(handList, possibleFaces[n]) >= 2)
+                    if (possibleFaces[n] != alreadyUsedFace && get_number_of_face_in_hand(handList, possibleFaces[n]) >= 2)//if it finds 2 cards with the same face and it is not already found
                     {
                         return true;
                     }
@@ -822,6 +885,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < handList.Count; i++)
         {
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            //getting the cards suit and face string and storing it
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
             currentFace = get_face_power(handList[i]);
@@ -831,7 +895,7 @@ public class gameManager : MonoBehaviour
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
                 if (get_face_power(handList[n]) == currentFace)
                 {
-                    currentCount += 1;
+                    currentCount += 1;//loops through and counts how many of the same face there are, if there is 3 it returns true, if not it continues searching
                     if (currentCount == 3)
                     {
                         return true;
@@ -854,6 +918,7 @@ public class gameManager : MonoBehaviour
         for (int i = 0; i < handList.Count; i++)
         {
             CardScript currentCardScript = handList[i].GetComponent<CardScript>();
+            //getting the cards suit and face string and storing it
             string suit = currentCardScript.suit;
             string face = currentCardScript.face;
             currentFace = get_face_power(handList[i]);
@@ -868,12 +933,12 @@ public class gameManager : MonoBehaviour
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
 
-                if (get_face_power(handList[n]) == currentFace)
+                if (get_face_power(handList[n]) == currentFace)//checks if the two cards match
                 {
-                    currentCount += 1;
+                    currentCount += 1;//increases the count of pairs found
                     if (currentCount == 2)
                     {
-                        if (excludedFace == "")
+                        if (excludedFace == "")//if the pair found has not already been found
                         {
 
                             return is_two_pair(handList, nestedCardScript.face);//re runs function passing in the face we just found so it no longer searches for it
@@ -925,7 +990,7 @@ public class gameManager : MonoBehaviour
         }
         return false;
     }
-    //checks if player has an ace king queen or jack
+    //checks if player has 1 ace king queen or jack
     public bool is_high_card(List<GameObject> handList)
     {
         if (get_number_of_face_in_hand(handList, "Ace") == 1 || get_number_of_face_in_hand(handList, "King") == 1 || get_number_of_face_in_hand(handList, "Queen") == 1 || get_number_of_face_in_hand(handList, "Jack") == 1)
