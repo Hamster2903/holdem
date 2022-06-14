@@ -1032,7 +1032,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1022721833}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToMainMenuScene
+        m_MethodName: swap_to_main_menu_scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1167,7 +1167,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1022721833}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: MuteToggle
+        m_MethodName: mute_toggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -428,7 +428,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1406279430}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToPlayerCreationScene
+        m_MethodName: swap_to_player_selection_scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -561,7 +561,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1406279430}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToInformationScene
+        m_MethodName: swap_to_information_scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -775,7 +775,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1406279430}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: MuteToggle
+        m_MethodName: mute_toggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1195,7 +1195,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1406279430}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: quit_game
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
