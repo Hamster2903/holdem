@@ -12,7 +12,6 @@ public class playerClassScript : MonoBehaviour
     public Text playerChipsText;
     public bool hasCalled = false;
     public bool isActive = false;
-    public bool hasGoneAllIn = false;
     public bool isAllIn = false;
     public int mostRecentBet;
     public string playerName = "";
