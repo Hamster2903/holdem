@@ -1002,6 +1002,8 @@ public class gameManager : MonoBehaviour
             return false;
         }
     }
+    
+    
     //this first sorts each players hand by its face rank and then returns an integer value which can be used to set players hand values
     public int get_hand_rank(List<GameObject> handList)
     {
