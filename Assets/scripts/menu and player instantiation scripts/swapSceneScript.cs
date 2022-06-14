@@ -30,6 +30,7 @@ public class swapSceneScript : MonoBehaviour
     {
         Application.Quit();
     }
+    
     public void MuteToggle(bool muted)
     {
         if(muted)
