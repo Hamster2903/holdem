@@ -55,8 +55,8 @@ public class gameManager : MonoBehaviour
     void Start()
     {
         generate_players(PlayerPrefs.GetInt("players"), 1);
-        deckScript.Generate();
-        deckScript.Shuffle();
+        deckScript.generate();
+        deckScript.shuffle();
         generate_player_objects_around_table();
         deal_to_hands();
     }
@@ -339,8 +339,8 @@ public class gameManager : MonoBehaviour
         }
         flopList.Clear();
         //clear player positions
-        deckScript.Generate();
-        deckScript.Shuffle();
+        deckScript.generate();
+        deckScript.shuffle();
         check_if_players_list_chips_valid();
         regenerate_players(players.Count, handNumber);
         check_if_players_list_chips_valid();
