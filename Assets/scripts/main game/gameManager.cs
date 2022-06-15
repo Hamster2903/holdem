@@ -845,9 +845,9 @@ public class gameManager : MonoBehaviour
     //checks if the hand contains 3 cards of 1 face and 2 other cards of the same face
     public bool is_full_house(List<GameObject> handList)
     {
-        string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };
-        string alreadyUsedFace = "";
-        for (int i = 0; i < possibleFaces.Length; i++)
+        string[] possibleFaces = new string[] { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" };//defining the possible faces the hand could be made of
+        string alreadyUsedFace = "";//defines a string to store the face that is found
+        for (int i = 0; i < possibleFaces.Length; i++)//loops through the possible faces
         {
             bool foundMultipleFaces = false;
             for (int n = 0; n < 13; n++)
@@ -893,7 +893,7 @@ public class gameManager : MonoBehaviour
             for (int n = i + 1; n < handList.Count; n++)
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
-                if (get_face_power(handList[n]) == currentFace)
+                if (get_face_power(handList[n]) == currentFace)//checks is two cards match in face power
                 {
                     currentCount += 1;//loops through and counts how many of the same face there are, if there is 3 it returns true, if not it continues searching
                     if (currentCount == 3)
@@ -933,7 +933,7 @@ public class gameManager : MonoBehaviour
             {
                 CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
 
-                if (get_face_power(handList[n]) == currentFace)//checks if the two cards match
+                if (get_face_power(handList[n]) == currentFace)//checks if the two cards match in power
                 {
                     currentCount += 1;//increases the count of pairs found
                     if (currentCount == 2)
