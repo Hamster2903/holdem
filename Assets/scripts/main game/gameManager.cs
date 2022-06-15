@@ -772,9 +772,9 @@ public class gameManager : MonoBehaviour
             string face = currentCardScript.face;
             currentFace = get_face_power(handList[i]);
             currentCount = 1;
-            for (int n = i + 1; n < handList.Count; n++)
+            for (int n = i + 1; n < handList.Count; n++)//loops through handList beginning 1 item after current card
             {
-                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();
+                CardScript nestedCardScript = handList[n].GetComponent<CardScript>();//nested card is the card 1 over from currentCard, does not need to check for currentCard again
                 if (get_face_power(handList[n]) == currentFace)//checks if the power of the face incremented 1 across is equal to the power of the face before it
                 {
                     currentCount += 1;
@@ -852,7 +852,7 @@ public class gameManager : MonoBehaviour
             bool foundMultipleFaces = false;
             for (int n = 0; n < 13; n++)
             {
-                if (alreadyUsedFace == "")//if the 
+                if (alreadyUsedFace == "")
                 {
                     if (get_number_of_face_in_hand(handList, possibleFaces[n]) >= 3)//checks if the type of face at index n is greater than 3
                     {
