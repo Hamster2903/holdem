@@ -901,7 +901,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450367}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToGameScene
+        m_MethodName: swap_to_game_scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1034,7 +1034,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450367}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: SwapToMainMenuScene
+        m_MethodName: swap_to_main_menu_scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1167,7 +1167,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450368}
         m_TargetAssemblyTypeName: playerCreationScene, Assembly-CSharp
-        m_MethodName: Get4Players
+        m_MethodName: get_4_players
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1325,7 +1325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 959, y: -508}
+  m_AnchoredPosition: {x: 887.61, y: -511}
   m_SizeDelta: {x: 389.698, y: 139.908}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1346250387
@@ -1377,7 +1377,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450367}
         m_TargetAssemblyTypeName: swapSceneScript, Assembly-CSharp
-        m_MethodName: MuteToggle
+        m_MethodName: mute_toggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1473,7 +1473,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450368}
         m_TargetAssemblyTypeName: playerCreationScene, Assembly-CSharp
-        m_MethodName: Get3Players
+        m_MethodName: get_3_players
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1606,7 +1606,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 510450368}
         m_TargetAssemblyTypeName: playerCreationScene, Assembly-CSharp
-        m_MethodName: Get5Players
+        m_MethodName: get_5_players
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
